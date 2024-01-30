@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import SearchIcon from "../assets/Icons/icons8-search-64.png";
 
-import TransactionCard from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/TransactionCard";
 import Select from "react-select";
-import MobileTransactionCard from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/MobileTransactionCard";
 import PolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/PolicyCard";
 import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
 

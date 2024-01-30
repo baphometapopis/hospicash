@@ -9,6 +9,7 @@ import { get_Pincode_Data, get_policy_data } from "../Api/getFormData";
 import CustomSelect from "../components/ui/CustomSelect";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// eslint-disable-next-line
 const validationSchema = Yup.object().shape({
   fname: Yup.string().required("Required"),
   middlename: Yup.string(),
@@ -30,9 +31,7 @@ const validationSchema = Yup.object().shape({
 export default function FormPage() {
   const location = useLocation();
 
-  const [selectedPlan, setSelectedPlan] = useState(
-    location?.state?.selectedPlan
-  );
+  const [selectedPlan] = useState(location?.state?.selectedPlan);
   const [salutation, setSalutation] = useState([]);
   const [nom_relation, setNom_relation] = useState([]);
   const [genderOption, setgenderOption] = useState([]);

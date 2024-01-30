@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import tvsImage from "../assets/img/TVS-Racer-Bike.webp";
-import tvsLogo from "../assets/img/tvs-logo.png";
+
 import BrandLogo from "../assets/img/brandLogo.png";
 
 import Button from "../components/ui/Button";

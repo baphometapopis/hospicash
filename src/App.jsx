@@ -1,11 +1,8 @@
 import "./App.css";
-import toast, { Toaster } from "react-hot-toast";
-import { isMobile } from "react-device-detect";
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import AppLayout from "./AppLayout";
 import Transactions from "./pages/Transactions";
 import Plans from "./pages/Plans";

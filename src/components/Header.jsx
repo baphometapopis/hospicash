@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import BrandLogo from "../assets/img/brandLogo.png";
 import walletClosed from "../assets/Icons/icons8-card-wallet-64.png";
 import walletOpened from "../assets/Icons/icons8-wallet-64 (1).png";
 import PaymentModal from "./dashboardcomponent/Modal/PaymentModal";
-import walletAdd from "../assets/Icons/icons8-plus-50.png";
 import { walletBalance } from "../Api/walletBalance";
 import { toast } from "react-toastify";
 import { decryptData } from "../Utils/cryptoUtils";
@@ -32,7 +31,7 @@ export default function Header({ toggle }) {
   const closePaymentModal = () => {
     setIsPaymentModalOpen(false);
   };
-  const getwalletBalance = async () => {
+  const getwalletBalance = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
     if (data) {
       const decryptdata = decryptData(data);
@@ -62,10 +61,11 @@ export default function Header({ toggle }) {
         pauseOnHover: true,
       });
     }
-  };
+  }, [setavailableBalance, navigate]);
+
   useEffect(() => {
     getwalletBalance();
-  }, [iswalletopened]);
+  }, [getwalletBalance, iswalletopened]);
 
   return (
     <>
@@ -79,7 +79,14 @@ export default function Header({ toggle }) {
           </span>
           <img src={BrandLogo} alt="tvs-brand-logo" className="w-32" />
         </div>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center", cursor:'pointer' }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "12px",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
           {iswalletopened ? (
             <img
               onClick={() => setwalletopened(!iswalletopened)}

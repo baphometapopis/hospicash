@@ -1,9 +1,7 @@
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Select from "react-select";
 
 const CancelModal = ({ isOpen, onClose, data }) => {
   const handleSubmit = (values, { resetForm }) => {

@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const Plans = () => {
   const location = useLocation();
   const initialPlansData = location?.state?.formdata?.plan_data || [];
-  const [plansData, setplansData] = useState(initialPlansData);
+  const [plansData] = useState(initialPlansData);
 
   const Navigation = useNavigate();
 
