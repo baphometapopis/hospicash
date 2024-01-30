@@ -1,0 +1,108 @@
+/* TailwindCSS */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Material Symbols */
+@import "material-symbols/outlined.css";
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 48;
+}
+
+/* Typography */
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-Thin.ttf"); /*URL to font*/
+  font-weight: 100;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-ExtraLight.ttf"); /*URL to font*/
+  font-weight: 200;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-Light.ttf"); /*URL to font*/
+  font-weight: 300;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-Regular.ttf"); /*URL to font*/
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-Medium.ttf"); /*URL to font*/
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-SemiBold.ttf"); /*URL to font*/
+  font-weight: 600;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-Bold.ttf"); /*URL to font*/
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-ExtraBold.ttf"); /*URL to font*/
+  font-weight: 800;
+}
+@font-face {
+  font-family: "Inter"; /*a name to be used later*/
+  src: url("././assets/fonts/Inter-Black.ttf"); /*URL to font*/
+  font-weight: 900;
+}
+
+body {
+  font-family: "Inter";
+  /* color: #051B34; */
+  color: #1b1b1c;
+  background-color: #F1F5F9;
+
+  /* background-image: url('./assets/img/bgImage.png'); */
+  /* background: rgb(3, 50, 103); */
+  /* background: linear-gradient(
+    180deg,
+    rgba(3, 50, 103, 1) 0%,
+    rgba(8, 43, 82, 1) 35%,
+    rgba(0, 0, 0, 1) 100%
+
+  ); */
+}
+
+::-webkit-datetime-edit {
+  padding: 0.5em;
+}
+::-webkit-datetime-edit-fields-wrapper {
+  background: silver;
+}
+::-webkit-datetime-edit-text {
+  color: red;
+  padding: 0 0.3em;
+}
+::-webkit-datetime-edit-month-field {
+  color: blue;
+}
+::-webkit-datetime-edit-day-field {
+  color: green;
+}
+::-webkit-datetime-edit-year-field {
+  color: purple;
+}
+::-webkit-inner-spin-button {
+  display: none;
+}
+/* ::-webkit-calendar-picker-indicator { background-color: orange; } */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: rgba(0, 0, 0, 0);
+  opacity: 1;
+  display: block;
+  background: url(https://mywildalberta.ca/images/GFX-MWA-Parks-Reservations.png)
+    no-repeat;
+  width: 24px;
+  height: 2px;
+  border-width: thin;
+}

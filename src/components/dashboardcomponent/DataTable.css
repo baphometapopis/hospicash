@@ -1,0 +1,36 @@
+/* DataTable.css */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.container {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.data-table {
+  border-collapse: collapse;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #ffffff;
+  padding: 8px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #92ccec;
+}
+
+.even-row {
+  background-color: #f9f9f9;
+}
+
+.odd-row {
+  background-color: #ffffff;
+}
