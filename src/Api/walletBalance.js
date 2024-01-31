@@ -10,6 +10,6 @@ export const walletBalance = async (dealer_id) => {
     return data;
   } catch (error) {
     // Handle errors
-    console.log(error);
+    // console.log(error);
   }
 };

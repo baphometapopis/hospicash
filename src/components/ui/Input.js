@@ -13,9 +13,11 @@ const Input = ({
   label,
   maxLength,
   required,
+  alphanumeric,
   capitalize,
   numericOnly,
   disabled,
+  alphabets,
   removeError, // New prop to conditionally show/hide error
 }) => {
   const classes = classNames(
@@ -49,8 +51,16 @@ const Input = ({
         maxLength={maxLength || 25} // Add maxLength attribute for character limitation
         onChange={(e) => {
           if (numericOnly) {
+            //allow
             e.target.value = e.target.value.replace(/[^0-9]/g, "");
           }
+          if (alphabets) {
+            e.target.value = e.target.value.replace(/[^a-zA-Z]/g, "");
+          }
+          if (alphanumeric) {
+            e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+          }
+
           formik.handleChange(e);
           if (onInputChange) {
             onInputChange(e.target.value);

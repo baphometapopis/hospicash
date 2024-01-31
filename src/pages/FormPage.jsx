@@ -8,10 +8,22 @@ import PlanCard from "./PlanCard";
 import { get_Pincode_Data, get_policy_data } from "../Api/getFormData";
 import CustomSelect from "../components/ui/CustomSelect";
 import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "react-toastify/dist/ReactToastify.css";
+import { generatePolicy } from "../Api/generatePolicy";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserData } from "../Redux/userSlice.js";
+import moment from "moment";
+import { format, parseISO } from "date-fns";
+
 // eslint-disable-next-line
 const validationSchema = Yup.object().shape({
   fname: Yup.string().required("Required"),
+  salutation: Yup.string().required("Required"),
+  dob: Yup.string().required("Required"),
+  gender: Yup.string().required("Required"),
+
   middlename: Yup.string(),
   lname: Yup.string().required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
@@ -24,11 +36,15 @@ const validationSchema = Yup.object().shape({
   city_id: Yup.string().required("Required"),
   state_id: Yup.string().required("Required"),
   nominee_full_name: Yup.string().required("Required"),
+  pan_number: Yup.string().required("Required"),
+
   nominee_age: Yup.number().required("Required").min(1, "Enter Valid Age"),
-  // nominee_relation: Yup.string().required("Required"),
+  nominee_relation: Yup.string().required("Required"),
 });
 
 export default function FormPage() {
+  const dispatch = useDispatch();
+
   const location = useLocation();
 
   const [selectedPlan] = useState(location?.state?.selectedPlan);
@@ -43,28 +59,38 @@ export default function FormPage() {
 
   const navigation = useNavigate();
 
+  const submitData = async () => {
+    const data = await generatePolicy(formik.values);
+    console.log(data);
+  };
+  const userData = useSelector((state) => state.user);
+
   const formik = useFormik({
-    initialValues: {
-      salutation: "",
-      fname: "",
-      middlename: "",
-      lname: "",
-      email: "",
-      mobile_no: "",
-      addr1: "",
-      addr2: "",
-      pincode: "",
-      city_id: "",
-      state_id: "",
-      nominee_full_name: "",
-      nominee_age: "",
-      nominee_relation: "",
-      appointee_name: "",
-      appointee_age: "",
-      appointee_relation: "",
-      gender: "",
-    },
-    // validationSchema: validationSchema,
+    initialValues: userData,
+
+    // initialValues: {
+    //   is_policy_schedule_type: "month",
+    //   salutation: "",
+    //   fname: "",
+    //   middlename: "",
+    //   lname: "",
+    //   email: "",
+    //   mobile_no: "",
+    //   addr1: "",
+    //   addr2: "",
+    //   pincode: "",
+    //   dob: "",
+    //   city_id: "",
+    //   state_id: "",
+    //   nominee_full_name: "",
+    //   nominee_age: "",
+    //   nominee_relation: "",
+    //   appointee_name: "",
+    //   appointee_age: "",
+    //   appointee_relation: "",
+    //   gender: "",
+    // },
+    validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values);
       if (
@@ -72,13 +98,16 @@ export default function FormPage() {
         location?.state?.Action === "NewPolicy"
       ) {
         console.log("Data Submitted Successfully ");
+        // submitData();
       } else {
+        dispatch(updateUserData(formik.values));
+
         navigation("/plans", { state: { formdata } });
       }
     },
     validate: (values) => {
       // Check if the pincode length is 6
-      console.log(values);
+      // console.log(formik.errors);
       if (
         values.pincode.length === 6 &&
         ((values.state_id === "" && values.city_id === "") ||
@@ -91,7 +120,7 @@ export default function FormPage() {
 
       if (values.salutation) {
         // Call your function here
-        console.log(formdata);
+        // console.log(formdata);
         // const nomdata = formdata?.nominee_relation_data?.filter(
         //   (relation) => relation.salutation == values.salutation
         // );
@@ -109,6 +138,7 @@ export default function FormPage() {
       formik.setFieldValue("city_id", data?.data?.city_id);
       formik.setFieldValue("state_id", data?.data?.state_id);
     } else {
+      formik.setFieldValue("pincode", " ");
       toast.error("Failed to fetch Pincode ", {
         position: "bottom-right",
         autoClose: 3000,
@@ -117,7 +147,6 @@ export default function FormPage() {
         pauseOnHover: true,
       });
     }
-    console.log(data);
   };
 
   const getFormData = async () => {
@@ -135,6 +164,11 @@ export default function FormPage() {
       setgenderOption(activeGender);
     }
   };
+
+  const formatDate = (date) => {
+    return moment(date).format("YYYY/MM/DD");
+  };
+
   useEffect(() => {
     getFormData();
   }, []);
@@ -187,6 +221,8 @@ export default function FormPage() {
                   placeholder="Enter your First Name"
                   label="First Name"
                   value={formik.values.fname}
+                  capitalize
+                  alphabets
                 />
                 <Input
                   {...formik.getFieldProps("middlename")}
@@ -198,6 +234,7 @@ export default function FormPage() {
                   label="Middle Name"
                   value={formik.values.middlename}
                   capitalize
+                  alphabets
                 />
                 <Input
                   {...formik.getFieldProps("lname")}
@@ -209,8 +246,10 @@ export default function FormPage() {
                   placeholder="Enter your Last Name"
                   label="Last Name"
                   value={formik.values.lname}
+                  alphabets
+                  capitalize
                 />
-                {/* <Input
+                <Input
                   {...formik.getFieldProps("email")}
                   formik={formik}
                   id="email"
@@ -219,7 +258,7 @@ export default function FormPage() {
                   placeholder="Enter your email"
                   label="Email"
                   value={formik.values.email}
-                />  */}
+                />
                 <Input
                   {...formik.getFieldProps("mobile_no")}
                   formik={formik}
@@ -233,6 +272,7 @@ export default function FormPage() {
                   numericOnly
                   maxLength={10}
                 />
+
                 {true && (
                   <CustomSelect
                     id="gender"
@@ -254,6 +294,46 @@ export default function FormPage() {
                   />
                 )}
                 <Input
+                  {...formik.getFieldProps("pan_number")}
+                  formik={formik}
+                  id="pan_number"
+                  name="pan_number"
+                  type="text"
+                  placeholder="Enter your Pan Number"
+                  label="Pan Number"
+                  required={true}
+                  value={formik.values.pan_number}
+                  alphanumeric
+                  maxLength={10}
+                  capitalize                />
+
+                <div className="flex flex-col">
+                  <label
+                    style={{ alignSelf: "flex-start", color: "#686464" }}
+                    htmlFor="date"
+                  >
+                    Date Of Birth
+                    <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <DatePicker
+                    id="date"
+                    selected={
+                      formik.values.dob
+                        ? moment(formik.values.dob, "YYYY/MM/DD").toDate()
+                        : ""
+                    }
+                    onChange={(date) => {
+                      formik.setFieldValue("dob", formatDate(date));
+                    }}
+                    preventOpenOnFocus={false}
+                    autoComplete="false"
+                    dateFormat="yyyy/MM/dd"
+                    placeholderText="YYYY/MM/DD"
+                    className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
+                  />
+                </div>
+
+                <Input
                   {...formik.getFieldProps("addr1")}
                   formik={formik}
                   id="addr1"
@@ -263,6 +343,7 @@ export default function FormPage() {
                   placeholder="Address1 "
                   label="Address 1"
                   value={formik.values.addr1}
+                  capitalize
                 />
                 <Input
                   {...formik.getFieldProps("addr2")}
@@ -274,6 +355,7 @@ export default function FormPage() {
                   placeholder="Address 2 "
                   label="Address 2"
                   value={formik.values.addr2}
+                  capitalize
                 />
                 <Input
                   {...formik.getFieldProps("pincode")}
@@ -401,7 +483,7 @@ export default function FormPage() {
               <div className="flex justify-center mt-4">
                 <button
                   type="submit"
-                  className="bg-primary text-white py-2 px-4 rounded"
+                  className="bg-primary text-white py-2 px-4 rounded mb-10"
                 >
                   Submit
                 </button>
@@ -410,7 +492,10 @@ export default function FormPage() {
           </div>
 
           {selectedPlan && (
-            <div className="sticky top-20  mx-6 md:min-w-fit md:w-1/2 h-fit mb-20  -mt-20 flex p-2">
+            <div
+              style={{ justifyContent: "center" }}
+              className="sticky top-20  mx-6 md:min-w-fit md:w-1/2 h-fit mb-20  -mt-10 md:-mt-20 flex p-2"
+            >
               {/* Plans Section */}
 
               <PlanCard

@@ -11,6 +11,6 @@ export const login = async (dealer_code, password) => {
     return data;
   } catch (error) {
     // Handle errors
-    console.log(error);
+    // console.log(error);
   }
 };

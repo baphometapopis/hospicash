@@ -12,33 +12,42 @@ import { ToastContainer } from "react-toastify";
 import TransactionsList from "./pages/TransactionList";
 import SoldPolicy from "./pages/SoldPolicy";
 import PurchaseStatus from "./pages/PurchaseStatus";
+import CancelledPolicy from "./pages/CancelledPolicy";
+import { Provider } from "react-redux";
+import store from "./Redux/store";
 
 function App() {
   return (
     <>
-      <BrowserRouter>
-        <ToastContainer />
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route index element={<Navigate replace to="Login" />}></Route>
-            <Route path="Form" element={<FormPage />}></Route>
-            <Route path="transaction" element={<Transactions />}></Route>
-            <Route path="soldPolicy" element={<SoldPolicy />}></Route>
-            <Route path="confirmed" element={<PurchaseStatus />}></Route>
+      <Provider store={store}>
+        <BrowserRouter>
+          <ToastContainer />
+          <Routes>
+            <Route element={<AppLayout />}>
+              <Route index element={<Navigate replace to="Login" />}></Route>
+              <Route path="Form" element={<FormPage />}></Route>
+              <Route path="transaction" element={<Transactions />}></Route>
+              <Route path="soldPolicy" element={<SoldPolicy />}></Route>
+              <Route path="confirmed" element={<PurchaseStatus />}></Route>
+              <Route
+                path="cancelledPolicy"
+                element={<CancelledPolicy />}
+              ></Route>
 
-            <Route
-              path="transaction_list"
-              element={<TransactionsList />}
-            ></Route>
+              <Route
+                path="transaction_list"
+                element={<TransactionsList />}
+              ></Route>
 
-            <Route path="plans" element={<Plans />}></Route>
+              <Route path="plans" element={<Plans />}></Route>
 
-            <Route path="home" element={<Home />}></Route>
-          </Route>
-          <Route path="login" element={<Login />}></Route>
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </BrowserRouter>
+              <Route path="home" element={<Home />}></Route>
+            </Route>
+            <Route path="login" element={<Login />}></Route>
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </Provider>
     </>
   );
 }

@@ -40,7 +40,6 @@ export default function Login() {
     },
   });
   const handleLoginApi = async () => {
-    console.log("hitting");
     setLoading(true);
 
     try {
@@ -90,9 +89,7 @@ export default function Login() {
     setLoading(false);
   };
   return (
-    <div
-      className="flex justify-center  items-center p-2 h-[100vh]"
-    >
+    <div className="flex justify-center  items-center p-2 h-[100vh]">
       {loading && <Loader />}
       <div className="flex flex-col items-center">
         <div className=" bg-white border border-neutral-light rounded flex flex-col items-center w-full">

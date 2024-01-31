@@ -9,7 +9,7 @@ export const get_policy_data = async () => {
     return data;
   } catch (error) {
     // Handle errors
-    console.log(error);
+    // console.log(error);
   }
 };
 
@@ -28,6 +28,6 @@ export const get_Pincode_Data = async (pincode) => {
     return data;
   } catch (error) {
     // Handle errors
-    console.log(error);
+    // console.log(error);
   }
 };

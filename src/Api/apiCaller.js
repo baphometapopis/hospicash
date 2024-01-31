@@ -1,5 +1,4 @@
 // import { getHeaders } from "./apiService";
-
 import { API_BASE_URL } from "./api_Endpoint";
 
 const makeApiRequest = (endpoint, method = "GET", body = null) => {
@@ -18,7 +17,7 @@ const makeApiRequest = (endpoint, method = "GET", body = null) => {
       return result; // You can return the result or process it further
     })
     .catch((error) => {
-    //   console.log(error);
+      // Do nothing or handle the error in a different way if needed
     });
 };
 

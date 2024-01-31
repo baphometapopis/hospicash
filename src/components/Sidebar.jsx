@@ -49,11 +49,18 @@ export default function Sidebar({ opened }) {
     },
 
     {
-      id: 5,
-      order: 3,
+      id: 4,
+      order: 4,
       label: "Sold Policy",
       icon: "Contract",
       path: "/soldPolicy",
+    },
+    {
+      id: 5,
+      order: 5,
+      label: "Cancelled Policy",
+      icon: "scan_delete",
+      path: "/cancelledPolicy",
     },
   ];
   return (
