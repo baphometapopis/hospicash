@@ -3,8 +3,9 @@ import { useDropzone } from "react-dropzone";
 import cloud from "../../assets/img/uploadcloud.jpeg";
 import * as XLSX from "xlsx";
 
-export const MyDropzoneComponent = () => {
+export const MyDropzoneComponent = ({ onFileSelect }) => {
   const [rows, setnumberofRows] = useState();
+
   const handleFile = (file) => {
     const reader = new FileReader();
 
@@ -23,6 +24,7 @@ export const MyDropzoneComponent = () => {
     };
 
     reader.readAsBinaryString(file);
+    onFileSelect(file); // Invoke the callback with the selected file
   };
 
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } =
@@ -58,14 +60,16 @@ export const MyDropzoneComponent = () => {
       {...getRootProps()}
       className={`dropzone ${isDragActive ? "active" : ""}`}
     >
-      <p
-        style={{
-          fontSize: "12px",
-          textAlign: "center",
-        }}
-      >
-        {rows}-Records Found
-      </p>
+      {rows && (
+        <p
+          style={{
+            fontSize: "12px",
+            textAlign: "center",
+          }}
+        >
+          {rows}-Records Found
+        </p>
+      )}
       <input {...getInputProps()} />
       <img
         src={cloud}
@@ -76,7 +80,7 @@ export const MyDropzoneComponent = () => {
       {acceptedFiles.length === 0 && (
         <p
           style={{
-            fontSize: "16px",
+            fontSize: "12px",
             alignSelf: "center",
             whiteSpace: "nowrap",
             padding: "12px",

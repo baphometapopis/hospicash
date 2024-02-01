@@ -5,217 +5,17 @@ import SearchIcon from "../assets/Icons/icons8-search-64.png";
 import Select from "react-select";
 import PolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/PolicyCard";
 import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
+import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 
 export default function SoldPolicy() {
   const [currentPage, setCurrentPage] = useState(1);
+  // const [data, setData] = useState();
+  const [totalRecords, setTotalRecords] = useState();
+  const [poicyList, setPolicyList] = useState([]);
+
+  const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
+  const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const recordsPerPage = 10;
-
-  const data = [
-    {
-      srno: 1,
-      policy_no: "POL001",
-      policy_duration: "1 year",
-      ins_name: "John Doe",
-      ins_mobile_no: "123-456-7890",
-      ins_cmp: "ABC Ins",
-      crt_date: "2024-01-01",
-      status: "Success",
-    },
-    {
-      srno: 2,
-      policy_no: "POL002",
-      policy_duration: "6 months",
-      ins_name: "Jane Smith",
-      ins_mobile_no: "987-654-3210",
-      ins_cmp: "DEF Ins",
-      crt_date: "2024-01-02",
-      status: "Cancelled",
-    },
-    {
-      srno: 3,
-      policy_no: "POL003",
-      policy_duration: "2 years",
-      ins_name: "Robert Johnson",
-      ins_mobile_no: "555-123-7890",
-      ins_cmp: "GHI Ins",
-      crt_date: "2024-01-03",
-      status: "Pending",
-    },
-    {
-      srno: 4,
-      policy_no: "POL004",
-      policy_duration: "1 year",
-      ins_name: "Emily Davis",
-      ins_mobile_no: "111-222-3333",
-      ins_cmp: "JKL Ins",
-      crt_date: "2024-01-04",
-      status: "Success",
-    },
-    {
-      srno: 5,
-      policy_no: "POL005",
-      policy_duration: "6 months",
-      ins_name: "Michael Williams",
-      ins_mobile_no: "444-555-6666",
-      ins_cmp: "MNO Ins",
-      crt_date: "2024-01-05",
-      status: "Cancelled",
-    },
-    {
-      srno: 6,
-      policy_no: "POL006",
-      policy_duration: "2 years",
-      ins_name: "Sarah Miller",
-      ins_mobile_no: "777-888-9999",
-      ins_cmp: "PQR Ins",
-      crt_date: "2024-01-06",
-      status: "Pending",
-    },
-    {
-      srno: 7,
-      policy_no: "POL007",
-      policy_duration: "1 year",
-      ins_name: "James Wilson",
-      ins_mobile_no: "222-333-4444",
-      ins_cmp: "STU Ins",
-      crt_date: "2024-01-07",
-      status: "Success",
-    },
-    {
-      srno: 8,
-      policy_no: "POL008",
-      policy_duration: "6 months",
-      ins_name: "Emma Brown",
-      ins_mobile_no: "666-777-8888",
-      ins_cmp: "VWX Ins",
-      crt_date: "2024-01-08",
-      status: "Cancelled",
-    },
-    {
-      srno: 9,
-      policy_no: "POL009",
-      policy_duration: "2 years",
-      ins_name: "Oliver White",
-      ins_mobile_no: "999-888-7777",
-      ins_cmp: "YZX Ins",
-      crt_date: "2024-01-09",
-      status: "Pending",
-    },
-    {
-      srno: 10,
-      policy_no: "POL010",
-      policy_duration: "1 year",
-      ins_name: "Sophia Taylor",
-      ins_mobile_no: "111-555-9999",
-      ins_cmp: "ABC Ins",
-      crt_date: "2024-01-10",
-      status: "Success",
-    },
-    {
-      srno: 11,
-      policy_no: "POL011",
-      policy_duration: "6 months",
-      ins_name: "Daniel Clark",
-      ins_mobile_no: "777-222-3333",
-      ins_cmp: "DEF Ins",
-      crt_date: "2024-01-11",
-      status: "Cancelled",
-    },
-    {
-      srno: 12,
-      policy_no: "POL012",
-      policy_duration: "2 years",
-      ins_name: "Eva Turner",
-      ins_mobile_no: "555-666-8888",
-      ins_cmp: "GHI Ins",
-      crt_date: "2024-01-12",
-      status: "Pending",
-    },
-    {
-      srno: 13,
-      policy_no: "POL013",
-      policy_duration: "1 year",
-      ins_name: "Gabriel Harris",
-      ins_mobile_no: "333-444-5555",
-      ins_cmp: "JKL Ins",
-      crt_date: "2024-01-13",
-      status: "Success",
-    },
-    {
-      srno: 14,
-      policy_no: "POL014",
-      policy_duration: "6 months",
-      ins_name: "Isabella Martin",
-      ins_mobile_no: "999-111-2222",
-      ins_cmp: "MNO Ins",
-      crt_date: "2024-01-14",
-      status: "Cancelled",
-    },
-    {
-      srno: 15,
-      policy_no: "POL015",
-      policy_duration: "2 years",
-      ins_name: "Jason Turner",
-      ins_mobile_no: "444-555-6666",
-      ins_cmp: "PQR Ins",
-      crt_date: "2024-01-15",
-      status: "Pending",
-    },
-    {
-      srno: 16,
-      policy_no: "POL016",
-      policy_duration: "1 year",
-      ins_name: "Emma Davis",
-      ins_mobile_no: "777-888-9999",
-      ins_cmp: "STU Ins",
-      crt_date: "2024-01-16",
-      status: "Success",
-    },
-    {
-      srno: 17,
-      policy_no: "POL017",
-      policy_duration: "6 months",
-      ins_name: "Olivia White",
-      ins_mobile_no: "222-333-4444",
-      ins_cmp: "VWX Ins",
-      crt_date: "2024-01-17",
-      status: "Cancelled",
-    },
-    {
-      srno: 18,
-      policy_no: "POL018",
-      policy_duration: "2 years",
-      ins_name: "Liam Turner",
-      ins_mobile_no: "666-777-8888",
-      ins_cmp: "YZX Ins",
-      crt_date: "2024-01-18",
-      status: "Pending",
-    },
-    {
-      srno: 19,
-      policy_no: "POL019",
-      policy_duration: "1 year",
-      ins_name: "Ava Brown",
-      ins_mobile_no: "999-555-1111",
-      ins_cmp: "ABC Ins",
-      crt_date: "2024-01-19",
-      status: "Pending",
-    },
-    {
-      srno: 20,
-      policy_no: "POL020",
-      policy_duration: "6 months",
-      ins_name: "Logan Taylor",
-      ins_mobile_no: "111-222-3333",
-      ins_cmp: "DEF Ins",
-      crt_date: "2024-01-20",
-      status: "Cancelled",
-    },
-  ];
-
-  const indexOfLastRecord = currentPage * recordsPerPage;
-  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = data.slice(indexOfFirstRecord, indexOfLastRecord);
   const [isMobile, setisMobile] = useState(false);
 
   const options = [
@@ -225,10 +25,27 @@ export default function SoldPolicy() {
   ];
 
   const handlePageChange = (pageNumber) => {
+    console.log(pageNumber);
     setCurrentPage(pageNumber);
+    setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
+
+  const SoldCancelPolicy = async () => {
+    const listdata = {
+      dealer_id: "1",
+      start: indexOfFirstRecord,
+      end: recordsPerPage,
+      policy_type: "sold",
+    };
+    if (indexOfFirstRecord !== indexOfLastRecord) {
+      const data = await getSold_CancelPolicy(listdata);
+      setPolicyList(data?.data);
+      setTotalRecords(data?.recordsTotal);
+      console.log(data?.recordsTotal);
+    }
+  };
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -245,6 +62,14 @@ export default function SoldPolicy() {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, [windowWidth]);
+
+  useEffect(() => {
+    setIndexOfLastRecord(currentPage * recordsPerPage);
+  }, [currentPage, recordsPerPage]);
+
+  useEffect(() => {
+    SoldCancelPolicy();
+  }, [indexOfLastRecord, indexOfFirstRecord]);
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -377,7 +202,7 @@ export default function SoldPolicy() {
                 }}
                 className="text-white"
               >
-                Ins Name
+                Pan No
               </span>
               <span
                 style={{
@@ -401,25 +226,26 @@ export default function SoldPolicy() {
               </span>
             </div>
           )}
-          {currentRecords.map((data) => (
+          {poicyList.map((data) => (
             <>
               {isMobile ? (
-                <PolicyCard key={data.srno} Policy={data} />
+                <PolicyCard key={data.id} Policy={data} />
               ) : (
-                <MobilePolicyCard key={data.srno} policy={data} />
+                <MobilePolicyCard key={data.id} policy={data} />
               )}
             </>
           ))}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
-              Showing {indexOfFirstRecord + 1} to{" "}
-              {Math.min(indexOfLastRecord, data.length)} of {data.length}{" "}
-              entries
+              Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
+              {totalRecords} entries
             </span>
             <div className="flex items-center mt-4">
               <span className="text-gray-600 mx-2">
-                Page {currentPage} of {Math.ceil(data.length / recordsPerPage)}
+                Page {currentPage} of{" "}
+                {Math.floor(totalRecords / recordsPerPage)}
               </span>
+
               <button
                 className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
                 onClick={() => handlePageChange(currentPage - 1)}
@@ -431,7 +257,7 @@ export default function SoldPolicy() {
                 className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={
-                  currentPage === Math.ceil(data.length / recordsPerPage)
+                  currentPage === Math.floor(totalRecords / recordsPerPage)
                 }
               >
                 Next

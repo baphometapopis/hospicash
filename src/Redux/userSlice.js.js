@@ -2,10 +2,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  is_policy_schedule_type: "month",
+  is_policy_schedule_type: "year",
+  dealer_id: "1",
+  plan_id: "",
   salutation: "",
   fname: "",
-  middlename: "",
+  mname: "",
   lname: "",
   email: "",
   mobile_no: "",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import PieChart from "../components/dashboardcomponent/PieChart";
 import { MyDropzoneComponent } from "../components/dashboardcomponent/FileDropZone";
@@ -7,14 +7,78 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
+import { fileUpload } from "../Api/fileUpload";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
+  const [selectedFile, setSelectedFile] = useState();
+  const [isuploadError, setisuploadError] = useState(false);
+  const [showUpload, setshowUpload] = useState(true);
+
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(1);
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
+  const handleFileSelect = (file) => {
+    console.log("Selected file:", file);
+    setSelectedFile(file);
+
+    setisuploadError(false);
+
+    // setSelectedFile(file)
+  };
+  const handleDownload = async () => {
+    try {
+      const pdfUrl =
+        "https://media.githubusercontent.com/media/datablist/sample-csv-files/main/files/organizations/organizations-100.csv"; // Provide the actual URL of the PDF file
+
+      // Fetch the PDF file
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
+
+      // Create a download link
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = `hospicashSample.csv`; // Specify the desired file name
+
+      // Trigger the download
+      downloadLink.click();
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      // Handle error, e.g., display an error message to the user
+    }
+  };
+
+  const sendFile = async () => {
+    setshowUpload(false);
+
+    const data = await fileUpload(selectedFile);
+    if (data?.status) {
+      setisuploadError(false);
+      toast.success(data?.message, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    } else {
+      toast.error("File Upload Failed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+      setisuploadError(true);
+    }
+    setshowUpload(true);
+  };
+
+  useEffect(() => {}, [showUpload]);
   return (
     <div className="flex flex-col w-full items-center">
       <div className="sticky -z-10 top-12 w-full">
@@ -24,12 +88,12 @@ export default function Home() {
           alt="cover_image"
         />
       </div>
-      <div className="justify-around	 lg:flex    w-full p-8 mx md:w-[75%] max-w-[95%] bg-white lg:max-h-80 min-h-fit -mt-20 border border-neutral-light rounded mb-4 ">
-        {/* This is container 1{" "} */}
-        {/* <div style={{width:'80%',marginBottom:'12px',minHeight:'80%'}}> */}
+      <div
+        style={{ height: "fit-content" }}
+        className="justify-around	 lg:flex  min-w-fit   w-full p-8 mx md:w-[85%] max-w-[95%] bg-white lg:max-h-96 min-h-fit -mt-20 border border-neutral-light rounded mb-4 "
+      >
         <PieChart />
-        {/* </div> */}
-        <Box className="min-w-44 min-h-fit bg-white border border-neutral-light rounded">
+        <Box className="min-w- h-[320px] bg-white border border-neutral-light rounded">
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
@@ -62,7 +126,7 @@ export default function Home() {
                   } py-1 rounded`}
                   onClick={() => {
                     setActiveTab(2);
-                    navigate('/form')
+                    navigate("/form");
                   }}
                 >
                   Yearly Proposal
@@ -70,7 +134,7 @@ export default function Home() {
               </Box>
             ) : (
               <Box>
-                <MyDropzoneComponent />
+                <MyDropzoneComponent onFileSelect={handleFileSelect} />
 
                 <Box
                   display="flex"
@@ -79,20 +143,35 @@ export default function Home() {
                   marginRight={2}
                   marginLeft={2}
                 >
-                  <Button
-                    className={"w-fit"}
-                    type="submit"
-                    label="Upload"
-                    variant="primary"
-                    // Add onClick handler for the "Upload" button if needed
-                  ></Button>
-                  <Button
-                    className={"w-fit"}
-                    type="submit"
-                    label="Download"
-                    variant="secondary"
-                    // Add onClick handler for the "Download" button if needed
-                  ></Button>
+                  {selectedFile && !isuploadError && showUpload && (
+                    <Button
+                      onClick={sendFile}
+                      className={"w-fit"}
+                      type="submit"
+                      label="Upload"
+                      variant="primary"
+                      // Add onClick handler for the "Upload" button if needed
+                    />
+                  )}
+                  {isuploadError && (
+                    <>
+                      <Button
+                        onClick={handleDownload}
+                        className={"w-fit"}
+                        type="submit"
+                        label="sample"
+                        variant="primary"
+                        // Add onClick handler for the "Upload" button if needed
+                      />
+                      <Button
+                        className={"w-fit"}
+                        type="submit"
+                        label="Download"
+                        variant="secondary"
+                        // Add onClick handler for the "Download" button if needed
+                      />
+                    </>
+                  )}
                 </Box>
               </Box>
             )}

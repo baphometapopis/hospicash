@@ -1,10 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import policyPurchaseSuccess from "../assets/img/undraw_certification_re_ifll (1).svg";
-// import policyPurchaseFailed from "../assets/img/policy_purchase_failed.svg";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "../components/ui/Button";
+import { getSoldPolicyData } from "../Api/getSoldPolicyData";
+import { useLocation, useNavigate } from "react-router-dom";
+import moment from "moment";
 
 export default function PurchaseStatus() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [policy_id] = useState(location?.state?.policy_id);
+
+  const [policyData, setPolicyData] = useState();
+  const getPolicyData = async () => {
+    const data = await getSoldPolicyData("1", policy_id);
+    if (data?.status) {
+      setPolicyData(data?.data[0]);
+    } else {
+      toast.error("Failed to get Policy Data", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getPolicyData();
+  }, []);
   return (
     <div className="flex flex-col w-full items-center">
       <div className="sticky -z-10 top-12 w-full">
@@ -36,43 +63,55 @@ export default function PurchaseStatus() {
                 <td className="w-40 text-neutral-darker text-right pr-4">
                   Policy Number
                 </td>
-                <td>POL1234</td>
+                <td>:{policyData?.sold_policy_no}</td>
               </tr>
               <tr>
                 <td className="w-40 text-neutral-darker text-right  pr-4">
                   Customer Name
                 </td>
-                <td>Vignesh Nadar</td>
+                <td>
+                  {policyData?.fname} {policyData?.mname} {policyData?.lname}
+                </td>
               </tr>
               <tr>
                 <td className="w-40 text-neutral-darker text-right  pr-4">
                   Mobile Number
                 </td>
-                <td>998766567</td>
+                <td>{policyData?.mobile_no}</td>
               </tr>
               <tr>
                 <td className="w-40 text-neutral-darker text-right  pr-4">
                   Email
                 </td>
-                <td>vignesh@gmail.com</td>
+                <td>{policyData?.email}</td>
               </tr>
               <tr>
                 <td className="w-40 text-neutral-darker text-right  pr-4">
                   Plan Amount
                 </td>
-                <td>Rs. 259/-</td>
+                <td>Rs. {policyData?.sold_policy_price_with_tax}/-</td>
               </tr>
               <tr>
                 <td className="w-40 text-neutral-darker text-right  pr-4">
                   Policy Start Date
                 </td>
-                <td>11th Jan 2024</td>
+                <td>
+                  {moment(
+                    policyData?.sold_policy_effective_date,
+                    "YYYY-MM-DD HH:mm:ss"
+                  ).format("DD MMM YYYY")}
+                </td>
               </tr>
               <tr>
                 <td className="w-40 text-neutral-darker text-right  pr-4">
                   Policy End Date
                 </td>
-                <td>11th Jan 2034</td>
+                <td>
+                  {moment(
+                    policyData?.sold_policy_end_date,
+                    "YYYY-MM-DD HH:mm:ss"
+                  ).format("DD MMM YYYY")}
+                </td>
               </tr>
             </table>
           </div>
@@ -80,8 +119,13 @@ export default function PurchaseStatus() {
       </div>
       <div className="flex justify-center">
         <div className="flex justify-center py-4 pb-8 w-96 space-x-4">
-          <Button type="button" label="Go to Dashboard" variant="ghost" />
-          <Button type="submit" label="Create New Policy" variant="primary" />
+          <Button
+            type="button"
+            onClick={() => navigate('/home')}
+            label="Go to Dashboard"
+            variant="ghost"
+          />
+          {/* <Button type="submit" label="Create New Policy" variant="primary" /> */}
         </div>
       </div>
     </div>

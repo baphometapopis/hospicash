@@ -18,6 +18,7 @@ const makeApiRequest = (endpoint, method = "GET", body = null) => {
     })
     .catch((error) => {
       // Do nothing or handle the error in a different way if needed
+      console.log(error);
     });
 };
 

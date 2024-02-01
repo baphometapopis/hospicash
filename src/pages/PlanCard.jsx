@@ -3,7 +3,7 @@ import Check from "../assets/Icons/icons8-check-48.png";
 
 const PlanCard = ({
   title,
-  features,
+  data,
   price,
   backgroundColor,
   onBuyClick,
@@ -26,9 +26,9 @@ const PlanCard = ({
         >
           {title}
         </h2>
-        {Array.isArray(features) &&
-          features.length > 0 &&
-          features.map((feature, index) => (
+        {Array.isArray(data?.features) &&
+          data?.features.length > 0 &&
+          data?.features.map((feature, index) => (
             <p key={index} className="text-gray-600 mb-2">
               {feature}
             </p>
@@ -65,7 +65,7 @@ const PlanCard = ({
             style={{ width: "25px", marginRight: "10px" }}
             alt="cover_image"
           />
-          <p>RSA Covered Kms : 25km</p>
+          <p>RSA Covered Kms : {data?.rsa_cover_km}</p>
         </div>
         <div style={{ display: "flex" }}>
           <img

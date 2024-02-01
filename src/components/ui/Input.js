@@ -15,6 +15,7 @@ const Input = ({
   required,
   alphanumeric,
   capitalize,
+  sentences,
   numericOnly,
   disabled,
   alphabets,
@@ -51,14 +52,23 @@ const Input = ({
         maxLength={maxLength || 25} // Add maxLength attribute for character limitation
         onChange={(e) => {
           if (numericOnly) {
-            //allow
+            //allow NUMBERS
             e.target.value = e.target.value.replace(/[^0-9]/g, "");
           }
           if (alphabets) {
+            //allow ALPHABETS NO SPACE
+
             e.target.value = e.target.value.replace(/[^a-zA-Z]/g, "");
           }
           if (alphanumeric) {
+            //allow ALPHANUMERIC
+
             e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+          }
+          if (sentences) {
+            //allow ALPHANUMERIC
+
+            e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
           }
 
           formik.handleChange(e);

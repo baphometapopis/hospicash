@@ -7,7 +7,16 @@ import CancelModal from "../../Modal/PolicyModal/CancelModal.js";
 import Download from "../../../../assets/Icons/icons8-download-64 (2).png";
 import Cancel from "../../../../assets/Icons/icons8-cancel-100 (1).png";
 import Edit from "../../../../assets/Icons/icons8-edit-64 (2).png";
-const PolicyCard = ({ Policy }) => {
+const PolicyCard = ({ Policy, iscancelled }) => {
+  const truncatedContent = Policy.cancel_remark;
+
+  const onShowHandler = (instance) => {
+    // Check if the content is truncated
+    if (instance.props.content !== truncatedContent) {
+      // Adjust Tippy's content to the truncated version
+      instance.setContent(truncatedContent);
+    }
+  };
   const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
   const navigate = useNavigate();
   const handleDownloadPDF = async () => {
@@ -86,7 +95,7 @@ const PolicyCard = ({ Policy }) => {
   return (
     <div className="flex flex-col bg-white shadow-lg py-4 px-4 rounded-md mb-1">
       <div className="flex  md:flex-row md:justify-between item-center w-full">
-        <span style={{ width: "5%", textAlign: "center" }}>{Policy.srno}</span>
+        <span style={{ width: "5%", textAlign: "center" }}>{Policy.id}</span>
 
         <span
           style={{
@@ -98,7 +107,7 @@ const PolicyCard = ({ Policy }) => {
         </span>
 
         <span style={{ textAlign: "center", width: "25%" }}>
-          {Policy.ins_name}
+          {Policy.full_name}
         </span>
 
         <span
@@ -107,7 +116,7 @@ const PolicyCard = ({ Policy }) => {
             width: "10%",
           }}
         >
-          {Policy.ins_cmp}
+          {Policy.pan_number || " - "}
         </span>
 
         <span className="px-4 rounded-lg" style={statusStyle}>
@@ -130,75 +139,98 @@ const PolicyCard = ({ Policy }) => {
           }}
         >
           {" "}
-          {formatDate(Policy.crt_date)}
+          {formatDate(Policy.created_date)}
         </span>
-        <div className="flex gap-1 ">
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#0089d1",
-              color: "#ffff",
-              padding: "1px",
-            }}
-            className="   rounded-md cursor-pointer h-fit"
-            onClick={handleDownloadPDF}
+        {!iscancelled ? (
+          <>
+            {" "}
+            <div className="flex gap-1 ">
+              <div
+                style={{
+                  fontSize: "14px",
+                  backgroundColor: "#0089d1",
+                  color: "#ffff",
+                  padding: "1px",
+                }}
+                className="   rounded-md cursor-pointer h-fit"
+                onClick={handleDownloadPDF}
+              >
+                <Tippy
+                  content={"Download Proposal"}
+                  placement="top"
+                  arrow={true}
+                  className="rounded-sm text-xs"
+                >
+                  <img
+                    src={Download}
+                    className="w-[25px]  object-center"
+                    alt="search_image"
+                  />
+                </Tippy>
+              </div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  backgroundColor: "#FCD34D",
+                  color: "#ffff",
+                }}
+                onClick={() =>
+                  navigate("/Form", { state: { Action: "Endorsment" } })
+                }
+                className="   rounded-md cursor-pointer  h-fit"
+              >
+                <Tippy
+                  content={"Endorsment Proposal"}
+                  placement="top"
+                  arrow={true}
+                  className="rounded-sm text-xs"
+                >
+                  <img
+                    src={Edit}
+                    className="w-[25px]  object-center"
+                    alt="search_image"
+                  />
+                </Tippy>
+              </div>
+              <div
+                style={{
+                  fontSize: "14px",
+                  backgroundColor: "#dc143c",
+                  color: "#ffff",
+                }}
+                className="   rounded-md cursor-pointer  h-fit"
+                onClick={() => setisCancelModalOpen(true)}
+              >
+                <Tippy
+                  content={"Cancel Proposal"}
+                  placement="top"
+                  arrow={true}
+                  className="rounded-sm text-xs"
+                >
+                  <img src={Cancel} className="w-[25px]  " alt="search_image" />
+                </Tippy>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Tippy
+            content={truncatedContent}
+            placement="top"
+            arrow={true}
+            onShow={onShowHandler}
+            className="rounded-sm text-xs max-w-96"
           >
-            <Tippy
-              content={"Download Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
+            <span
+              style={{
+                textAlign: "center",
+                width: "10%",
+              }}
+              className="truncate"
             >
-              <img
-                src={Download}
-                className="w-[25px]  object-center"
-                alt="search_image"
-              />
-            </Tippy>
-          </div>
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#FCD34D",
-              color: "#ffff",
-            }}
-            onClick={() =>
-              navigate("/Form", { state: { Action: "Endorsment" } })
-            }
-            className="   rounded-md cursor-pointer  h-fit"
-          >
-            <Tippy
-              content={"Endorsment Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
-            >
-              <img
-                src={Edit}
-                className="w-[25px]  object-center"
-                alt="search_image"
-              />
-            </Tippy>
-          </div>
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#dc143c",
-              color: "#ffff",
-            }}
-            className="   rounded-md cursor-pointer  h-fit"
-            onClick={() => setisCancelModalOpen(true)}
-          >
-            <Tippy
-              content={"Cancel Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
-            >
-              <img src={Cancel} className="w-[25px]  " alt="search_image" />
-            </Tippy>
-          </div>
-        </div>
+              {Policy.cancel_remark}
+            </span>
+          </Tippy>
+        )}
       </div>
       <CancelModal
         isOpen={isCancelModalOpen}

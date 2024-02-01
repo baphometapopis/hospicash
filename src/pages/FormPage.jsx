@@ -8,27 +8,26 @@ import PlanCard from "./PlanCard";
 import { get_Pincode_Data, get_policy_data } from "../Api/getFormData";
 import CustomSelect from "../components/ui/CustomSelect";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-toastify/dist/ReactToastify.css";
 import { generatePolicy } from "../Api/generatePolicy";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserData } from "../Redux/userSlice.js";
 import moment from "moment";
-import { format, parseISO } from "date-fns";
 
-// eslint-disable-next-line
 const validationSchema = Yup.object().shape({
   fname: Yup.string().required("Required"),
   salutation: Yup.string().required("Required"),
   dob: Yup.string().required("Required"),
   gender: Yup.string().required("Required"),
 
-  middlename: Yup.string(),
+  mname: Yup.string(),
   lname: Yup.string().required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
   mobile_no: Yup.string()
-    .matches(/^[0-9]+$/, "Must be a number")
+    .matches(/^[6-9]\d{9}$/, "Invalid number")
     .required("Required"),
   addr1: Yup.string().required("Required"),
   addr2: Yup.string().required("Required"),
@@ -36,8 +35,9 @@ const validationSchema = Yup.object().shape({
   city_id: Yup.string().required("Required"),
   state_id: Yup.string().required("Required"),
   nominee_full_name: Yup.string().required("Required"),
-  pan_number: Yup.string().required("Required"),
-
+  pan_number: Yup.string()
+    .required("Required")
+    .matches(/^[A-Z]{3}[P]{1}[A-Z]{1}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number"),
   nominee_age: Yup.number().required("Required").min(1, "Enter Valid Age"),
   nominee_relation: Yup.string().required("Required"),
 });
@@ -61,35 +61,33 @@ export default function FormPage() {
 
   const submitData = async () => {
     const data = await generatePolicy(formik.values);
-    console.log(data);
+    if (data?.status) {
+      console.log(data);
+      navigation("/confirmed", { state: { policy_id: data?.policy_id } });
+
+      toast.success(data?.message, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    } else {
+      console.log(data);
+      toast.error(data?.message, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
   };
   const userData = useSelector((state) => state.user);
 
   const formik = useFormik({
     initialValues: userData,
 
-    // initialValues: {
-    //   is_policy_schedule_type: "month",
-    //   salutation: "",
-    //   fname: "",
-    //   middlename: "",
-    //   lname: "",
-    //   email: "",
-    //   mobile_no: "",
-    //   addr1: "",
-    //   addr2: "",
-    //   pincode: "",
-    //   dob: "",
-    //   city_id: "",
-    //   state_id: "",
-    //   nominee_full_name: "",
-    //   nominee_age: "",
-    //   nominee_relation: "",
-    //   appointee_name: "",
-    //   appointee_age: "",
-    //   appointee_relation: "",
-    //   gender: "",
-    // },
     validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values);
@@ -98,7 +96,7 @@ export default function FormPage() {
         location?.state?.Action === "NewPolicy"
       ) {
         console.log("Data Submitted Successfully ");
-        // submitData();
+        submitData();
       } else {
         dispatch(updateUserData(formik.values));
 
@@ -118,12 +116,40 @@ export default function FormPage() {
         getPincode(values.pincode);
       }
 
+      if (values.nominee_age < 18 && values.nominee_age !== "") {
+        // Add additional validation for appointee fields
+        validationSchema.fields.appointee_name =
+          Yup.string().required("Required");
+        validationSchema.fields.appointee_age = Yup.number()
+          .required("Required")
+          .min(1, "Enter Valid Age");
+        validationSchema.fields.appointee_relation =
+          Yup.string().required("Required");
+
+        // Validate appointee fields
+        try {
+          validationSchema.validateSyncAt(
+            "appointee_name",
+            values.appointee_name
+          );
+          validationSchema.validateSyncAt(
+            "appointee_age",
+            values.appointee_age
+          );
+          validationSchema.validateSyncAt(
+            "appointee_relation",
+            values.appointee_relation
+          );
+        } catch (error) {
+          // Handle errors if needed
+          formik.setFieldError("appointee_name", error.errors[0]);
+          formik.setFieldError("appointee_age", error.errors[0]);
+          formik.setFieldError("appointee_relation", error.errors[0]);
+        }
+      }
+
+      console.log(formik.errors);
       if (values.salutation) {
-        // Call your function here
-        // console.log(formdata);
-        // const nomdata = formdata?.nominee_relation_data?.filter(
-        //   (relation) => relation.salutation == values.salutation
-        // );
         setNom_relation(formdata?.nominee_relation_data);
       }
     },
@@ -202,6 +228,7 @@ export default function FormPage() {
                         label: salutation.name,
                       })),
                     ]}
+                    required
                     placeholder="Select Salutation"
                     value={formik.values.salutation}
                     formik={formik}
@@ -225,14 +252,14 @@ export default function FormPage() {
                   alphabets
                 />
                 <Input
-                  {...formik.getFieldProps("middlename")}
+                  {...formik.getFieldProps("mname")}
                   formik={formik}
-                  id="middlename"
-                  name="middlename"
+                  id="mname"
+                  name="mname"
                   type="text"
                   placeholder="Enter your Middle Name"
                   label="Middle Name"
-                  value={formik.values.middlename}
+                  value={formik.values.mname}
                   capitalize
                   alphabets
                 />
@@ -254,6 +281,7 @@ export default function FormPage() {
                   formik={formik}
                   id="email"
                   name="email"
+                  required
                   type="text"
                   placeholder="Enter your email"
                   label="Email"
@@ -275,6 +303,7 @@ export default function FormPage() {
 
                 {true && (
                   <CustomSelect
+                    required
                     id="gender"
                     name="gender"
                     options={
@@ -305,7 +334,8 @@ export default function FormPage() {
                   value={formik.values.pan_number}
                   alphanumeric
                   maxLength={10}
-                  capitalize                />
+                  capitalize
+                />
 
                 <div className="flex flex-col">
                   <label
@@ -403,6 +433,8 @@ export default function FormPage() {
                   required={true}
                   placeholder="Enter Nominee Name"
                   label="Nominee Full Name"
+                  sentences
+                  capitalize
                   value={formik.values.nominee_full_name}
                 />
                 <Input
@@ -421,6 +453,7 @@ export default function FormPage() {
                 {true && (
                   <CustomSelect
                     id="nominee_relation"
+                    required
                     name="nominee_relation"
                     label={"Nominee Relation"}
                     options={
@@ -453,6 +486,7 @@ export default function FormPage() {
                         required={true}
                         placeholder="Enter Appointee Name"
                         label="Appointee Full Name"
+                        sentences
                         value={formik.values.appointee_name}
                       />
                       <Input
@@ -465,6 +499,8 @@ export default function FormPage() {
                         label="Appointee Age"
                         required={true}
                         value={formik.values.appointee_age}
+                        numericOnly
+                        maxLength={2}
                       />
                       <Input
                         {...formik.getFieldProps("appointee_relation")}

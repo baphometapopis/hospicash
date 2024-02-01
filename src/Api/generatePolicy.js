@@ -1,33 +1,67 @@
-import makeApiRequest from "./apiCaller";
+import { API_BASE_URL } from "./api_Endpoint";
 
-export const generatePolicy = async (formdata) => {
-  console.log(formdata);
-  debugger;
-  try {
-    const body = new URLSearchParams();
-    body.append("dealer_id", formdata?.dealer_id);
-    body.append("plan_id", formdata?.plan_id);
-    body.append("salutation", formdata?.salutation);
-    body.append("fname", formdata?.fname);
-    body.append("lname", formdata?.lname);
-    body.append("mobile_no", formdata?.mobile_no);
-    body.append("gender", formdata?.gender);
-    body.append("dob", formdata?.dob);
-    body.append("addr1", formdata?.addr1);
-    body.append("addr2", formdata?.addr2);
-    body.append("pincode", formdata?.pincode);
-    body.append("nominee_full_name", formdata?.nominee_full_name);
-    body.append("nominee_relation", formdata?.nominee_relation);
-    body.append("nominee_age", formdata?.nominee_age);
-    body.append("state_id", formdata?.state_id);
-    body.append("city_id", formdata?.city_id);
-    body.append("is_policy_schedule_type", formdata?.is_policy_schedule_type);
+export const generatePolicy = (data) => {
+  console.log(data);
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-    const result = await makeApiRequest("generated_policy_data", "POST", body);
-    const data = JSON.parse(result);
-    return data;
-  } catch (error) {
-    // Handle errors
-    // console.log(error);
-  }
+  var urlencoded = new URLSearchParams();
+  urlencoded.append("dealer_id", data?.dealer_id);
+  urlencoded.append("plan_id", data?.plan_id);
+  urlencoded.append("salutation", data?.salutation);
+  urlencoded.append("first_name", data?.fname);
+  urlencoded.append("middel_name", data?.mname);
+  urlencoded.append("last_name", data?.lname);
+  urlencoded.append("mobile_no", data?.mobile_no);
+  urlencoded.append("gender", data?.gender);
+  urlencoded.append("dob", data?.dob);
+  urlencoded.append("addr1", data?.addr1);
+  urlencoded.append("addr2", data?.addr2);
+  urlencoded.append("pincode", data?.pincode);
+  urlencoded.append("nominee_full_name", data?.nominee_full_name);
+  urlencoded.append("nominee_relation", data?.nominee_relation);
+  urlencoded.append("nominee_age", data?.nominee_age);
+  urlencoded.append("state_id", data?.state_id);
+  urlencoded.append("city_id", data?.city_id);
+  urlencoded.append("is_policy_schedule_type", data?.is_policy_schedule_type);
+  urlencoded.append("email", data?.email);
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: urlencoded,
+    redirect: "follow",
+  };
+
+  // Returning the fetch promise
+  return fetch(`${API_BASE_URL}/generated_policy_data`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      // Returning the JSON data
+      return result;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      // Returning an error object or message if needed
+      return { error: "An error occurred while fetching data." };
+    });
 };
+
+// urlencoded.append("dealer_id", data?.dealer_id);
+// urlencoded.append("plan_id", data?.plan_id);
+// urlencoded.append("salutation", data?.salutation);
+// urlencoded.append("first_name", data?.fname);
+// urlencoded.append("middel_name", data?.mname);
+// urlencoded.append("last_name", data?.lname);
+// urlencoded.append("mobile_no", data?.mobile_no);
+// urlencoded.append("gender", data?.gender);
+// urlencoded.append("dob", data?.dob);
+// urlencoded.append("addr1", data?.addr1);
+// urlencoded.append("addr2", data?.addr2);
+// urlencoded.append("pincode", data?.pincode);
+// urlencoded.append("nominee_full_name", data?.nominee_full_name);
+// urlencoded.append("nominee_relation", data?.nominee_relation);
+// urlencoded.append("nominee_age", data?.nominee_age);
+// urlencoded.append("state_id", data?.state_id);
+// urlencoded.append("city_id", data?.city_id);
+// urlencoded.append("is_policy_schedule_type", data?.is_policy_schedule_type);
+// urlencoded.append("email", data?.email);
