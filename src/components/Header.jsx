@@ -7,15 +7,23 @@ import { walletBalance } from "../Api/walletBalance";
 import { toast } from "react-toastify";
 import { decryptData } from "../Utils/cryptoUtils";
 import { useNavigate } from "react-router-dom";
+import UserPaymentModal from "./dashboardcomponent/Modal/UserPaymentModal.";
 
 export default function Header({ toggle }) {
   const navigate = useNavigate();
   const [iswalletopened, setwalletopened] = useState(true);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isUserPaymentModalOpen, setIsUserPaymentModalOpen] = useState(false);
+
   const [availableBalance, setavailableBalance] = useState();
+  const role = "dealer";
 
   const openPaymentModal = () => {
-    setIsPaymentModalOpen(true);
+    if (role === "admin") {
+      setIsPaymentModalOpen(true);
+    } else {
+      setIsUserPaymentModalOpen(true);
+    }
   };
   function formatIndianRupees(amount) {
     return new Intl.NumberFormat("en-IN", {
@@ -27,9 +35,12 @@ export default function Header({ toggle }) {
   }
 
   // Example usage
-
   const closePaymentModal = () => {
-    setIsPaymentModalOpen(false);
+    if (role === "admin") {
+      setIsPaymentModalOpen(false);
+    } else {
+      setIsUserPaymentModalOpen(false);
+    }
   };
   const getwalletBalance = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
@@ -110,6 +121,10 @@ export default function Header({ toggle }) {
           </div>
         </div>
         <PaymentModal isOpen={isPaymentModalOpen} onClose={closePaymentModal} />
+        <UserPaymentModal
+          isOpen={isUserPaymentModalOpen}
+          onClose={closePaymentModal}
+        />
       </header>
     </>
   );
