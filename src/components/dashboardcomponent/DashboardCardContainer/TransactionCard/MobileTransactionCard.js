@@ -12,7 +12,7 @@ const MobileTransactionCard = ({ transaction }) => {
           top: "5px",
           right: "10px",
         };
-      case "success":
+      case "approved":
         return {
           backgroundColor: "#68D391",
           color: "#ffffff",
@@ -39,7 +39,7 @@ const MobileTransactionCard = ({ transaction }) => {
     }
   };
 
-  const statusStyle = getStatusStyle(transaction.status);
+  const statusStyle = getStatusStyle(transaction.approval_status);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -63,24 +63,24 @@ const MobileTransactionCard = ({ transaction }) => {
         boxShadow:
           "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px",
       }}
-      className="flex flex-col bg-white  py-4 px-4 rounded-md mb-10 relative"
+      className="flex flex-col bg-white  py-4 px-4 rounded-md mb-2 relative"
     >
       <div className="flex flex-col md:flex-row md:justify-between items-start w-full">
         <div className="flex items-center mb-2 md:mb-0">
-          <span className="mr-2">{transaction.srno}</span>
+          <span className="mr-2">{transaction.id}</span>
 
-          <span className="mr-2">#{transaction.transactionNo}</span>
+          <span className="mr-2">#{transaction.bank_transaction_no}</span>
         </div>
         {/* <div className="flex items-center mb-2 md:mb-0"> */}
         <span style={{ fontSize: "14px" }} className="mr-2">
           Bank Name: {transaction.bankName}
         </span>
         <span style={{ fontSize: "14px" }} className="mr-2 my-2 ">
-          Amount :{transaction.amount}
+          Amount :₹{transaction.deposit_amount}
         </span>
         {/* </div> */}
         <span className="px-4 rounded-lg" style={statusStyle}>
-          {transaction.status}
+          {transaction.approval_status}
         </span>
         <div className="flex items-center mb-2 md:mb-0">
           <span
@@ -92,7 +92,7 @@ const MobileTransactionCard = ({ transaction }) => {
             }}
             className="mr-2"
           >
-            Payment Date:{transaction.paymentDate}
+            Account Type:{transaction.account_type}
           </span>
 
           <span
@@ -103,10 +103,10 @@ const MobileTransactionCard = ({ transaction }) => {
               fontSize: "12px",
             }}
           >
-            {formatDate(transaction.createdAt)}
+            {formatDate(transaction.created_date)}
           </span>
         </div>
-        <div
+       {false&& <div
           style={{
             backgroundColor: "#0089d1",
             width: "100%",
@@ -157,7 +157,7 @@ const MobileTransactionCard = ({ transaction }) => {
           >
             Endorsement
           </button>
-        </div>
+        </div>}
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
@@ -8,6 +7,7 @@ import { getDealerData } from "../../../Api/getDealerData";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { checkTransactionNo } from "../../../Api/checkTransactionNo";
+import { getPaymentRequest } from "../../../Api/getPaymentRequest";
 const UserPaymentModal = ({ isOpen, onClose }) => {
   const partyOptions = [
     { value: "Deposit", label: "Deposit" },
@@ -21,14 +21,35 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
   const [paymentDate, setPaymentDate] = useState();
   const [istransactionidvalid, setistransactionidvalid] = useState();
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = async (values, { resetForm }) => {
     console.log(values);
     // Perform payment processing or other logic here
+    const data = await getPaymentRequest(values);
+    if (data?.status) {
+      toast.success(data?.message, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+      onClose();
+      resetForm();
+    } else {
+      toast.error(`${data?.message}`, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
 
+    console.log(data);
     // Close the modal after
-    resetForm();
+    // resetForm();
 
-    onClose();
+    // onClose();
   };
 
   const handleAmountChange = (e) => {
@@ -48,7 +69,7 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
   const formik = useFormik({
     initialValues: {
       transactionType: "",
-      dealer_bank_trans_id: "",
+      transaction_no: "",
       bankIfscCode: "",
       bank_name: "",
       bankAccountNumber: "",
@@ -70,19 +91,17 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
       };
 
       validateRequired("transactionType", "Required");
-      validateRequired("dealer_bank_trans_id", "Required");
+      validateRequired("transaction_no", "Required");
       validateRequired("bankIfscCode", "Required");
       validateRequired("bank_name", "Required");
       validateRequired("bankAccountNumber", "Required");
       validateRequired("deposit_amount", "Required");
       validateRequired("date", "Required");
 
-      if (istransactionidvalid) {
-        if (istransactionidvalid === "No data found") {
-          errors["dealer_bank_trans_id"] = "Transaction Id not Found";
-        } else {
-          delete errors["dealer_bank_trans_id"];
-        }
+      if (!istransactionidvalid && values?.transaction_no !== "") {
+        errors["transaction_no"] = "This Transaction No is Already Exist";
+      } else {
+        delete errors["transaction_no"];
       }
       console.log(formik.errors);
 
@@ -90,8 +109,8 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
     },
   });
   const checkNumber = async () => {
-    const data = await checkTransactionNo(formik?.values?.dealer_bank_trans_id);
-    setistransactionidvalid(data?.message);
+    const data = await checkTransactionNo(formik?.values?.transaction_no);
+    setistransactionidvalid(data?.status);
     console.log(data);
   };
 
@@ -115,8 +134,10 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
     }
   };
   useEffect(() => {
-    getData();
-  }, []);
+    if (isOpen) {
+      getData();
+    }
+  }, [isOpen]);
   return (
     <div
       style={{ zIndex: 100 }}
@@ -144,30 +165,27 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
               <div style={{ gap: 26 }} className="flex flex-col">
                 <label htmlFor="transactionType">Transaction type : </label>
                 <label htmlFor="bank_name">Bank Name :</label>
-                <label htmlFor="dealer_bank_trans_id">
-                  Bank Account Number :{" "}
-                </label>
+                <label htmlFor="transaction_no">Bank Account Number : </label>
                 <label htmlFor="bankIfscCode"> IFSC Code :</label>
                 <div style={{ position: "relative" }}>
                   <label htmlFor="bankAccountNumber">
                     Transaction Number :
                   </label>
                   {console.log(
-                    formik.touched.dealer_bank_trans_id,
-                    formik.errors.dealer_bank_trans_id
+                    formik.touched.transaction_no,
+                    formik.errors.transaction_no
                   )}
-                  {istransactionidvalid === "No data found" &&
-                    formik.errors.dealer_bank_trans_id && (
-                      <p
-                        style={{
-                          fontSize: "10px",
-                          color: "red",
-                          position: "absolute",
-                        }}
-                      >
-                        {formik.errors.dealer_bank_trans_id}
-                      </p>
-                    )}
+                  {!istransactionidvalid && formik.errors.transaction_no && (
+                    <p
+                      style={{
+                        fontSize: "10px",
+                        color: "red",
+                        position: "absolute",
+                      }}
+                    >
+                      {formik.errors.transaction_no}
+                    </p>
+                  )}
                 </div>
                 <label htmlFor="acc_type">Account type :</label>
                 <label htmlFor="deposit_amount">Amount :</label>
@@ -269,17 +287,17 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
                 />
                 <input
                   type="text"
-                  id="dealer_bank_trans_id"
-                  name="dealer_bank_trans_id"
+                  id="transaction_no"
+                  name="transaction_no"
                   placeholder="Transaction Number"
-                  onChange={(e) => handleTextChange("dealer_bank_trans_id", e)}
+                  onChange={(e) => handleTextChange("transaction_no", e)}
                   onBlur={checkNumber}
-                  value={formik.values.dealer_bank_trans_id}
+                  value={formik.values.transaction_no}
                   autoComplete="off"
                   style={{
                     borderColor:
-                      formik.touched.dealer_bank_trans_id &&
-                      formik.errors.dealer_bank_trans_id
+                      formik.touched.transaction_no &&
+                      formik.errors.transaction_no
                         ? "red"
                         : "#6D6D6D",
                   }}

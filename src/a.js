@@ -1,34 +1,39 @@
-import React, { useState } from "react";
-import Download from "../../../../assets/Icons/icons8-download-64 (2).png";
-import Cancel from "../../../../assets/Icons/icons8-cancel-100 (1).png";
-import Edit from "../../../../assets/Icons/icons8-edit-64 (2).png";
-import Tippy from "@tippyjs/react";
-import "tippy.js/dist/tippy.css";
-import CancelModal from "../../Modal/PolicyModal/CancelModal.js";
+import React, { useEffect, useState } from "react";
+import coverImage from "../assets/img/hospicashcoverimage.jpeg";
+import PieChart from "../components/dashboardcomponent/PieChart";
+import { MyDropzoneComponent } from "../components/dashboardcomponent/FileDropZone";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
-import jsPDF from "jspdf";
+import { fileUpload } from "../Api/fileUpload";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const PolicyCard = ({ Policy }) => {
-  const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
+export default function Home() {
+  const [selectedFile, setSelectedFile] = useState();
+  const [isuploadError, setisuploadError] = useState(false);
+  const [showUpload, setshowUpload] = useState(true);
+
   const navigate = useNavigate();
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "Pending":
-        return { backgroundColor: "#FCD34D", color: "#ffffff", padding: "2px" };
-      case "Success":
-        return { backgroundColor: "#68D391", color: "#ffffff" };
-      case "Cancelled":
-        return { backgroundColor: "#dc143c", color: "#ffffff" };
-      default:
-        return { backgroundColor: "#D1D5DB", color: "#000000" };
-    }
+  const [activeTab, setActiveTab] = useState(1);
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
   };
 
-  const statusStyle = getStatusStyle(Policy.status);
-  const handleDownloadPDF = async () => {
+  const handleFileSelect = (file) => {
+    console.log("Selected file:", file);
+    setSelectedFile(file);
+
+    setisuploadError(false);
+
+    // setSelectedFile(file)
+  };
+  const handleDownload = async () => {
     try {
       const pdfUrl =
-        "https://demo.mypolicynow.com/api/api/downloadProposal/quote-00b1773c89649e7143aed4f7e635dff6"; // Replace with your actual PDF URL
+        "https://media.githubusercontent.com/media/datablist/sample-csv-files/main/files/organizations/organizations-100.csv"; // Provide the actual URL of the PDF file
 
       // Fetch the PDF file
       const response = await fetch(pdfUrl);
@@ -37,7 +42,7 @@ const PolicyCard = ({ Policy }) => {
       // Create a download link
       const downloadLink = document.createElement("a");
       downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = `${Policy?.policy_no}_${Policy?.ins_name}.pdf`; // Specify the desired file name
+      downloadLink.download = `hospicashSample.csv`; // Specify the desired file name
 
       // Trigger the download
       downloadLink.click();
@@ -46,139 +51,136 @@ const PolicyCard = ({ Policy }) => {
       // Handle error, e.g., display an error message to the user
     }
   };
-  // const handleDownloadPDF = () => {
-  //   // Generate PDF content
-  //   const pdfContent = "Sample PDF Content"; // Replace with your PDF content
 
-  //   // Create a new jsPDF instance
-  //   const pdf = new jsPDF();
+  const sendFile = async () => {
+    setshowUpload(false);
 
-  //   // Add content to the PDF
-  //   pdf.text(pdfContent, 10, 10);
-
-  //   // Save the PDF as a Blob
-  //   const pdfBlob = pdf.output("blob");
-
-  //   // Create a download link
-  //   const downloadLink = document.createElement("a");
-  //   downloadLink.href = URL.createObjectURL(pdfBlob);
-  //   downloadLink.download = "sample.pdf"; // Replace with your desired file name
-
-  //   // Trigger the download
-  //   downloadLink.click();
-  // };
-
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    const formattedDate = date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-    });
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-
-    return `${formattedDate} ${formattedTime}`;
+    const data = await fileUpload(selectedFile);
+    if (data?.status) {
+      setisuploadError(false);
+      toast.success(data?.message, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    } else {
+      toast.error("File Upload Failed", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+      setisuploadError(true);
+    }
+    setshowUpload(true);
   };
 
+  useEffect(() => {}, [showUpload]);
   return (
-    <div className="flex flex-col bg-white shadow-lg py-4 px-4 rounded-md mb-1">
-      <div className="flex flex-col md:flex-row md:justify-between items-start w-full">
-        <span className="mr-2">{Policy?.srno}</span>
-
-        <span className="mr-2">{Policy?.policy_no}</span>
-
-        <span className="mr-2">{Policy?.policy_duration}</span>
-
-        <span className="mr-2">{Policy?.ins_name}</span>
-
-        <span className="px-4 rounded-lg" style={statusStyle}>
-          {Policy?.status}
-        </span>
-
-        <span className="mr-2">{Policy?.paymentDate}</span>
-
-        <span>{formatDate(Policy.crt_date)}</span>
-
-        {/* Add the buttons here */}
-        <div className="flex gap-1 ">
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#0089d1",
-              color: "#ffff",
-              padding: "1px",
-            }}
-            className="   rounded-md cursor-pointer"
-            onClick={handleDownloadPDF}
-          >
-            <Tippy
-              content={"Download Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
-            >
-              <img
-                src={Download}
-                className="w-[25px]  object-center"
-                alt="search_image"
-              />
-            </Tippy>
-          </div>
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#FCD34D",
-              color: "#ffff",
-            }}
-            onClick={() =>
-              navigate("/Form", { state: { Action: "Endorsment" } })
-            }
-            className="   rounded-md cursor-pointer"
-          >
-            <Tippy
-              content={"Endorsment Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
-            >
-              <img
-                src={Edit}
-                className="w-[25px]  object-center"
-                alt="search_image"
-              />
-            </Tippy>
-          </div>
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#dc143c",
-              color: "#ffff",
-            }}
-            className="   rounded-md cursor-pointer"
-            onClick={() => setisCancelModalOpen(true)}
-          >
-            <Tippy
-              content={"Cancel Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
-            >
-              <img src={Cancel} className="w-[25px]  " alt="search_image" />
-            </Tippy>
-          </div>
-        </div>
+    <div className="flex flex-col w-full items-center">
+      <div className="sticky -z-10 top-12 w-full">
+        <img
+          src={coverImage}
+          className="w-full h-36 object-cover"
+          alt="cover_image"
+        />
       </div>
-      <CancelModal
-        isOpen={isCancelModalOpen}
-        onClose={() => setisCancelModalOpen(false)}
-        data={Policy}
-      />
+      <div
+        style={{ height: "fit-content" }}
+        className="justify-around	 lg:flex  min-w-fit   w-full p-8 mx md:w-[85%] max-w-[95%] bg-white lg:max-h-96 min-h-fit -mt-20 border border-neutral-light rounded mb-4 "
+      >
+        <PieChart />
+        <Box className="min-w- h-[320px] bg-white border border-neutral-light rounded">
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            textColor="primary"
+          >
+            <Tab label="Year" value={1} />
+            <Tab label="Month" value={2} />
+          </Tabs>
+
+          <Box p={2}>
+            {activeTab === 1 ? (
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                height="100%"
+              >
+                <div
+                  style={{
+                    backgroundColor: "#0089d1",
+
+                    cursor: "pointer",
+                    width: "80%",
+
+                    textAlign: "center",
+                    color: "white",
+                  }}
+                  className={` h-fit tab ${
+                    activeTab === 2 ? "active-tab" : ""
+                  } py-1 rounded`}
+                  onClick={() => {
+                    setActiveTab(2);
+                    navigate("/form");
+                  }}
+                >
+                  Yearly Proposal
+                </div>
+              </Box>
+            ) : (
+              <Box>
+                <MyDropzoneComponent onFileSelect={handleFileSelect} />
+
+                <Box
+                  display="flex"
+                  flexDirection="row"
+                  gap={2}
+                  marginRight={2}
+                  marginLeft={2}
+                >
+                  {selectedFile && !isuploadError && showUpload && (
+                    <Button
+                      onClick={sendFile}
+                      className={"w-fit"}
+                      type="submit"
+                      label="Upload"
+                      variant="primary"
+                      // Add onClick handler for the "Upload" button if needed
+                    />
+                  )}
+                  {isuploadError && (
+                    <>
+                      <Button
+                        onClick={handleDownload}
+                        className={"w-fit"}
+                        type="submit"
+                        label="sample"
+                        variant="primary"
+                        // Add onClick handler for the "Upload" button if needed
+                      />
+                      <Button
+                        className={"w-fit"}
+                        type="submit"
+                        label="Download"
+                        variant="secondary"
+                        // Add onClick handler for the "Download" button if needed
+                      />
+                    </>
+                  )}
+                </Box>
+              </Box>
+            )}
+          </Box>
+        </Box>
+      </div>
+      {/* <div className=" flex justify-center	md:w-[75%] w-[95%] px-8  overflow-x-scroll	 bg-white  border border-neutral-light rounded ">
+        <DataTable data={data} />
+      </div> */}
     </div>
   );
-};
-
-export default PolicyCard;
+}

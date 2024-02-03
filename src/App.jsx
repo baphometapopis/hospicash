@@ -15,6 +15,7 @@ import PurchaseStatus from "./pages/PurchaseStatus";
 import CancelledPolicy from "./pages/CancelledPolicy";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
   return (
@@ -44,6 +45,8 @@ function App() {
               <Route path="home" element={<Home />}></Route>
             </Route>
             <Route path="login" element={<Login />}></Route>
+            <Route path="Admin" element={<AdminLogin />}></Route>
+
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>

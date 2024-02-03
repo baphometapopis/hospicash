@@ -19,7 +19,7 @@ const PieChart = () => {
   const options = {
     plugins: {
       legend: {
-        position: "right",
+        position: "bottom",
       },
     },
     layout: {
@@ -30,7 +30,7 @@ const PieChart = () => {
       //   bottom: 0,
       // },
     },
-    aspectRatio: 2, // Adjust the aspect ratio to your preference
+    // aspectRatio: 2, // Adjust the aspect ratio to your preference
     responsive: true,
     maintainAspectRatio: true, // Set to false to enable dynamic aspect ratio
   };

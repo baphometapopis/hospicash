@@ -1,18 +1,21 @@
+import moment from "moment";
 import { API_BASE_URL } from "./api_Endpoint";
 
 export const getPaymentRequest = async (data) => {
-  console.log(data);
+  console.log(data?.dealer_bank_trans_id);
+  const date = moment(data?.date).format("YYYY/MM/DD");
+  console.log(date);
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
   var urlencoded = new URLSearchParams();
-  urlencoded.append("transaction_no", "23232323");
-  urlencoded.append("bank_name", "HDFC Bank");
-  urlencoded.append("ifsc_code", "HDFC0001588");
-  urlencoded.append("deposit_amount", "10000");
-  urlencoded.append("transaction_type", "deposit");
-  urlencoded.append("acc_type", "saving");
-  urlencoded.append("transaction_date", "2024-01-01");
+  urlencoded.append("transaction_no", data?.transaction_no);
+  urlencoded.append("bank_name", data?.bank_name);
+  urlencoded.append("ifsc_code", data?.bankIfscCode);
+  urlencoded.append("deposit_amount", data?.deposit_amount);
+  urlencoded.append("transaction_type", data?.transactionType);
+  urlencoded.append("acc_type", data?.acc_type);
+  urlencoded.append("transaction_date", date);
   urlencoded.append("dealer_bank_trans_id", "");
   urlencoded.append("dealer_id", "1");
 

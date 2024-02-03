@@ -1,0 +1,94 @@
+/* YourDashboard.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .dashboard-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-gap: 20px;
+    padding: 20px;
+    height: 100%;
+    width: 100%;
+  }
+  
+  .grid-item {
+    border-radius: 15px;
+
+  }
+  
+  .item1 {
+    grid-column: span 1;
+    grid-row: span 1;
+    padding: 20px;
+    background-color: #ffffff;  /* Light gray background */
+  }
+  
+  .item2 {
+    grid-column: span 2;
+    grid-row: span 2;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    /* height:415px; */
+    gap:15px;
+
+  }
+  
+  .item2-left{
+    border-radius: 15px;
+
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: #ffffff; 
+  }
+   .item2-right {
+    border-radius: 15px;
+    
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: #ffffff;  /* Medium gray background */
+  }
+  
+  .item3 {
+    grid-column: span 1;
+    grid-row: span 3;
+    /* background-color: #ffffff;  Dark gray background */
+  }
+  
+  .item4 {
+    grid-column: span 2;
+    grid-row: span 3;
+    background-color: #ffffff;  /* Gray background */
+  }
+  
+  /* Responsive styles for smaller screens */
+  @media screen and (max-width: 600px) {
+    .dashboard-container {
+      grid-template-columns: 1fr;
+    }
+  
+    .item1, .item2, .item3, .item4 {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    .item2{
+        height: auto;
+    }
+    .item2-left{
+        grid-column: span 2;
+        grid-row: span 1;
+      }
+       .item2-right {
+        grid-column: span 2;
+        grid-row: span 1;
+      }
+      .item2-right {
+        order: -1;  /* Set order to -1 to move it to the left on mobile */
+      }
+  }
+  

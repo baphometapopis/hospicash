@@ -11,7 +11,7 @@ const TransactionCard = ({ transaction }) => {
           width: "fit-content",
           height: "fit-content",
         };
-      case "success":
+      case "approved":
         return {
           backgroundColor: "#68D391",
           color: "#ffffff",
@@ -35,7 +35,7 @@ const TransactionCard = ({ transaction }) => {
     }
   };
 
-  const statusStyle = getStatusStyle(transaction.status);
+  const statusStyle = getStatusStyle(transaction.approval_status);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -57,20 +57,20 @@ const TransactionCard = ({ transaction }) => {
     <div className="flex flex-col bg-white shadow-lg py-4 px-4 rounded-md mb-1">
       <div className="flex  md:flex-row md:justify-between item-center w-full">
         <span style={{ width: "5%", textAlign: "center" }}>
-          {transaction.srno}
+          {transaction.id}
         </span>
 
         <span
           style={{
             textAlign: "center",
-            width: "15%",
+            width: "30%",
           }}
         >
-          {transaction.transactionNo}
+          {transaction.bank_transaction_no}
         </span>
 
-        <span style={{ textAlign: "center", width: "25%" }}>
-          {transaction.bankName}
+        <span style={{ textAlign: "center", width: "10%" }}>
+          {transaction.account_type}
         </span>
 
         <span
@@ -79,11 +79,11 @@ const TransactionCard = ({ transaction }) => {
             width: "10%",
           }}
         >
-          {transaction.amount}
+          ₹{transaction.deposit_amount}
         </span>
 
         <span className="px-4 rounded-lg" style={statusStyle}>
-          {transaction.status}
+          {transaction.approval_status}
         </span>
 
         <span
@@ -92,7 +92,7 @@ const TransactionCard = ({ transaction }) => {
             width: "15%",
           }}
         >
-          {transaction.paymentDate}
+          {transaction.transaction_type}
         </span>
 
         <span
@@ -102,7 +102,7 @@ const TransactionCard = ({ transaction }) => {
           }}
         >
           {" "}
-          {formatDate(transaction.createdAt)}
+          {formatDate(transaction.created_date)}
         </span>
       </div>
     </div>

@@ -24,7 +24,7 @@ const validationSchema = Yup.object().shape({
   //   .min(6, "Password must be atleast 6 characters long"),
 });
 
-export default function Login() {
+export default function AdminLogin() {
   const navigation = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -89,7 +89,7 @@ export default function Login() {
     setLoading(false);
   };
   return (
-    <div className="flex justify-center  items-center p-2 h-[100vh]">
+    <div style={{backgroundColor:'#0089D1'}} className="flex justify-center  items-center p-2 h-[100vh]">
       {loading && <Loader />}
       <div className="flex flex-col items-center">
         <div className=" bg-white border border-neutral-light rounded flex flex-col items-center w-full">
@@ -104,6 +104,7 @@ export default function Login() {
             {/* <div className="flex flex-col items-center">
                 <img src={BrandLogo} className="w-36" />
               </div> */}
+            <p>Admin Login</p>
             <div className="mt-2">
               <form onSubmit={formik.handleSubmit}>
                 <div className="flex flex-col">
@@ -155,12 +156,6 @@ export default function Login() {
                   </div>
                 </div>
                 <Button type="submit" label="Login" variant="primary"></Button>
-                <Button
-                  type="button"
-                  onClick={() => navigation("/admin")}
-                  label="Admin Panel"
-                  variant="ghost"
-                />
               </form>
             </div>
           </div>
