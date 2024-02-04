@@ -1,5 +1,5 @@
 // DataTable.js
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useTable,
   useFilters,
@@ -10,6 +10,8 @@ import { format, parseISO } from "date-fns";
 import "./DataTable.css"; // Import the CSS file for styling
 
 const DataTable = ({ data }) => {
+  const [expandedRows, setExpandedRows] = useState([]);
+
   const columns = useMemo(
     () => [
       { Header: "Sr. No", accessor: "srno" },
@@ -27,10 +29,23 @@ const DataTable = ({ data }) => {
       {
         Header: "Created At",
         accessor: "createdAt",
-        Cell: ({ value }) => format(parseISO(value), "yyyy-MM-dd HH:mm:ss"),
+        Cell: ({ value }) =>
+          value ? format(parseISO(value), "yyyy-MM-dd HH:mm:ss") : "",
+      },
+      {
+        Header: "",
+        accessor: "expand", // Use a virtual accessor for the expand/collapse column
+        Cell: ({ row }) => (
+          <span
+            className="expand-icon"
+            onClick={() => handleRowExpand(row.id)}
+          >
+            {expandedRows.includes(row.id) ? "-" : "+"}
+          </span>
+        ),
       },
     ],
-    []
+    [expandedRows]
   );
 
   const defaultColumn = useMemo(() => {
@@ -61,42 +76,63 @@ const DataTable = ({ data }) => {
 
   const { globalFilter, pageIndex, pageSize } = state;
 
+  const handleRowExpand = (rowId) => {
+    setExpandedRows((prevExpandedRows) =>
+      prevExpandedRows.includes(rowId)
+        ? prevExpandedRows.filter((id) => id !== rowId)
+        : [...prevExpandedRows, rowId]
+    );
+  };
+
   return (
-    <div>
-      <div>
+    <div className="data-table-container">
+      <div className="search-bar">
         <input
           value={globalFilter || ""}
           onChange={(e) => setGlobalFilter(e.target.value || undefined)}
           placeholder="Search..."
         />
       </div>
-      <table {...getTableProps()} className="data-table">
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, index) => {
-            prepareRow(row);
-            return (
-              <tr
-                {...row.getRowProps()}
-                className={index % 2 === 0 ? "even-row" : "odd-row"}
-              >
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+      <div className="table-container">
+        <table {...getTableProps()} className="data-table">
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th {...column.getHeaderProps()}>{column.render("Header")}</th>
                 ))}
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map((row, index) => {
+              prepareRow(row);
+              return (
+                <>
+                  <tr
+                    {...row.getRowProps()}
+                    className={index % 2 === 0 ? "even-row" : "odd-row"}
+                  >
+                    {row.cells.map((cell) => (
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    ))}
+                  </tr>
+                  {expandedRows.includes(row.id) && (
+                    <tr className="expanded-row">
+                      <td colSpan={columns.length}>
+                        {/* Additional content for the expanded row */}
+                        {/* Example: You can render details here */}
+                        {`Additional details for row with ID ${row.id}`}
+                      </td>
+                    </tr>
+                  )}
+                </>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className="pagination">
         <span>
           Page{" "}
           <strong>

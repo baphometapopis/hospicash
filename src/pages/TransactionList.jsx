@@ -1,16 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import SearchIcon from "../assets/Icons/icons8-search-64.png";
-
 import Select from "react-select";
-import PolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/PolicyCard";
-import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
-import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 import { getDealerTransactionList } from "../Api/getDealerTransactionList";
 import TransactionCard from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/TransactionCard";
 import MobileTransactionCard from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/MobileTransactionCard";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { decryptData } from "../Utils/cryptoUtils";
 export default function TransactionsList() {
   const [currentPage, setCurrentPage] = useState(1);
   // const [data, setData] = useState();
@@ -58,21 +55,26 @@ export default function TransactionsList() {
     };
   }, [windowWidth]);
   const dealerTransactionList = useCallback(async () => {
-    const listdata = {
-      dealer_id: "1",
-      start: indexOfFirstRecord,
-      end: recordsPerPage,
-      policy_type: "sold",
-    };
-    if (indexOfFirstRecord !== indexOfLastRecord) {
-      try {
-        const data = await getDealerTransactionList(listdata);
-        setPolicyList(data?.data);
-        setTotalRecords(data?.recordsTotal);
-        console.log(data?.recordsTotal);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle the error as needed
+    const data = localStorage.getItem("LoggedInUser");
+    const decryptdata = decryptData(data);
+
+    if (decryptdata) {
+      const listdata = {
+        dealer_id: decryptdata?.user_details?.id,
+        start: indexOfFirstRecord,
+        end: recordsPerPage,
+        policy_type: "sold",
+      };
+      if (indexOfFirstRecord !== indexOfLastRecord) {
+        try {
+          const data = await getDealerTransactionList(listdata);
+          setPolicyList(data?.data);
+          setTotalRecords(data?.recordsTotal);
+          console.log(data?.recordsTotal);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          // Handle the error as needed
+        }
       }
     }
   }, [indexOfFirstRecord, indexOfLastRecord, recordsPerPage]);
@@ -234,7 +236,7 @@ export default function TransactionsList() {
                 padding: "10px",
                 zIndex: 4,
               }}
-              className="px-4 flex rounded-t item-center justify-between  w-full sticky top-[115px] "
+              className="px-4 flex rounded-t items-center justify-between w-full sticky top-[115px] "
             >
               <span
                 style={{
@@ -247,17 +249,18 @@ export default function TransactionsList() {
               </span>
               <span
                 style={{
-                  width: "30%",
+                  width: "25%", // Adjusted width for responsiveness
                   textAlign: "center",
                 }}
                 className="text-white"
               >
-                tranx No
+                Tranx No
               </span>
               <span
                 style={{
                   width: "10%",
                   textAlign: "center",
+                  minWidth: "fitcontent",
                 }}
                 className="text-white "
               >
@@ -273,15 +276,11 @@ export default function TransactionsList() {
                 Amount
               </span>
               <span
-                style={{
-                  textAlign: "center",
-                  width: "10%",
-                }}
+                style={{ textAlign: "center", width: "10%" }}
                 className="text-white w-['10%']"
               >
                 Status
               </span>
-
               <span
                 style={{ textAlign: "center", width: "15%" }}
                 className="text-white"

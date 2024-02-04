@@ -1,10 +1,10 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
-export const generatePolicy = (data) => {
+export const generatePolicy = (id, data) => {
   console.log(data);
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
+  debugger;
   var urlencoded = new URLSearchParams();
   urlencoded.append("dealer_id", data?.dealer_id);
   urlencoded.append("plan_id", data?.plan_id);
@@ -25,6 +25,8 @@ export const generatePolicy = (data) => {
   urlencoded.append("city_id", data?.city_id);
   urlencoded.append("is_policy_schedule_type", data?.is_policy_schedule_type);
   urlencoded.append("email", data?.email);
+  urlencoded.append("pan_number", data?.pan_number);
+
   var requestOptions = {
     method: "POST",
     headers: myHeaders,

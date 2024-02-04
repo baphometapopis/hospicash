@@ -18,7 +18,7 @@ const RadialBarChart = () => {
     },
     plotOptions: {
       radialBar: {
-        offsetY: 0,
+        offsetY: -20,
         startAngle: 0,
         endAngle: 270,
         hollow: {
@@ -46,7 +46,7 @@ const RadialBarChart = () => {
       show: true,
       floating: true,
       fontSize: "12px",
-      offsetX: 160,
+      offsetX: 200,
       offsetY: 15,
       labels: {
         useSeriesColors: true,

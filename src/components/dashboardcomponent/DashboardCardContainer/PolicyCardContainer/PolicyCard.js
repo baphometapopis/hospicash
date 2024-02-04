@@ -7,69 +7,55 @@ import CancelModal from "../../Modal/PolicyModal/CancelModal.js";
 import Download from "../../../../assets/Icons/icons8-download-64 (2).png";
 import Cancel from "../../../../assets/Icons/icons8-cancel-100 (1).png";
 import Edit from "../../../../assets/Icons/icons8-edit-64 (2).png";
+
 const PolicyCard = ({ Policy, iscancelled }) => {
   const truncatedContent = Policy.cancel_remark;
-
   const onShowHandler = (instance) => {
-    // Check if the content is truncated
     if (instance.props.content !== truncatedContent) {
-      // Adjust Tippy's content to the truncated version
       instance.setContent(truncatedContent);
     }
   };
   const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
   const navigate = useNavigate();
+
   const handleDownloadPDF = async () => {
     try {
       const pdfUrl =
-        "https://demo.mypolicynow.com/api/api/downloadProposal/quote-00b1773c89649e7143aed4f7e635dff6"; // Replace with your actual PDF URL
-
-      // Fetch the PDF file
+        "https://demo.mypolicynow.com/api/api/downloadProposal/quote-00b1773c89649e7143aed4f7e635dff6";
       const response = await fetch(pdfUrl);
       const blob = await response.blob();
 
-      // Create a download link
       const downloadLink = document.createElement("a");
       downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = `${Policy?.policy_no}_${Policy?.ins_name}.pdf`; // Specify the desired file name
+      downloadLink.download = `${Policy?.policy_no}_${Policy?.ins_name}.pdf`;
 
-      // Trigger the download
       downloadLink.click();
     } catch (error) {
       console.error("Error downloading PDF:", error);
-      // Handle error, e.g., display an error message to the user
     }
   };
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "Pending":
         return {
           backgroundColor: "#FCD34D",
           color: "#ffffff",
-          padding: "2px",
-          width: "fit-content",
-          height: "fit-content",
         };
       case "Success":
         return {
           backgroundColor: "#68D391",
           color: "#ffffff",
-          width: "fit-content",
-          height: "fit-content",
         };
       case "Cancelled":
         return {
           backgroundColor: "#dc143c",
           color: "#ffffff",
-          width: "fit-content",
-          height: "fit-content",
         };
       default:
         return {
           backgroundColor: "#D1D5DB",
           color: "#000000",
-          width: "fit-content",
-          height: "fit-content",
         };
     }
   };
@@ -94,124 +80,92 @@ const PolicyCard = ({ Policy, iscancelled }) => {
 
   return (
     <div className="flex flex-col bg-white shadow-lg py-4 px-4 rounded-md mb-1">
-      <div className="flex  md:flex-row md:justify-between item-center w-full">
-        <span style={{ width: "5%", textAlign: "center" }}>{Policy.id}</span>
-
-        <span
-          style={{
-            textAlign: "center",
-            width: "15%",
-          }}
-        >
+      <div className="flex md:flex-row md:justify-between item-center w-full">
+        <p style={{ width: "fit-content", textAlign: "center" }} className="px-1">{Policy.id}</p>
+        <p style={{ width: "fit-content", textAlign: "center" }} className="px-1">
           {Policy.policy_no}
-        </span>
-
-        <span style={{ textAlign: "center", width: "25%" }}>
+        </p>
+        <p style={{ textAlign: "center", width: "fit-content", }} className="px-1">
           {Policy.full_name}
-        </span>
-
-        <span
-          style={{
-            textAlign: "center",
-            width: "10%",
-          }}
-        >
+        </p>
+        <p style={{ textAlign: "center", width: "fit-content" }} className="px-1">
           {Policy.pan_number || " - "}
-        </span>
-
-        <span className="px-4 rounded-lg" style={statusStyle}>
+        </p>
+        <p className="px-4 rounded-lg " style={statusStyle}>
           {Policy.status}
-        </span>
-
-        {/* <span
-          style={{
-            textAlign: "center",
-            width: "15%",
-          }}
-        >
-          {Policy.paymentDate}
-        </span> */}
-
-        <span
-          style={{
-            textAlign: "center",
-            width: "20%",
-          }}
-        >
-          {" "}
+        </p>
+        <p style={{ textAlign: "center", width: "fit-content" }} className="px-1">
           {formatDate(Policy.created_date)}
-        </span>
+        </p>
+
         {!iscancelled ? (
-          <>
-            {" "}
-            <div className="flex gap-1 ">
-              <div
-                style={{
-                  fontSize: "14px",
-                  backgroundColor: "#0089d1",
-                  color: "#ffff",
-                  padding: "1px",
-                }}
-                className="   rounded-md cursor-pointer h-fit"
-                onClick={handleDownloadPDF}
+          <div className="flex gap-1">
+            <div
+              style={{
+                fontSize: "14px",
+                backgroundColor: "#0089d1",
+                color: "#ffff",
+                padding: "1px",
+              }}
+              className="rounded-md cursor-pointer h-fit"
+              onClick={handleDownloadPDF}
+            >
+              <Tippy
+                content={"Download Proposal"}
+                placement="top"
+                arrow={true}
+                className="rounded-sm text-xs"
               >
-                <Tippy
-                  content={"Download Proposal"}
-                  placement="top"
-                  arrow={true}
-                  className="rounded-sm text-xs"
-                >
-                  <img
-                    src={Download}
-                    className="w-[25px]  object-center"
-                    alt="search_image"
-                  />
-                </Tippy>
-              </div>
-              <div
-                style={{
-                  fontSize: "14px",
-                  backgroundColor: "#FCD34D",
-                  color: "#ffff",
-                }}
-                onClick={() =>
-                  navigate("/Form", { state: { Action: "Endorsment" } })
-                }
-                className="   rounded-md cursor-pointer  h-fit"
-              >
-                <Tippy
-                  content={"Endorsment Proposal"}
-                  placement="top"
-                  arrow={true}
-                  className="rounded-sm text-xs"
-                >
-                  <img
-                    src={Edit}
-                    className="w-[25px]  object-center"
-                    alt="search_image"
-                  />
-                </Tippy>
-              </div>
-              <div
-                style={{
-                  fontSize: "14px",
-                  backgroundColor: "#dc143c",
-                  color: "#ffff",
-                }}
-                className="   rounded-md cursor-pointer  h-fit"
-                onClick={() => setisCancelModalOpen(true)}
-              >
-                <Tippy
-                  content={"Cancel Proposal"}
-                  placement="top"
-                  arrow={true}
-                  className="rounded-sm text-xs"
-                >
-                  <img src={Cancel} className="w-[25px]  " alt="search_image" />
-                </Tippy>
-              </div>
+                <img
+                  src={Download}
+                  className="w-[25px] object-center"
+                  alt="search_image"
+                />
+              </Tippy>
             </div>
-          </>
+            <div
+              style={{
+                fontSize: "14px",
+                backgroundColor: "#FCD34D",
+                color: "#ffff",
+              }}
+              onClick={() =>
+                navigate("/Form", { state: { Action: "Endorsment" } })
+              }
+              className="rounded-md cursor-pointer h-fit"
+            >
+              <Tippy
+                content={"Endorsment Proposal"}
+                placement="top"
+                arrow={true}
+                className="rounded-sm text-xs"
+              >
+                <img
+                  src={Edit}
+                  className="w-[25px] object-center"
+                  alt="search_image"
+                />
+              </Tippy>
+            </div>
+            <div
+              style={{
+                fontSize: "14px",
+                backgroundColor: "#dc143c",
+                color: "#ffff",
+              }}
+              className="rounded-md cursor-pointer h-fit"
+              onClick={() => setisCancelModalOpen(true)}
+            >
+              <Tippy
+                content={"Cancel Proposal"}
+                placement="top"
+                arrow={true}
+                className="rounded-sm text-xs"
+              >
+                <img src={Cancel} className="w-[25px]" alt="search_image" />
+              </Tippy>
+            </div>
+          </div>
         ) : (
           <Tippy
             content={truncatedContent}
@@ -220,15 +174,12 @@ const PolicyCard = ({ Policy, iscancelled }) => {
             onShow={onShowHandler}
             className="rounded-sm text-xs max-w-96"
           >
-            <span
-              style={{
-                textAlign: "center",
-                width: "10%",
-              }}
+            <p
+              style={{ textAlign: "center", width: "10%" }}
               className="truncate"
             >
               {Policy.cancel_remark}
-            </span>
+            </p>
           </Tippy>
         )}
       </div>

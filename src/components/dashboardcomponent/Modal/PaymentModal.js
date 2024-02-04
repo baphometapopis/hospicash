@@ -1,25 +1,65 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
-// ... (previous imports)
+import moment from "moment";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { decryptData } from "../../../Utils/cryptoUtils";
+import { useNavigate } from "react-router-dom";
+import { get_ICPaymentRequest } from "../../../Api/getICpaymentRequestApi";
 
-const PaymentModal = ({ isOpen, onClose }) => {
-  const partyOptions = [
-    { value: "party1", label: "Party 1" },
-    { value: "party2", label: "Party 2" },
-  ];
+const PaymentModal = ({ isOpen, onClose, icList }) => {
+  const [insuranceCompaniesList, setinsuranceCompaniesList] = useState([]);
+  const [LocalData, setLocalData] = useState();
+  const navigate = useNavigate();
+  async function handleSubmit(values, { resetForm }) {
+    const data = await get_ICPaymentRequest(
+      LocalData?.user_details?.id,
+      values
+    );
+    if (data?.status) {
+      toast.success(data?.message, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+      onClose();
+      resetForm();
+    } else {
+      console.log(data);
+      toast.error(`${data?.message}`, {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
+  }
 
-  const handleSubmit = (values, { resetForm }) => {
-    console.log(values);
-    // Perform payment processing or other logic here
+  const getlocalData = async () => {
+    const data = localStorage.getItem("LoggedInUser");
+    if (data) {
+      const decryptdata = decryptData(data);
+      setLocalData(decryptdata);
 
-    // Close the modal after
-    resetForm();
+      //api function if needed or  store in a state
+    } else {
+      navigate("/");
 
-    onClose();
+      toast.error("Session Expired, Login Again", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
   };
 
   const handleAmountChange = (e) => {
@@ -38,24 +78,22 @@ const PaymentModal = ({ isOpen, onClose }) => {
 
   const formik = useFormik({
     initialValues: {
-      partyName: "",
-      chequeNo: "",
-      bankIfscCode: "",
-      bankName: "",
-      bankAccountNumber: "",
+      ic_id: "",
+      transaction_no: "",
+      ifsc_code: "",
+      bank_name: "",
+      account_no: "",
       amount: "",
-      date: null,
+      payment_date: null,
     },
     validationSchema: Yup.object({
-      partyName: Yup.string().required("Party Name is required"),
-      chequeNo: Yup.string().required("Cheque No is required"),
-      bankIfscCode: Yup.string().required("Bank IFSC Code is required"),
-      bankName: Yup.string().required("Bank Name is required"),
-      bankAccountNumber: Yup.string().required(
-        "Bank Account Number is required"
-      ),
+      ic_id: Yup.string().required("Party Name is required"),
+      transaction_no: Yup.string().required("Cheque No is required"),
+      ifsc_code: Yup.string().required("Bank IFSC Code is required"),
+      bank_name: Yup.string().required("Bank Name is required"),
+      account_no: Yup.string().required("Bank Account Number is required"),
       amount: Yup.number().required("Amount is required"),
-      date: Yup.date().required("Date is required"),
+      payment_date: Yup.date().required("Date is required"),
     }),
     onSubmit: handleSubmit,
     validateOnChange: true,
@@ -65,6 +103,16 @@ const PaymentModal = ({ isOpen, onClose }) => {
       console.log(formik.values, formik.errors);
     },
   });
+
+  const formatDate = (date) => {
+    return moment(date).format("YYYY/MM/DD");
+  };
+  useEffect(() => {
+    if (icList) {
+      setinsuranceCompaniesList(icList);
+    }
+    getlocalData();
+  }, []);
 
   return (
     <div
@@ -91,30 +139,30 @@ const PaymentModal = ({ isOpen, onClose }) => {
 
             <div className="flex gap-10 my-10">
               <div style={{ gap: 26 }} className="flex flex-col">
-                <label htmlFor="partyName">Party Name : </label>
-                <label htmlFor="chequeNo">Cheque No : </label>
-                <label htmlFor="bankIfscCode">Bank IFSC Code :</label>
-                <label htmlFor="bankName">Bank Name :</label>
-                <label htmlFor="bankAccountNumber">Bank Account Number :</label>
+                <label htmlFor="ic_id">Insurance Name : </label>
+                <label htmlFor="transaction_no">Transaction No : </label>
+                <label htmlFor="ifsc_code">Bank IFSC Code :</label>
+                <label htmlFor="bank_name">Bank Name :</label>
+                <label htmlFor="account_no">Bank Account Number :</label>
                 <label htmlFor="amount">Amount :</label>
-                <label htmlFor="date" className="text-lg">
+                <label htmlFor="payment_date" className="text-lg">
                   Date :
                 </label>{" "}
               </div>
 
               <div style={{ gap: 15 }} className="flex flex-col ">
                 <Select
-                  id="partyName"
+                  id="ic_id"
                   options={[
-                    { value: "", label: "Select Party", isDisabled: true }, // Placeholder option
-                    ...partyOptions,
+                    ...(icList || []).map((salutation) => ({
+                      value: salutation.id,
+                      label: salutation.name,
+                    })),
                   ]}
                   placeholder="Select Party"
-                  value={partyOptions.find(
-                    (o) => o.value === formik.values.partyName
-                  )}
+                  value={icList?.find((o) => o.value === formik.values.ic_id)}
                   onChange={(option) =>
-                    formik.setFieldValue("partyName", option?.value || "")
+                    formik.setFieldValue("ic_id", option?.value || "")
                   }
                   styles={{
                     control: (provided, state) => ({
@@ -124,9 +172,9 @@ const PaymentModal = ({ isOpen, onClose }) => {
 
                       // Border color when focused
                       borderColor:
-                        state.isFocused && !formik.touched.partyName
+                        state.isFocused && !formik.touched.ic_id
                           ? "#6D6D6D" // Default border color when focused and not touched
-                          : formik.touched.partyName && formik.errors.partyName
+                          : formik.touched.ic_id && formik.errors.ic_id
                           ? "red" // Border color on error
                           : "#6D6D6D", // Default border color
                     }),
@@ -135,15 +183,16 @@ const PaymentModal = ({ isOpen, onClose }) => {
 
                 <input
                   type="text"
-                  id="chequeNo"
-                  name="chequeNo"
-                  placeholder="Cheque number"
-                  onChange={(e) => handleTextChange("chequeNo", e)}
+                  id="transaction_no"
+                  name="transaction_no"
+                  placeholder="Transaction number"
+                  onChange={(e) => handleTextChange("transaction_no", e)}
                   onBlur={formik.handleBlur}
-                  value={formik.values.chequeNo}
+                  value={formik.values.transaction_no}
                   style={{
                     borderColor:
-                      formik.touched.chequeNo && formik.errors.chequeNo
+                      formik.touched.transaction_no &&
+                      formik.errors.transaction_no
                         ? "red"
                         : "#6D6D6D",
                   }}
@@ -153,15 +202,15 @@ const PaymentModal = ({ isOpen, onClose }) => {
                 />
                 <input
                   type="text"
-                  id="bankIfscCode"
+                  id="ifsc_code"
                   placeholder="Bank Ifsc Code"
-                  name="bankIfscCode"
-                  onChange={(e) => handleTextChange("bankIfscCode", e)}
+                  name="ifsc_code"
+                  onChange={(e) => handleTextChange("ifsc_code", e)}
                   onBlur={formik.handleBlur}
-                  value={formik.values.bankIfscCode}
+                  value={formik.values.ifsc_code}
                   style={{
                     borderColor:
-                      formik.touched.bankIfscCode && formik.errors.bankIfscCode
+                      formik.touched.ifsc_code && formik.errors.ifsc_code
                         ? "red"
                         : "#6D6D6D",
                   }}
@@ -171,15 +220,15 @@ const PaymentModal = ({ isOpen, onClose }) => {
                 />
                 <input
                   type="text"
-                  id="bankName"
-                  name="bankName"
+                  id="bank_name"
+                  name="bank_name"
                   placeholder="Bank Name"
-                  onChange={(e) => handleTextChange("bankName", e)}
+                  onChange={(e) => handleTextChange("bank_name", e)}
                   onBlur={formik.handleBlur}
-                  value={formik.values.bankName}
+                  value={formik.values.bank_name}
                   style={{
                     borderColor:
-                      formik.touched.bankName && formik.errors.bankName
+                      formik.touched.bank_name && formik.errors.bank_name
                         ? "red"
                         : "#6D6D6D",
                   }}
@@ -189,16 +238,15 @@ const PaymentModal = ({ isOpen, onClose }) => {
                 />
                 <input
                   type="text"
-                  id="bankAccountNumber"
-                  name="bankAccountNumber"
+                  id="account_no"
+                  name="account_no"
                   placeholder="Bank Account number"
-                  onChange={(e) => handleTextChange("bankAccountNumber", e)}
+                  onChange={(e) => handleTextChange("account_no", e)}
                   onBlur={formik.handleBlur}
-                  value={formik.values.bankAccountNumber}
+                  value={formik.values.account_no}
                   style={{
                     borderColor:
-                      formik.touched.bankAccountNumber &&
-                      formik.errors.bankAccountNumber
+                      formik.touched.account_no && formik.errors.account_no
                         ? "red"
                         : "#6D6D6D",
                   }}
@@ -227,7 +275,7 @@ const PaymentModal = ({ isOpen, onClose }) => {
                 <div
                   style={{
                     borderColor:
-                      formik.touched.date && formik.errors.date
+                      formik.touched.payment_date && formik.errors.payment_date
                         ? "red"
                         : "#6D6D6D",
                   }}
@@ -235,9 +283,21 @@ const PaymentModal = ({ isOpen, onClose }) => {
                     `}
                 >
                   <DatePicker
-                    id="date"
-                    selected={formik.values.date}
-                    onChange={(date) => formik.setFieldValue("date", date)}
+                    id="payment_date"
+                    selected={
+                      formik.values.payment_date
+                        ? moment(
+                            formik.values.payment_date,
+                            "YYYY/MM/DD"
+                          ).toDate()
+                        : ""
+                    }
+                    onChange={(payment_date) =>
+                      formik.setFieldValue(
+                        "payment_date",
+                        formatDate(payment_date)
+                      )
+                    }
                     dateFormat="yyyy/MM/dd"
                     placeholderText="YYYY/MM/DD"
                     className="focus:outline-none"

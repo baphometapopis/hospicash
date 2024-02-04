@@ -7,6 +7,7 @@ import Button from "../components/ui/Button";
 import { getSoldPolicyData } from "../Api/getSoldPolicyData";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
+import { decryptData } from "../Utils/cryptoUtils";
 
 export default function PurchaseStatus() {
   const navigate = useNavigate();
@@ -15,17 +16,25 @@ export default function PurchaseStatus() {
 
   const [policyData, setPolicyData] = useState();
   const getPolicyData = async () => {
-    const data = await getSoldPolicyData("1", policy_id);
-    if (data?.status) {
-      setPolicyData(data?.data[0]);
-    } else {
-      toast.error("Failed to get Policy Data", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-      });
+    const localdata = localStorage.getItem("LoggedInUser");
+    const decryptdata = decryptData(localdata);
+
+    if (decryptdata) {
+      const data = await getSoldPolicyData(
+        decryptdata?.user_details?.id,
+        policy_id
+      );
+      if (data?.status) {
+        setPolicyData(data?.data[0]);
+      } else {
+        toast.error("Failed to get Policy Data", {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+      }
     }
   };
 
@@ -121,7 +130,7 @@ export default function PurchaseStatus() {
         <div className="flex justify-center py-4 pb-8 w-96 space-x-4">
           <Button
             type="button"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate("/home")}
             label="Go to Dashboard"
             variant="ghost"
           />

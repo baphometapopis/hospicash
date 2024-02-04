@@ -3,9 +3,9 @@ import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import SearchIcon from "../assets/Icons/icons8-search-64.png";
 
 import Select from "react-select";
+import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 import PolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/PolicyCard";
 import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
-import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 
 export default function SoldPolicy() {
   const [currentPage, setCurrentPage] = useState(1);

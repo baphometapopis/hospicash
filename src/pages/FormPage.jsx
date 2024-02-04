@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -16,6 +16,7 @@ import { generatePolicy } from "../Api/generatePolicy";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserData } from "../Redux/userSlice.js";
 import moment from "moment";
+import { decryptData } from "../Utils/cryptoUtils.js";
 
 const validationSchema = Yup.object().shape({
   fname: Yup.string().required("Required"),
@@ -37,14 +38,14 @@ const validationSchema = Yup.object().shape({
   nominee_full_name: Yup.string().required("Required"),
   pan_number: Yup.string()
     .required("Required")
-    .matches(/^[A-Z]{3}[P]{1}[A-Z]{1}[0-9]{4}[A-Z]{1}$/, "Invalid PAN number"),
+    .matches(/^[A-Z]{3}P{4}[A-Z][0-9]{4}[A-Z]$/, "Invalid PAN number"),
   nominee_age: Yup.number().required("Required").min(1, "Enter Valid Age"),
   nominee_relation: Yup.string().required("Required"),
 });
 
 export default function FormPage() {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const location = useLocation();
 
   const [selectedPlan] = useState(location?.state?.selectedPlan);
@@ -56,11 +57,17 @@ export default function FormPage() {
 
   const [cityName, setcityName] = useState("");
   const [StateName, setStateName] = useState("");
+  const [LocalData, setLocalData] = useState();
 
   const navigation = useNavigate();
 
   const submitData = async () => {
-    const data = await generatePolicy(formik.values);
+    dispatch(updateUserData({ dealer_id: LocalData?.user_details?.id }));
+
+    const data = await generatePolicy(
+      LocalData?.user_details?.id,
+      formik.values
+    );
     if (data?.status) {
       console.log(data);
       navigation("/confirmed", { state: { policy_id: data?.policy_id } });
@@ -175,6 +182,25 @@ export default function FormPage() {
     }
   };
 
+  const getlocalData = useCallback(async () => {
+    const data = localStorage.getItem("LoggedInUser");
+    if (data) {
+      const decryptdata = decryptData(data);
+      setLocalData(decryptdata);
+
+      //api function if needed or  store in a state
+    } else {
+      navigate("/");
+
+      toast.error("Session Expired, Login Again", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
+  }, []);
   const getFormData = async () => {
     const data = await get_policy_data();
     if (data?.status) {
@@ -197,7 +223,8 @@ export default function FormPage() {
 
   useEffect(() => {
     getFormData();
-  }, []);
+    getlocalData();
+  }, [getlocalData]);
 
   return (
     <>

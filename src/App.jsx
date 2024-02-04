@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./AppLayout";
-import Transactions from "./pages/Transactions";
+import Transactions from "./pages/transaction/Transactions";
 import Plans from "./pages/Plans";
 import FormPage from "./pages/FormPage";
 import Home from "./pages/Home";

@@ -1,11 +1,12 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
-export const fileUpload = async (file) => {
+export const fileUpload = async (id, file) => {
   try {
     var myHeaders = new Headers();
 
     var formdata = new FormData();
     formdata.append("transaction_file", file);
+    formdata.append("dealer_id", id);
 
     var requestOptions = {
       method: "POST",

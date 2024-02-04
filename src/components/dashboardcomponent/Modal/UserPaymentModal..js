@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,23 +8,69 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { checkTransactionNo } from "../../../Api/checkTransactionNo";
 import { getPaymentRequest } from "../../../Api/getPaymentRequest";
+import { decryptData } from "../../../Utils/cryptoUtils";
+import { useNavigate } from "react-router-dom";
+import moment from "moment";
+
 const UserPaymentModal = ({ isOpen, onClose }) => {
+  const [LocalData, setLocalData] = useState();
+  const navigate = useNavigate();
+  const [istransactionidvalid, setistransactionidvalid] = useState();
+  const validateForm = (values) => {
+    const errors = {};
+
+    const validateRequired = (field, message) => {
+      if (!values[field]) {
+        errors[field] = message;
+      } else {
+        delete errors[field];
+      }
+    };
+
+    validateRequired("transactionType", "Required");
+    validateRequired("transaction_no", "Required");
+    validateRequired("bankIfscCode", "Required");
+    validateRequired("bank_name", "Required");
+    validateRequired("bankAccountNumber", "Required");
+    validateRequired("deposit_amount", "Required");
+    validateRequired("date", "Required");
+
+    if (!istransactionidvalid && values?.transaction_no !== "") {
+      errors["transaction_no"] = "This Transaction No is Already Exist";
+    } else {
+      delete errors["transaction_no"];
+    }
+
+    return errors;
+  };
+  const formik = useFormik({
+    initialValues: {
+      transactionType: "",
+      transaction_no: "",
+      bankIfscCode: "",
+      bank_name: "",
+      bankAccountNumber: "",
+      deposit_amount: "",
+      date: null,
+    },
+    onSubmit: handleSubmit,
+    validateOnChange: true,
+    validateOnBlur: true,
+    validate: validateForm,
+  });
+
   const partyOptions = [
     { value: "Deposit", label: "Deposit" },
     { value: "Withdraw", label: "Withdraw" },
   ];
+
   const accType = [
     { value: "saving", label: "Saving" },
     { value: "current", label: "current" },
   ];
 
-  const [paymentDate, setPaymentDate] = useState();
-  const [istransactionidvalid, setistransactionidvalid] = useState();
-
-  const handleSubmit = async (values, { resetForm }) => {
-    console.log(values);
-    // Perform payment processing or other logic here
-    const data = await getPaymentRequest(values);
+  async function handleSubmit(values, { resetForm }) {
+    const data = await getPaymentRequest(LocalData?.user_details?.id, values);
     if (data?.status) {
       toast.success(data?.message, {
         position: "bottom-right",
@@ -44,100 +90,78 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
         pauseOnHover: true,
       });
     }
+  }
 
-    console.log(data);
-    // Close the modal after
-    // resetForm();
-
-    // onClose();
-  };
-
-  const handleAmountChange = (e) => {
-    // Allow only numeric input for the deposit_amount field
+  function handleAmountChange(e) {
     const numericValue = e.target.value.replace(/[^0-9]/g, "");
     formik.setFieldValue("deposit_amount", numericValue);
-  };
+  }
 
-  const handleTextChange = (fieldName, e) => {
-    // Convert lowercase letters to uppercase and disallow special characters
+  function handleTextChange(fieldName, e) {
     const sanitizedValue = e.target.value
       .replace(/[^a-zA-Z0-9 ]/g, "")
       .toUpperCase();
     formik.setFieldValue(fieldName, sanitizedValue);
-  };
+  }
 
-  const formik = useFormik({
-    initialValues: {
-      transactionType: "",
-      transaction_no: "",
-      bankIfscCode: "",
-      bank_name: "",
-      bankAccountNumber: "",
-      deposit_amount: "",
-      date: null,
-    },
-
-    onSubmit: handleSubmit,
-    validateOnChange: true,
-    validateOnBlur: true,
-    validate: (values) => {
-      const errors = {};
-      const validateRequired = (field, message) => {
-        if (!values[field]) {
-          errors[field] = message;
-        } else {
-          delete errors[field];
-        }
-      };
-
-      validateRequired("transactionType", "Required");
-      validateRequired("transaction_no", "Required");
-      validateRequired("bankIfscCode", "Required");
-      validateRequired("bank_name", "Required");
-      validateRequired("bankAccountNumber", "Required");
-      validateRequired("deposit_amount", "Required");
-      validateRequired("date", "Required");
-
-      if (!istransactionidvalid && values?.transaction_no !== "") {
-        errors["transaction_no"] = "This Transaction No is Already Exist";
-      } else {
-        delete errors["transaction_no"];
-      }
-      console.log(formik.errors);
-
-      return errors;
-    },
-  });
-  const checkNumber = async () => {
-    const data = await checkTransactionNo(formik?.values?.transaction_no);
+  async function checkNumber() {
+    const data = await checkTransactionNo(
+      LocalData?.user_details?.id,
+      formik?.values?.transaction_no
+    );
     setistransactionidvalid(data?.status);
-    console.log(data);
-  };
+  }
 
-  const getData = async () => {
-    const data = await getDealerData(1);
-    if (data?.status) {
-      console.log(data);
-      formik.setFieldValue("bank_name", data?.data?.bank_name);
-      formik.setFieldValue("bankAccountNumber", data?.data?.banck_acc_no);
-      formik.setFieldValue("bankIfscCode", data?.data?.banck_ifsc_code);
+  const getLocalData = useCallback(async () => {
+    const data = localStorage.getItem("LoggedInUser");
 
-      setPaymentDate(data);
+    if (data) {
+      const decryptdata = decryptData(data);
+      setLocalData(decryptdata);
+
+      if (
+        formik.values.bank_name === "" ||
+        formik.values.bankAccountNumber === "" ||
+        formik.values.bankIfscCode === ""
+      ) {
+        const dealerData = await getDealerData(decryptdata?.user_details?.id);
+
+        if (dealerData?.status) {
+          formik.setValues({
+            ...formik.values,
+            bank_name: dealerData?.data?.bank_name,
+            bankAccountNumber: dealerData?.data?.banck_acc_no,
+            bankIfscCode: dealerData?.data?.banck_ifsc_code,
+          });
+        } else {
+          toast.error(dealerData?.message, {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+          });
+        }
+      }
     } else {
-      toast.error(data?.message, {
+      navigate("/");
+      toast.error("Session Expired, Login Again", {
         position: "bottom-right",
-        autoClose: 3000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
       });
     }
-  };
+  }, [formik.values, navigate]);
   useEffect(() => {
     if (isOpen) {
-      getData();
+      getLocalData();
     }
-  }, [isOpen]);
+  }, [getLocalData, isOpen]);
+  const formatDate = (date) => {
+    return moment(date).format("YYYY/MM/DD");
+  };
   return (
     <div
       style={{ zIndex: 100 }}
@@ -171,10 +195,7 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
                   <label htmlFor="bankAccountNumber">
                     Transaction Number :
                   </label>
-                  {console.log(
-                    formik.touched.transaction_no,
-                    formik.errors.transaction_no
-                  )}
+
                   {!istransactionidvalid && formik.errors.transaction_no && (
                     <p
                       style={{
@@ -368,8 +389,14 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
                   <DatePicker
                     id="date"
                     autoComplete="off"
-                    selected={formik.values.date}
-                    onChange={(date) => formik.setFieldValue("date", date)}
+                    selected={
+                      formik.values.date
+                        ? moment(formik.values.date, "YYYY/MM/DD").toDate()
+                        : ""
+                    }
+                    onChange={(date) =>
+                      formik.setFieldValue("date", formatDate(date))
+                    }
                     dateFormat="yyyy/MM/dd"
                     placeholderText="YYYY/MM/DD"
                     className="focus:outline-none"

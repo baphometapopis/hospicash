@@ -34,3 +34,11 @@ body, html {
 .odd-row {
   background-color: #ffffff;
 }
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+  .data-table th,
+  .data-table td {
+    padding: 8px 4px; /* Adjust padding for smaller screens */
+  }
+}

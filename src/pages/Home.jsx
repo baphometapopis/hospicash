@@ -24,6 +24,7 @@ import Total from "../assets/Icons/icons8-rupee-64.png";
 import Pending from "../assets/Icons/icons8-pending-50.png";
 import Success from "../assets/Icons/icons8-card-payment-80.png";
 import concile from "../assets/Icons/icons8-rupees-64.png";
+import id from "date-fns/locale/id";
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState();
   const [isuploadError, setisuploadError] = useState(false);
@@ -1096,7 +1097,7 @@ export default function Home() {
   const sendFile = async () => {
     setshowUpload(false);
 
-    const data = await fileUpload(selectedFile);
+    const data = await fileUpload(LoginData?.user_details?.id, selectedFile);
     if (data?.status) {
       setisuploadError(false);
       toast.success(data?.message, {

@@ -1,7 +1,7 @@
 import moment from "moment";
 import { API_BASE_URL } from "./api_Endpoint";
 
-export const getPaymentRequest = async (data) => {
+export const getPaymentRequest = async (id, data) => {
   console.log(data?.dealer_bank_trans_id);
   const date = moment(data?.date).format("YYYY/MM/DD");
   console.log(date);
@@ -17,7 +17,7 @@ export const getPaymentRequest = async (data) => {
   urlencoded.append("acc_type", data?.acc_type);
   urlencoded.append("transaction_date", date);
   urlencoded.append("dealer_bank_trans_id", "");
-  urlencoded.append("dealer_id", "1");
+  urlencoded.append("dealer_id", id);
 
   var requestOptions = {
     method: "POST",
@@ -39,3 +39,4 @@ export const getPaymentRequest = async (data) => {
       return { error: "An error occurred while fetching data." };
     });
 };
+
