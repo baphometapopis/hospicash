@@ -6,6 +6,7 @@ import Select from "react-select";
 import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 import PolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/PolicyCard";
 import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
+import DealerSoldPolicyTable from "../components/dashboardcomponent/DealerSoldPolicyTable";
 
 export default function SoldPolicy() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -158,7 +159,8 @@ export default function SoldPolicy() {
               />
             </div>
           </div>
-
+          <DealerSoldPolicyTable data={poicyList} />
+{/*           
           {isMobile && (
             <div
               style={{
@@ -225,8 +227,8 @@ export default function SoldPolicy() {
                 Created At
               </span>
             </div>
-          )}
-          {poicyList.map((data) => (
+          )} */}
+          {/* {poicyList?.map((data) => (
             <>
               {isMobile ? (
                 <PolicyCard key={data.id} Policy={data} />
@@ -234,7 +236,7 @@ export default function SoldPolicy() {
                 <MobilePolicyCard key={data.id} policy={data} />
               )}
             </>
-          ))}
+          ))} */}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}

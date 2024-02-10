@@ -6,7 +6,7 @@ export const generatePolicy = (id, data) => {
   myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
   debugger;
   var urlencoded = new URLSearchParams();
-  urlencoded.append("dealer_id", data?.dealer_id);
+  urlencoded.append("dealer_id", id);
   urlencoded.append("plan_id", data?.plan_id);
   urlencoded.append("salutation", data?.salutation);
   urlencoded.append("first_name", data?.fname);

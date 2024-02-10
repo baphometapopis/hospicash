@@ -79,110 +79,88 @@ const PolicyCard = ({ Policy, iscancelled }) => {
   };
 
   return (
-    <div className="flex flex-col bg-white shadow-lg py-4 px-4 rounded-md mb-1">
-      <div className="flex md:flex-row md:justify-between item-center w-full">
-        <p style={{ width: "fit-content", textAlign: "center" }} className="px-1">{Policy.id}</p>
-        <p style={{ width: "fit-content", textAlign: "center" }} className="px-1">
-          {Policy.policy_no}
-        </p>
-        <p style={{ textAlign: "center", width: "fit-content", }} className="px-1">
-          {Policy.full_name}
-        </p>
-        <p style={{ textAlign: "center", width: "fit-content" }} className="px-1">
-          {Policy.pan_number || " - "}
-        </p>
-        <p className="px-4 rounded-lg " style={statusStyle}>
-          {Policy.status}
-        </p>
-        <p style={{ textAlign: "center", width: "fit-content" }} className="px-1">
-          {formatDate(Policy.created_date)}
-        </p>
-
-        {!iscancelled ? (
-          <div className="flex gap-1">
-            <div
-              style={{
-                fontSize: "14px",
-                backgroundColor: "#0089d1",
-                color: "#ffff",
-                padding: "1px",
-              }}
-              className="rounded-md cursor-pointer h-fit"
-              onClick={handleDownloadPDF}
-            >
-              <Tippy
-                content={"Download Proposal"}
-                placement="top"
-                arrow={true}
-                className="rounded-sm text-xs"
-              >
-                <img
-                  src={Download}
-                  className="w-[25px] object-center"
-                  alt="search_image"
-                />
-              </Tippy>
-            </div>
-            <div
-              style={{
-                fontSize: "14px",
-                backgroundColor: "#FCD34D",
-                color: "#ffff",
-              }}
-              onClick={() =>
-                navigate("/Form", { state: { Action: "Endorsment" } })
-              }
-              className="rounded-md cursor-pointer h-fit"
-            >
-              <Tippy
-                content={"Endorsment Proposal"}
-                placement="top"
-                arrow={true}
-                className="rounded-sm text-xs"
-              >
-                <img
-                  src={Edit}
-                  className="w-[25px] object-center"
-                  alt="search_image"
-                />
-              </Tippy>
-            </div>
-            <div
-              style={{
-                fontSize: "14px",
-                backgroundColor: "#dc143c",
-                color: "#ffff",
-              }}
-              className="rounded-md cursor-pointer h-fit"
-              onClick={() => setisCancelModalOpen(true)}
-            >
-              <Tippy
-                content={"Cancel Proposal"}
-                placement="top"
-                arrow={true}
-                className="rounded-sm text-xs"
-              >
-                <img src={Cancel} className="w-[25px]" alt="search_image" />
-              </Tippy>
-            </div>
-          </div>
-        ) : (
-          <Tippy
-            content={truncatedContent}
-            placement="top"
-            arrow={true}
-            onShow={onShowHandler}
-            className="rounded-sm text-xs max-w-96"
+    <div>
+      {!iscancelled ? (
+        <div className="flex gap-1">
+          <div
+            style={{
+              fontSize: "14px",
+              backgroundColor: "#0089d1",
+              color: "#ffff",
+              padding: "1px",
+            }}
+            className="rounded-md cursor-pointer h-fit"
+            onClick={handleDownloadPDF}
           >
-            <p
-              style={{ textAlign: "center", width: "10%" }}
-              className="truncate"
+            <Tippy
+              content={"Download Proposal"}
+              placement="top"
+              arrow={true}
+              className="rounded-sm text-xs"
             >
-              {Policy.cancel_remark}
-            </p>
-          </Tippy>
-        )}
-      </div>
+              <img
+                src={Download}
+                className="w-[25px] object-center"
+                alt="search_image"
+              />
+            </Tippy>
+          </div>
+          <div
+            style={{
+              fontSize: "14px",
+              backgroundColor: "#FCD34D",
+              color: "#ffff",
+            }}
+            onClick={() =>
+              navigate("/Form", { state: { Action: "Endorsment" } })
+            }
+            className="rounded-md cursor-pointer h-fit"
+          >
+            <Tippy
+              content={"Endorsment Proposal"}
+              placement="top"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img
+                src={Edit}
+                className="w-[25px] object-center"
+                alt="search_image"
+              />
+            </Tippy>
+          </div>
+          <div
+            style={{
+              fontSize: "14px",
+              backgroundColor: "#dc143c",
+              color: "#ffff",
+            }}
+            className="rounded-md cursor-pointer h-fit"
+            onClick={() => setisCancelModalOpen(true)}
+          >
+            <Tippy
+              content={"Cancel Proposal"}
+              placement="top"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img src={Cancel} className="w-[25px]" alt="search_image" />
+            </Tippy>
+          </div>
+        </div>
+      ) : (
+        <Tippy
+          content={truncatedContent}
+          placement="top"
+          arrow={true}
+          onShow={onShowHandler}
+          className="rounded-sm text-xs max-w-96"
+        >
+          <p style={{ textAlign: "center", width: "10%" }} className="truncate">
+            {Policy.cancel_remark}
+          </p>
+        </Tippy>
+      )}
       <CancelModal
         isOpen={isCancelModalOpen}
         onClose={() => setisCancelModalOpen(false)}

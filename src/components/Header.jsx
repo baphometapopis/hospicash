@@ -14,16 +14,11 @@ export default function Header({ toggle }) {
   const [iswalletopened, setwalletopened] = useState(true);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isUserPaymentModalOpen, setIsUserPaymentModalOpen] = useState(false);
-
+  const [loginData, setLoginData] = useState();
   const [availableBalance, setavailableBalance] = useState();
-  const role = "dealer";
 
   const openPaymentModal = () => {
-    if (role === "admin") {
-      setIsPaymentModalOpen(true);
-    } else {
-      setIsUserPaymentModalOpen(true);
-    }
+    setIsUserPaymentModalOpen(true);
   };
   function formatIndianRupees(amount) {
     return new Intl.NumberFormat("en-IN", {
@@ -36,17 +31,13 @@ export default function Header({ toggle }) {
 
   // Example usage
   const closePaymentModal = () => {
-    if (role === "admin") {
-      setIsPaymentModalOpen(false);
-    } else {
-      setIsUserPaymentModalOpen(false);
-    }
+    setIsPaymentModalOpen(false);
   };
   const getwalletBalance = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
     if (data) {
       const decryptdata = decryptData(data);
-
+      setLoginData(decryptdata);
       const balance = await walletBalance(decryptdata?.user_details?.id);
       if (balance?.status) {
         const formattedNumber = formatIndianRupees(balance?.wallet_balance);
@@ -98,24 +89,29 @@ export default function Header({ toggle }) {
             cursor: "pointer",
           }}
         >
-          {iswalletopened ? (
-            <img
-              onClick={() => setwalletopened(!iswalletopened)}
-              src={walletClosed}
-              alt="wallet-money"
-              className="w-6"
-            />
-          ) : (
+          {loginData?.user_details?.role_type === "dealer" && (
             <>
-              <img
-                onClick={() => setwalletopened(!iswalletopened)}
-                src={walletOpened}
-                alt="wallet-money"
-                className="w-6"
-              />
-              <p onClick={() => openPaymentModal()}>{availableBalance}</p>
+              {iswalletopened ? (
+                <img
+                  onClick={() => setwalletopened(!iswalletopened)}
+                  src={walletClosed}
+                  alt="wallet-money"
+                  className="w-6"
+                />
+              ) : (
+                <>
+                  <img
+                    onClick={() => setwalletopened(!iswalletopened)}
+                    src={walletOpened}
+                    alt="wallet-money"
+                    className="w-6"
+                  />
+                  <p onClick={() => openPaymentModal()}>{availableBalance}</p>
+                </>
+              )}
             </>
           )}
+
           <div className="hidden md:block">
             <div className="bg-primary-lightest rounded-full h-8 w-8"></div>
           </div>

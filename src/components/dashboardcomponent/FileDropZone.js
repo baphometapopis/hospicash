@@ -74,7 +74,7 @@ export const MyDropzoneComponent = ({ onFileSelect }) => {
       <img
         src={cloud}
         alt="Cloud_logo"
-        className="w-32"
+        className="w-28"
         style={{ alignSelf: "center" }}
       />
       {acceptedFiles.length === 0 && (

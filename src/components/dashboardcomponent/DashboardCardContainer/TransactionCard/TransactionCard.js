@@ -1,6 +1,12 @@
 import React from "react";
+import { ApproveDealerTransaction } from "../../../../Api/approveDealer";
 
-const TransactionCard = ({ transaction }) => {
+const TransactionCard = ({ transaction, user_id, role_type }) => {
+  const approveDealerRequest = async () => {
+    const data = await ApproveDealerTransaction(user_id, transaction);
+    console.log(data);
+  };
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "pending":
@@ -104,6 +110,21 @@ const TransactionCard = ({ transaction }) => {
           {" "}
           {formatDate(transaction.created_date)}
         </span>
+        {role_type === "admin" && (
+          <span
+            onClick={approveDealerRequest}
+            style={{
+              textAlign: "center",
+              width: "20%",
+              backgroundColor:
+                transaction.approval_status === "pending" ? "#0089D1" : "",
+              borderRadius: "4px",
+              color: transaction.approval_status === "pending" ? "white" : "",
+            }}
+          >
+            {transaction.approval_status === "pending" ? "Approve" : "-"}
+          </span>
+        )}
       </div>
     </div>
   );

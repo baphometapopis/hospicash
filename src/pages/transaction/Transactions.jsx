@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
+import AddPAyment from "../../assets/Icons/icons8-add-payment-24.png";
+
 import { get_Insurance_Companies_List } from "../../Api/getInsuranceCompaniesList";
 import { getBankTransactionList } from "../../Api/getBankTransactionList";
 import { decryptData } from "../../Utils/cryptoUtils";
@@ -12,8 +14,8 @@ import TransactionCard from "../../components/dashboardcomponent/DashboardCardCo
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import BankTransactionCard from "../../components/dashboardcomponent/DashboardCardContainer/BankTransactionCard/BankTransactionCard";
-import DataTable from "../../components/dashboardcomponent/DataTable";
 import PaymentModal from "../../components/dashboardcomponent/Modal/PaymentModal";
+import AccountBankTransactionListTable from "../../components/dashboardcomponent/DataTable";
 export default function Transactions() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
@@ -125,7 +127,7 @@ export default function Transactions() {
       <div className=" grid md:grid-cols-3    gap-2 w-[85%]  lg:max-h-80 min-h-fit -mt-20  rounded mb-4 ">
         <div className=" bg-white h-64 overflow-y-scroll hide-scrollbar p-2 row-span-2 col-span-2 w-full">
           {" "}
-          {insuranceCompaniesList.map((data, index) => (
+          {insuranceCompaniesList?.map((data, index) => (
             <div
               onClick={() => setSelectedIC(data)}
               className={`relative w-full h-fit border mb-1`}
@@ -154,20 +156,82 @@ export default function Transactions() {
             </div>
           ))}
         </div>
-        <div className="h-64 bg-white col-span-2 md:col-span-1">
+        <div className="h-64 min-w-[250px] bg-[#0071ab] col-span-2 md:col-span-1 overflow-scroll hide-scrollbar justify-between">
           {" "}
-          <p>{selectedIC?.name || "select an IC "}</p>
+          <p style={{ textAlign: "center", padding: "12px", color: "white" }}>
+            {selectedIC?.name || "select an IC "}
+          </p>
           {selectedIC && (
-            <p
-              onClick={() => setIsPaymentModalOpen(true)}
-              style={{ backgroundColor: "blueviolet", marginTop: "10px" }}
-            >
-              Add Payment{" "}
-            </p>
+            <>
+              {" "}
+              <div style={{ position: "relative" }}>
+                <img
+                  onClick={() => setIsPaymentModalOpen(true)}
+                  src={AddPAyment}
+                  className="w-15 absolute right-3 -top-10"
+                  alt="cover_image"
+                />
+                <p
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    backgroundColor: "#eeeeee",
+                    padding: "12px",
+                    fontSize: "14px",
+                  }}
+                >
+                  DEPOSIT AMOUNT <span> 1174118.00</span>
+                </p>
+                <p
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    backgroundColor: "#ffff",
+                    padding: "12px",
+                    fontSize: "14px",
+                  }}
+                >
+                  SOLD POLICY COUNT <span> 1174118.00</span>
+                </p>
+                <p
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    backgroundColor: "#eeeeee",
+                    padding: "12px",
+                    fontSize: "14px",
+                  }}
+                >
+                  SOLD POLICY AMOUNT <span> 1174118.00</span>
+                </p>
+                <p
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    backgroundColor: "#ffff",
+                    padding: "12px",
+                    fontSize: "14px",
+                  }}
+                >
+                  BALANCE AMOUNT <span> 1174118.00</span>
+                </p>
+                {/* <p
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    backgroundColor: "#eeeeee",
+                    paddingTop: "12px",
+                    fontSize: "14px",
+                  }}
+                >
+                  NIA DEPOSIT AMOUNT <span> 1174118.00</span>
+                </p> */}
+              </div>
+            </>
           )}
         </div>
       </div>
-      <div className="  w-[85%] mb:px-8 mb-20 bg-white border border-neutral-light rounded">
+      <div className="  w-[85%] mb:px-8 mb-20 bg-white border border-neutral-light rounded relative">
         <div className="container mx-auto p-4">
           <h1 className="text-2xl font-bold mb-4">Transaction List</h1>
           {false && (
@@ -298,7 +362,7 @@ export default function Transactions() {
             </div>
           )}
 
-          {isMobile && (
+          {/* {isMobile && (
             <div
               style={{
                 backgroundColor: "#0089d1",
@@ -311,60 +375,69 @@ export default function Transactions() {
                 <tbody>
                   <tr>
                     <td
-                      style={{ width: "8%", textAlign: "center" }}
+                      style={{ width: "20px", textAlign: "center" }}
                       className="text-white"
                     >
                       SR No
                     </td>
                     <td
-                      style={{ width: "25%", textAlign: "center" }}
+                      style={{ width: "90px", textAlign: "center" }}
                       className="text-white"
                     >
-                      Tranx No
+                      Company Name
+                    </td>
+                    <td
+                      style={{ width: "100px", textAlign: "center" }}
+                      className="text-white"
+                    >
+                      Transaction No
                     </td>
                     <td
                       style={{
-                        width: "10%",
+                        width: "20px",
                         textAlign: "center",
                         minWidth: "fitcontent",
                       }}
                       className="text-white "
                     >
-                      Transaction Type
-                    </td>
-                    <td
-                      style={{ width: "10%", textAlign: "center" }}
-                      className="text-white"
-                    >
                       Amount
                     </td>
                     <td
-                      style={{ textAlign: "center", width: "10%" }}
-                      className="text-white w-['10%']"
-                    >
-                      Status
-                    </td>
-                    <td
-                      style={{ textAlign: "center", width: "15%" }}
+                      style={{ width: "20px", textAlign: "center" }}
                       className="text-white"
                     >
-                      Payment Date
+                      Account no
+                    </td>
+                    <td
+                      style={{ textAlign: "center", width: "20px" }}
+                      className="text-white w-['10%']"
+                    >
+                      Bank Name
+                    </td>
+                    <td
+                      style={{ textAlign: "center", width: "20px" }}
+                      className="text-white"
+                    >
+                      IFSC Code
                     </td>
                     <td
                       style={{
                         color: "white",
-                        width: "20%",
+                        width: "20px",
                         textAlign: "center",
                       }}
                     >
-                      Created At
+                      Payment Date
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          )}
-          {bankTransactionList.map((data) => (
+          )} */}
+          {/* <DataGridExample data={bankTransactionList} /> */}
+          <AccountBankTransactionListTable data={bankTransactionList} />
+
+          {/* {bankTransactionList?.map((data) => (
             <>
               {isMobile ? (
                 <BankTransactionCard key={data.id} transaction={data} />
@@ -372,7 +445,8 @@ export default function Transactions() {
                 <MobileTransactionCard key={data.id} transaction={data} />
               )}
             </>
-          ))}
+          ))} */}
+          <div className="bg-white w-[97%] mx-1 h-8 absolute bottom-24"></div>
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}

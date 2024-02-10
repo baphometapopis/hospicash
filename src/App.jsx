@@ -6,7 +6,7 @@ import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./AppLayout";
 import Transactions from "./pages/transaction/Transactions";
 import Plans from "./pages/Plans";
-import FormPage from "./pages/FormPage";
+import FormPage from "./pages/Formpage/FormPage";
 import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import TransactionsList from "./pages/TransactionList";
@@ -16,6 +16,7 @@ import CancelledPolicy from "./pages/CancelledPolicy";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
 import AdminLogin from "./pages/AdminLogin";
+import MonthlyFileUpload from "./pages/FileUploadPage";
 
 function App() {
   return (
@@ -30,6 +31,11 @@ function App() {
               <Route path="transaction" element={<Transactions />}></Route>
               <Route path="soldPolicy" element={<SoldPolicy />}></Route>
               <Route path="confirmed" element={<PurchaseStatus />}></Route>
+              <Route
+                path="Monthly_Policy"
+                element={<MonthlyFileUpload />}
+              ></Route>
+
               <Route
                 path="cancelledPolicy"
                 element={<CancelledPolicy />}

@@ -1,0 +1,22 @@
+.ag-theme-alpine{
+    --ag-header-foreground-color: rgb(255, 255, 255);
+    --ag-header-background-color:  rgb(0, 137, 209) !important;
+    --ag-odd-row-background-color: rgba(150, 36, 36, 0.03);
+    /* --ag-header-column-resize-handle-color: rgb(255, 255, 255); */
+    --ag-row-border-color: rgb(202, 202, 202);
+
+
+}
+
+.ag-row{
+    background-color: #ffffff; /* Change to your desired background color */
+    --ag-row-border-color: rgb(198, 198, 198);
+    border-bottom-width: 4px;
+
+}
+
+/* Reactdata.css */
+.ag-header-cell {
+    background-color: rgb(0, 137, 209); /* Change to your desired background color */
+  }
+  

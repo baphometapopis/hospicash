@@ -3,6 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
   // content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    // screens: {
+    //   'tb': '1200px'
+    // },
     colors: {
       primary: {
         darkest: "#051B34",

@@ -13,7 +13,7 @@ export default function TransactionsList() {
   // const [data, setData] = useState();
   const [totalRecords, setTotalRecords] = useState();
   const [poicyList, setPolicyList] = useState([]);
-
+  const [loginData, setloginData] = useState();
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const recordsPerPage = 10;
@@ -26,9 +26,8 @@ export default function TransactionsList() {
   });
 
   const options = [
-    { value: "Bank A", label: "Bank A" },
-    { value: "Bank B", label: "Bank B" },
-    { value: "Bank C", label: "Bank C" },
+    { value: "Pending", label: "Pending" },
+    { value: "approved", label: "Approved " },
   ];
 
   const handlePageChange = (pageNumber) => {
@@ -57,6 +56,7 @@ export default function TransactionsList() {
   const dealerTransactionList = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
     const decryptdata = decryptData(data);
+    setloginData(decryptdata);
 
     if (decryptdata) {
       const listdata = {
@@ -264,7 +264,7 @@ export default function TransactionsList() {
                 }}
                 className="text-white "
               >
-                Transaction Type
+                Amount
               </span>
               <span
                 style={{
@@ -273,13 +273,13 @@ export default function TransactionsList() {
                 }}
                 className="text-white"
               >
-                Amount
+                Status
               </span>
               <span
                 style={{ textAlign: "center", width: "10%" }}
                 className="text-white w-['10%']"
               >
-                Status
+                Transaction Type
               </span>
               <span
                 style={{ textAlign: "center", width: "15%" }}
@@ -287,19 +287,35 @@ export default function TransactionsList() {
               >
                 Payment Date
               </span>
-              <span
+              {/* <span
                 style={{ color: "white", width: "20%", textAlign: "center" }}
               >
                 Created At
-              </span>
+              </span> */}
+              {loginData?.user_details?.role_type === "admin" && (
+                <span
+                  style={{ color: "white", width: "20%", textAlign: "center" }}
+                >
+                  Action
+                </span>
+              )}
             </div>
           )}
           {poicyList.map((data) => (
             <>
               {isMobile ? (
-                <TransactionCard key={data.id} transaction={data} />
+                <TransactionCard
+                  key={data.id}
+                  transaction={data}
+                  user_id={loginData?.user_details?.id}
+                  role_type={loginData?.user_details?.role_type}
+                />
               ) : (
-                <MobileTransactionCard key={data.id} transaction={data} />
+                <MobileTransactionCard
+                  key={data.id}
+                  transaction={data}
+                  user_id={loginData?.user_details?.id}
+                />
               )}
             </>
           ))}

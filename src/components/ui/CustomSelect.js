@@ -28,9 +28,10 @@ const CustomSelect = ({
           : formik.touched[name] && formik.errors[name]
           ? "red"
           : "#6D6D6D",
-      width: "245px", // Set the desired width
+      width: "220px", // Set the desired width
+
       height: "10px", // Set the desired height
-      borderRadius: 0, // Remove the border radius
+      borderRadius: 4, // Remove the border radius
     }),
     input: (provided) => ({
       ...provided,

@@ -73,7 +73,7 @@ body {
   ); */
 }
 
-::-webkit-datetime-edit {
+/* ::-webkit-datetime-edit {
   padding: 0.5em;
 }
 ::-webkit-datetime-edit-fields-wrapper {
@@ -94,9 +94,9 @@ body {
 }
 ::-webkit-inner-spin-button {
   display: none;
-}
+} */
 /* ::-webkit-calendar-picker-indicator { background-color: orange; } */
-input[type="date"]::-webkit-calendar-picker-indicator {
+/* input[type="date"]::-webkit-calendar-picker-indicator {
   color: rgba(0, 0, 0, 0);
   opacity: 1;
   display: block;
@@ -105,4 +105,4 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   width: 24px;
   height: 2px;
   border-width: thin;
-}
+} */

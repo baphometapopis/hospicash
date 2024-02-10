@@ -195,7 +195,7 @@ export default function CancelledPolicy() {
               >
                 Customer Name
               </span>
-              <span
+              {/* <span
                 style={{
                   width: "10%",
                   textAlign: "center",
@@ -203,7 +203,7 @@ export default function CancelledPolicy() {
                 className="text-white"
               >
                 Pan No
-              </span>
+              </span> */}
               <span
                 style={{
                   textAlign: "center",
@@ -236,7 +236,7 @@ export default function CancelledPolicy() {
               </span>
             </div>
           )}
-          {poicyList.map((data) => (
+          {poicyList?.map((data) => (
             <>
               {isMobile ? (
                 <PolicyCard key={data.id} Policy={data} iscancelled={true} />
@@ -280,7 +280,7 @@ export default function CancelledPolicy() {
               </div>
             )}
           </div>
-        </div>{" "}
+        </div>
       </div>
     </div>
   );

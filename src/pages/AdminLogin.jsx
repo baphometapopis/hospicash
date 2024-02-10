@@ -45,7 +45,7 @@ export default function AdminLogin() {
     try {
       const loginResponse = await login(
         formik.values.username,
-        formik.values.password
+        formik.values.password,'admin'
       );
 
       if (loginResponse?.status) {

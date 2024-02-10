@@ -25,6 +25,7 @@ import Pending from "../assets/Icons/icons8-pending-50.png";
 import Success from "../assets/Icons/icons8-card-payment-80.png";
 import concile from "../assets/Icons/icons8-rupees-64.png";
 import id from "date-fns/locale/id";
+import CompanyBarChart from "../components/dashboardcomponent/DashboardCardContainer/Charts/companybarchart";
 export default function Home() {
   const [selectedFile, setSelectedFile] = useState();
   const [isuploadError, setisuploadError] = useState(false);
@@ -1051,7 +1052,7 @@ export default function Home() {
     },
     {
       icon: concile,
-      title: "Coincile",
+      title: "Reconcile",
       value: "20",
       bgColor: "#f5c149",
     },
@@ -1097,7 +1098,7 @@ export default function Home() {
   const sendFile = async () => {
     setshowUpload(false);
 
-    const data = await fileUpload(LoginData?.user_details?.id, selectedFile);
+    const data = await fileUpload(LoginData?.id, selectedFile);
     if (data?.status) {
       setisuploadError(false);
       toast.success(data?.message, {
@@ -1159,87 +1160,91 @@ export default function Home() {
             <RadialBarChart />
           </div>
           <div className="item2-right p-3">
-            <Box className=" h-full bg-white border border-neutral-light rounded">
-              <Tabs
-                value={activeTab}
-                onChange={handleTabChange}
-                textColor="primary"
-              >
-                <Tab label="Year" value={1} />
-                <Tab label="Month" value={2} />
-              </Tabs>
+            {LoginData?.role_type === "admin" ? (
+              <CompanyBarChart />
+            ) : (
+              <Box className=" h-full bg-white border border-neutral-light rounded">
+                <Tabs
+                  value={activeTab}
+                  onChange={handleTabChange}
+                  textColor="primary"
+                >
+                  <Tab label="Year" value={1} />
+                  <Tab label="Month" value={2} />
+                </Tabs>
 
-              <Box p={2}>
-                {activeTab === 1 ? (
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    height="100%"
-                  >
-                    <div
-                      style={{
-                        backgroundColor: "#0089d1",
-
-                        cursor: "pointer",
-                        width: "80%",
-
-                        textAlign: "center",
-                        color: "white",
-                      }}
-                      className={` h-fit tab ${
-                        activeTab === 2 ? "active-tab" : ""
-                      } py-1 rounded`}
-                      onClick={() => {
-                        setActiveTab(2);
-                        navigate("/form");
-                      }}
-                    >
-                      Yearly Proposal
-                    </div>
-                  </Box>
-                ) : (
-                  <Box>
-                    <MyDropzoneComponent onFileSelect={handleFileSelect} />
-
+                <Box p={2}>
+                  {activeTab === 1 ? (
                     <Box
                       display="flex"
-                      flexDirection="row"
-                      gap={2}
-                      marginRight={2}
-                      marginLeft={2}
+                      alignItems="center"
+                      justifyContent="center"
+                      height="100%"
                     >
-                      {selectedFile && !isuploadError && showUpload && (
-                        <Button
-                          onClick={sendFile}
-                          className={"w-fit"}
-                          type="submit"
-                          label="Upload"
-                          variant="primary"
-                        />
-                      )}
-                      {isuploadError && (
-                        <>
+                      <div
+                        style={{
+                          backgroundColor: "#0089d1",
+
+                          cursor: "pointer",
+                          width: "80%",
+
+                          textAlign: "center",
+                          color: "white",
+                        }}
+                        className={` h-fit tab ${
+                          activeTab === 2 ? "active-tab" : ""
+                        } py-1 rounded`}
+                        onClick={() => {
+                          setActiveTab(2);
+                          navigate("/form");
+                        }}
+                      >
+                        Yearly Proposal
+                      </div>
+                    </Box>
+                  ) : (
+                    <Box>
+                      <MyDropzoneComponent onFileSelect={handleFileSelect} />
+
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        gap={2}
+                        marginRight={2}
+                        marginLeft={2}
+                      >
+                        {selectedFile && !isuploadError && showUpload && (
                           <Button
-                            onClick={handleDownload}
+                            onClick={sendFile}
                             className={"w-fit"}
                             type="submit"
-                            label="sample"
+                            label="Upload"
                             variant="primary"
                           />
-                          <Button
-                            className={"w-fit"}
-                            type="submit"
-                            label="Download"
-                            variant="secondary"
-                          />
-                        </>
-                      )}
+                        )}
+                        {isuploadError && (
+                          <>
+                            <Button
+                              onClick={handleDownload}
+                              className={"w-fit"}
+                              type="submit"
+                              label="sample"
+                              variant="primary"
+                            />
+                            <Button
+                              className={"w-fit"}
+                              type="submit"
+                              label="Download"
+                              variant="secondary"
+                            />
+                          </>
+                        )}
+                      </Box>
                     </Box>
-                  </Box>
-                )}
+                  )}
+                </Box>
               </Box>
-            </Box>{" "}
+            )}
           </div>
         </div>
         <div className="grid-item item3">

@@ -45,7 +45,8 @@ export default function Login() {
     try {
       const loginResponse = await login(
         formik.values.username,
-        formik.values.password
+        formik.values.password,
+        "dealer"
       );
 
       if (loginResponse?.status) {

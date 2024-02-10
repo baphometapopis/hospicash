@@ -84,7 +84,7 @@ const RadialBarChart = () => {
     <div>
       <ReactApexChart
         type="radialBar"
-        height={390}
+        height={350}
         options={chartOptions}
         series={series}
       />
