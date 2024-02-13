@@ -3,11 +3,10 @@ import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import SearchIcon from "../assets/Icons/icons8-search-64.png";
 import Select from "react-select";
 import { getDealerTransactionList } from "../Api/getDealerTransactionList";
-import TransactionCard from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/TransactionCard";
-import MobileTransactionCard from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/MobileTransactionCard";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { decryptData } from "../Utils/cryptoUtils";
+import TransactionListTable from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/TransactionListTable";
 export default function TransactionsList() {
   const [currentPage, setCurrentPage] = useState(1);
   // const [data, setData] = useState();
@@ -110,13 +109,9 @@ export default function TransactionsList() {
               marginBottom: "20px",
               marginTop: "5px",
               border: "1px solid",
-              // width: "fit-content",
               paddingLeft: "20px",
               marginLeft: "auto",
               zIndex: 5,
-
-              //   boxShadow:
-              //     "rgba(0, 137, 209, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
             }}
             className=" flex sticky top-12 "
           >
@@ -228,8 +223,11 @@ export default function TransactionsList() {
               />
             </div>
           </div>
-
-          {isMobile && (
+          <TransactionListTable
+            data={poicyList}
+            role={loginData?.user_details?.role_type}
+          />
+          {false && (
             <div
               style={{
                 backgroundColor: "#0089d1",
@@ -301,7 +299,7 @@ export default function TransactionsList() {
               )}
             </div>
           )}
-          {poicyList.map((data) => (
+          {/* {poicyList.map((data) => (
             <>
               {isMobile ? (
                 <TransactionCard
@@ -318,7 +316,7 @@ export default function TransactionsList() {
                 />
               )}
             </>
-          ))}
+          ))} */}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}

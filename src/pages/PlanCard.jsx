@@ -26,19 +26,13 @@ const PlanCard = ({
         >
           {title}
         </h2>
-        {Array.isArray(data?.features) &&
-          data?.features.length > 0 &&
-          data?.features.map((feature, index) => (
-            <p key={index} className="text-gray-600 mb-2">
-              {feature}
-            </p>
-          ))}
+
         <p
           style={{ color: "#0089d2" }}
           className=" font-bold text-3xl	  text-center	"
         >
           ₹{price}
-          <span className="text-base">/mon</span>
+          <span className="text-base">/year</span>
         </p>
         <div style={{ color: "#a6a9ae" }} className="border-b  mb-6 mt-2"></div>
       </div>
@@ -51,7 +45,21 @@ const PlanCard = ({
           gap: 20,
         }}
       >
-        <div style={{ display: "flex" }}>
+        {Array.isArray(data?.features) &&
+          data?.features.length > 0 &&
+          data?.features.map((feature, index) => (
+            <div style={{ display: "flex" }}>
+              <img
+                src={Check}
+                style={{ width: "25px", marginRight: "10px" }}
+                alt="cover_image"
+              />
+              <p>
+                {feature.label} :{feature.value}
+              </p>
+            </div>
+          ))}
+        {/* <div style={{ display: "flex" }}>
           <img
             src={Check}
             style={{ width: "25px", marginRight: "10px" }}
@@ -82,7 +90,7 @@ const PlanCard = ({
             alt="cover_image"
           />
           <p>Sum Insured : 15 lakh</p>
-        </div>
+        </div> */}
       </div>
       {button && (
         <button

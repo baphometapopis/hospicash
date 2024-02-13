@@ -97,7 +97,7 @@ export default function Sidebar({ opened }) {
       order: 6,
       label: "Yearly Policy",
       icon: "description",
-      path: "/Yearly_Policy",
+      path: "/form",
       Admin: false,
       user: true,
     },

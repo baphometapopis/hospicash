@@ -3,7 +3,6 @@ import { API_BASE_URL } from "./api_Endpoint";
 export const getDealerData = async (data) => {
   console.log(data);
   var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
   var urlencoded = new URLSearchParams();
   urlencoded.append("dealer_id", data);

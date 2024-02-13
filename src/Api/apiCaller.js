@@ -14,7 +14,6 @@ const makeApiRequest = (endpoint, method = "GET", body = null) => {
   return fetch(url, requestOptions)
     .then((response) => response.text())
     .then((result) => {
-      console.log(result);
       return result; // You can return the result or process it further
     })
     .catch((error) => {

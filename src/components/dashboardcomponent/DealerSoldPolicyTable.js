@@ -8,15 +8,37 @@ import { grey } from "@mui/material/colors";
 
 const DealerSoldPolicyTable = ({ data }) => {
   const columns = [
-    { field: "id", headerName: "SR No", width: 55 },
-    { field: "policy_no", headerName: "Policy No", width: 250 },
-    { field: "full_name", headerName: "Customer Name", width: 350 },
+    {
+      field: "id",
+      headerName: "SR No",
+      width: 55,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "policy_no",
+      headerName: "Policy No",
+      width: 250,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "full_name",
+      headerName: "Customer Name",
+      width: 350,
+      headerClassName: "super-app-theme--header",
+    },
 
-    { field: "plan_name", headerName: "Plan", width: 150 },
+    {
+      field: "plan_name",
+      headerName: "Plan",
+      width: 150,
+      headerClassName: "super-app-theme--header",
+    },
     {
       field: "created_date",
       headerName: "Created Date",
       width: 180,
+      headerClassName: "super-app-theme--header",
+
       valueFormatter: (params) => {
         const formattedDate = moment(params.value).format("DD-MM-YYYY");
         return formattedDate;
@@ -25,7 +47,9 @@ const DealerSoldPolicyTable = ({ data }) => {
     {
       field: "",
       headerName: "Action",
-      width: 180,
+      headerClassName: "super-app-theme--header",
+
+      width: 210,
       renderCell: () => <PolicyCard Policy={data} />,
     },
   ];
@@ -123,7 +147,6 @@ const DealerSoldPolicyTable = ({ data }) => {
         "& ::-webkit-scrollbar": { display: "none" },
         // backgroundColor: "",
         border: "none",
-
       }}
     >
       {" "}
@@ -136,6 +159,10 @@ const DealerSoldPolicyTable = ({ data }) => {
         getRowHeight={() => "auto"}
         sx={{
           border: "none",
+          [`& .super-app-theme--header`]: {
+            backgroundColor: "#0089d1",
+            color: "white",
+          },
           [`& .${gridClasses.cell}`]: {
             py: 2,
             border: "none",
@@ -143,11 +170,14 @@ const DealerSoldPolicyTable = ({ data }) => {
           [`& .${gridClasses.row}`]: {
             marginLeft: "3px",
             marginRight: "3px",
+            marginTop: "12px",
+            marginBottom: "12px",
 
             bgcolor: (theme) => theme.palette.mode === "white",
-            boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+            boxShadow:
+              "rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px",
             borderRadius: "12px",
-            border: "none",
+            border: "1px",
           },
         }}
         getRowSpacing={(params) => ({

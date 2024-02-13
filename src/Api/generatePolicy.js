@@ -1,10 +1,8 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
 export const generatePolicy = (id, data) => {
-  console.log(data);
+  console.log(id, data);
   var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-  debugger;
   var urlencoded = new URLSearchParams();
   urlencoded.append("dealer_id", id);
   urlencoded.append("plan_id", data?.plan_id);

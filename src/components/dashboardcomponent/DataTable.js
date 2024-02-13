@@ -6,15 +6,52 @@ import { styled } from "@mui/material/styles";
 
 const AccountBankTransactionListTable = ({ data }) => {
   const columns = [
-    { field: "id", headerName: "ID", width: 50 },
-    { field: "name", headerName: "Name", width: 200 },
-    { field: "transaction_no", headerName: "Transaction No", width: 300 },
-    { field: "amount", headerName: "Amount", width: 100 },
-
-    { field: "ifsc_code", headerName: "IFSC Code", width: 150 },
-    { field: "bank_name", headerName: "Bank Name", width: 180 },
-    { field: "account_no", headerName: "Account No", width: 180 },
     {
+      field: "id",
+      headerName: "ID",
+      width: 50,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 200,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "transaction_no",
+      headerName: "Transaction No",
+      width: 300,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      width: 100,
+      headerClassName: "super-app-theme--header",
+    },
+
+    {
+      field: "ifsc_code",
+      headerName: "IFSC Code",
+      width: 150,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "bank_name",
+      headerName: "Bank Name",
+      width: 180,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "account_no",
+      headerName: "Account No",
+      width: 180,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      headerClassName: "super-app-theme--header",
+
       field: "payment_date",
       headerName: "Payment Date",
       width: 180,
@@ -117,6 +154,8 @@ const AccountBankTransactionListTable = ({ data }) => {
         height: 600,
         width: "100%",
         "& ::-webkit-scrollbar": { display: "none" },
+        // backgroundColor: "",
+        border: "none",
       }}
     >
       {" "}
@@ -128,10 +167,32 @@ const AccountBankTransactionListTable = ({ data }) => {
         rowsPerPageOptions={[]}
         getRowHeight={() => "auto"}
         sx={{
+          border: "none",
+          [`& .super-app-theme--header`]: {
+            backgroundColor: "#0089d1",
+            color: "white",
+          },
           [`& .${gridClasses.cell}`]: {
             py: 2,
+            border: "none",
+          },
+          [`& .${gridClasses.row}`]: {
+            marginLeft: "3px",
+            marginRight: "3px",
+            marginTop: "12px",
+            marginBottom: "12px",
+
+            bgcolor: (theme) => theme.palette.mode === "white",
+            boxShadow:
+              "rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px",
+            borderRadius: "12px",
+            border: "1px",
           },
         }}
+        getRowSpacing={(params) => ({
+          top: params.isFirstVisible ? 0 : 5,
+          bottom: params.isLastVisible ? 0 : 5,
+        })}
         slots={{ noRowsOverlay: CustomNoRowsOverlay }}
         // sx={{ "--DataGrid-overlayHeight": "300px" }}
       />

@@ -6,7 +6,7 @@ export const fileUpload = async (id, file) => {
 
     var formdata = new FormData();
     formdata.append("transaction_file", file);
-    formdata.append("dealer_id", id);
+    formdata.append("login_id", id);
 
     var requestOptions = {
       method: "POST",

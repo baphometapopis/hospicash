@@ -6,6 +6,7 @@ const Input = ({
   name,
   type,
   value,
+  max,
   formik,
   placeholder,
   className,
@@ -19,7 +20,7 @@ const Input = ({
   numericOnly,
   disabled,
   alphabets,
-  removeError, // New prop to conditionally show/hide error
+  removeError,
 }) => {
   const classes = classNames(
     `px-3 py-1 placeholder-neutral-dark border border-neutral-dark rounded-sm focus:outline-none focus:border focus:border-primary`,
@@ -46,6 +47,7 @@ const Input = ({
         name={name}
         className={classes}
         type={type}
+        max={max}
         value={capitalize ? value.toUpperCase() : value}
         placeholder={placeholder || "Type Here..."}
         disabled={disabled}
@@ -77,7 +79,8 @@ const Input = ({
           }
         }}
       />
-      {!removeError && hasError && (
+      {console.log(formik.errors[name], id, !removeError, hasError)}
+      {!removeError && (hasError || id === "dob") && (
         <p
           style={{
             fontSize: "12px",

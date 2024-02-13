@@ -6,7 +6,6 @@ export const getPaymentRequest = async (id, data) => {
   const date = moment(data?.date).format("YYYY/MM/DD");
   console.log(date);
   var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
   var urlencoded = new URLSearchParams();
   urlencoded.append("transaction_no", data?.transaction_no);

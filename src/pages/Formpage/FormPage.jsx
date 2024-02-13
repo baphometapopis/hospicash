@@ -18,32 +18,26 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUserData } from "../../Redux/userSlice.js.js";
 import moment from "moment";
 import { decryptData } from "../../Utils/cryptoUtils.js";
-
 const validationSchema = Yup.object().shape({
-  fname: Yup.string().required("Required"),
-  salutation: Yup.string().required("Required"),
-  dob: Yup.string().required("Required"),
-  gender: Yup.string().required("Required"),
-
-  mname: Yup.string(),
-  lname: Yup.string().required("Required"),
-  email: Yup.string().email("Invalid email").required("Required"),
-  mobile_no: Yup.string()
-    .matches(/^[6-9]\d{9}$/, "Invalid number")
-    .required("Required"),
-  addr1: Yup.string().required("Required"),
-  addr2: Yup.string().required("Required"),
-  pincode: Yup.string().required("Required"),
-  city_id: Yup.string().required("Required"),
-  state_id: Yup.string().required("Required"),
-  nominee_full_name: Yup.string().required("Required"),
-  // pan_number: Yup.string()
-  //   .required("Required")
-  //   .matches(/^[A-Z]{3}P{4}[A-Z][0-9]{4}[A-Z]$/, "Invalid PAN number"),
-  nominee_age: Yup.number().required("Required").min(1, "Enter Valid Age"),
-  nominee_relation: Yup.string().required("Required"),
+  // fname: Yup.string().required("Required"),
+  // salutation: Yup.string().required("Required"),
+  // dob: Yup.string().required("Required"),
+  // gender: Yup.string().required("Required"),
+  // mname: Yup.string(),
+  // lname: Yup.string().required("Required"),
+  // email: Yup.string().email("Invalid email").required("Required"),
+  // mobile_no: Yup.string()
+  //   .matches(/^[6-9]\d{9}$/, "Invalid number")
+  //   .required("Required"),
+  // addr1: Yup.string().required("Required"),
+  // addr2: Yup.string().required("Required"),
+  // pincode: Yup.string().required("Required"),
+  // city_id: Yup.string().required("Required"),
+  // state_id: Yup.string().required("Required"),
+  // nominee_full_name: Yup.string().required("Required"),
+  // nominee_age: Yup.number().required("Required").min(1, "Enter Valid Age"),
+  // nominee_relation: Yup.string().required("Required"),
 });
-
 export default function FormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -96,7 +90,6 @@ export default function FormPage() {
   const formik = useFormik({
     initialValues: userData,
 
-    validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values);
       if (
@@ -112,51 +105,76 @@ export default function FormPage() {
       }
     },
     validate: (values) => {
-      // Check if the pincode length is 6
-      // console.log(formik.errors);
+      const errors = {};
+
+      const validateRequired = (field, message) => {
+        if (!values[field]) {
+          errors[field] = message;
+        } else {
+          delete errors[field];
+        }
+      };
+      const validateEmailFormat = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{1,3}$/;
+        return emailRegex.test(email);
+      };
+      const validateIndanMobileNo = (mobileno) => {
+        const mobileRegex = /^[6789]\d{9}$/;
+        return mobileRegex.test(mobileno);
+      };
+      const validatePanNo = (panNo) => {
+        console.log(panNo);
+        const panRegex = /^[A-Za-z]{5}[0-9]{4}[A-Za-z]$/;
+        return panRegex.test(panNo);
+      };
+
+      validateRequired("fname", "Required");
+      validateRequired("salutation", "Required");
+      validateRequired("dob", "Required");
+      validateRequired("gender", "Required");
+      validateRequired("lname", "Required");
+      validateRequired("email", "Required");
+      validateRequired("pan_number", "Required");
+
+      validateRequired("mobile_no", "Required");
+      validateRequired("addr1", "Required");
+      validateRequired("addr2", "Required");
+      validateRequired("pincode", "Required");
+      validateRequired("city_id", "Required");
+      validateRequired("state_id", "Required");
+      validateRequired("nominee_full_name", "Required");
+      validateRequired("nominee_age", "Required");
+      validateRequired("nominee_relation", "Required");
+      if (values.email && !validateEmailFormat(values.email)) {
+        errors.email = "Invalid email format";
+      }
+
+      if (values.mobile_no && !validateIndanMobileNo(values.mobile_no)) {
+        errors.mobile_no = "Invalid Mobile Number";
+      }
+      if (values.pan_number && !validatePanNo(values.pan_number)) {
+        errors.pan_number = "Invalid Pan Number";
+      } else {
+        delete errors.pan_number;
+      }
+
       if (
         values.pincode.length === 6 &&
         ((values.state_id === "" && values.city_id === "") ||
           values.pincode !== formik.values.pincode)
       ) {
         // Call your function here
-        console.log("calling pincode function ", values.pincode);
         getPincode(values.pincode);
       }
 
       if (values.nominee_age < 18 && values.nominee_age !== "") {
-        // Add additional validation for appointee fields
-        validationSchema.fields.appointee_name =
-          Yup.string().required("Required");
-        validationSchema.fields.appointee_age = Yup.number()
-          .required("Required")
-          .min(1, "Enter Valid Age");
-        validationSchema.fields.appointee_relation =
-          Yup.string().required("Required");
-
-        // Validate appointee fields
-        try {
-          validationSchema.validateSyncAt(
-            "appointee_name",
-            values.appointee_name
-          );
-          validationSchema.validateSyncAt(
-            "appointee_age",
-            values.appointee_age
-          );
-          validationSchema.validateSyncAt(
-            "appointee_relation",
-            values.appointee_relation
-          );
-        } catch (error) {
-          // Handle errors if needed
-          formik.setFieldError("appointee_name", error.errors[0]);
-          formik.setFieldError("appointee_age", error.errors[0]);
-          formik.setFieldError("appointee_relation", error.errors[0]);
-        }
+        validateRequired("appointee_name", "Required");
+        validateRequired("appointee_age", "Required");
+        validateRequired("appointee_relation", "Required");
       }
 
       console.log(formik.errors);
+      return errors;
     },
   });
 
@@ -264,12 +282,11 @@ export default function FormPage() {
               {/* Plans Section */}
 
               <PlanCard
+                key={selectedPlan?.id}
                 title={selectedPlan.plan_name}
+                data={selectedPlan}
                 features={selectedPlan.features}
-                price={
-                  selectedPlan.policy_premium +
-                  selectedPlan.policy_premium_with_gst
-                }
+                price={selectedPlan.total_premium}
                 backgroundColor={selectedPlan.backgroundColor}
               />
               {/* End of Plans Section */}
@@ -404,7 +421,7 @@ export default function FormPage() {
                   capitalize
                 />
 
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                   <label
                     style={{ alignSelf: "flex-start", color: "#686464" }}
                     htmlFor="date"
@@ -428,20 +445,28 @@ export default function FormPage() {
                     placeholderText="YYYY/MM/DD"
                     className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
                   />
+                </div> */}
+                <div className="flex flex-col w-[100%]">
+                  <label
+                    style={{ alignSelf: "flex-start", color: "#686464" }}
+                    htmlFor="date"
+                  >
+                    Date Of Birth
+                    <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <Input
+                    {...formik.getFieldProps("dob")}
+                    formik={formik}
+                    id="dob"
+                    name="dob"
+                    type="date"
+                    max={moment().subtract(18, "years").format("YYYY-MM-DD")}
+                    required={true}
+                    placeholder="dob"
+                    value={formik.values.dob}
+                    className="w-full"
+                  />
                 </div>
-                {/* <Input
-                  {...formik.getFieldProps("addr1")}
-                  formik={formik}
-                  id="addr1"
-                  name="addr1"
-                  type="date"
-                  required={true}
-                  placeholder="Address1 "
-                  label="Address 1"
-                  value={formik.values.addr1}
-                  capitalize
-                  className='w-full'
-                /> */}
                 <Input
                   {...formik.getFieldProps("addr1")}
                   formik={formik}

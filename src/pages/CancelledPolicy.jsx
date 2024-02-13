@@ -6,6 +6,7 @@ import Select from "react-select";
 import PolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/PolicyCard";
 import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
 import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
+import DealerCancelledPolicyTable from "../components/dashboardcomponent/DealerCancelledPolicyTable";
 
 export default function CancelledPolicy() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -159,84 +160,9 @@ export default function CancelledPolicy() {
             </div>
           </div>
 
-          {isMobile && (
-            <div
-              style={{
-                backgroundColor: "#0089d1",
-                padding: "10px",
-                zIndex: 4,
-              }}
-              className="px-4 flex rounded-t item-center justify-between  w-full sticky top-[115px] "
-            >
-              <span
-                style={{
-                  width: "8%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                SR No
-              </span>
-              <span
-                style={{
-                  width: "15%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                Policy No
-              </span>
-              <span
-                style={{
-                  width: "25%",
-                  textAlign: "center",
-                }}
-                className="text-white "
-              >
-                Customer Name
-              </span>
-              {/* <span
-                style={{
-                  width: "10%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                Pan No
-              </span> */}
-              <span
-                style={{
-                  textAlign: "center",
-                  width: "10%",
-                }}
-                className="text-white w-['10%']"
-              >
-                Plan
-              </span>
+          <DealerCancelledPolicyTable data={poicyList} />
 
-              <span
-                style={{
-                  color: "white",
-                  width: "20%",
-                  textAlign: "center",
-                  // marginRight: "100px",
-                }}
-              >
-                Created At
-              </span>
-              <span
-                style={{
-                  color: "white",
-                  width: "10%",
-                  textAlign: "center",
-                  // marginRight: "100px",
-                }}
-              >
-                Remarks{" "}
-              </span>
-            </div>
-          )}
-          {poicyList?.map((data) => (
+          {/* {poicyList?.map((data) => (
             <>
               {isMobile ? (
                 <PolicyCard key={data.id} Policy={data} iscancelled={true} />
@@ -248,7 +174,7 @@ export default function CancelledPolicy() {
                 />
               )}
             </>
-          ))}
+          ))} */}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}

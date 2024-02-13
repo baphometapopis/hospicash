@@ -160,7 +160,7 @@ export default function SoldPolicy() {
             </div>
           </div>
           <DealerSoldPolicyTable data={poicyList} />
-{/*           
+          {/*           
           {isMobile && (
             <div
               style={{

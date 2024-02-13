@@ -7,7 +7,6 @@ export const get_ICPaymentRequest = async (id, data) => {
     console.log(date);
   
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
     var urlencoded = new URLSearchParams();
     urlencoded.append("transaction_no", data?.transaction_no);
