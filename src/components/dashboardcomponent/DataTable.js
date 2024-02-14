@@ -161,7 +161,7 @@ const AccountBankTransactionListTable = ({ data }) => {
       {" "}
       <DataGrid
         pagination={false}
-        rows={data}
+        rows={data || []}
         rowCount={[]}
         columns={columns}
         rowsPerPageOptions={[]}

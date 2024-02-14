@@ -152,7 +152,7 @@ const DealerSoldPolicyTable = ({ data }) => {
       {" "}
       <DataGrid
         pagination={false}
-        rows={data}
+        rows={data || []}
         rowCount={[]}
         columns={columns}
         rowsPerPageOptions={[]}

@@ -1,24 +1,41 @@
 import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import AddPAyment from "../../assets/Icons/icons8-add-payment-24.png";
-
+import { DatePicker, Space } from "antd";
 import { get_Insurance_Companies_List } from "../../Api/getInsuranceCompaniesList";
 import { getBankTransactionList } from "../../Api/getBankTransactionList";
 import { decryptData } from "../../Utils/cryptoUtils";
 import SearchIcon from "../../assets/Icons/icons8-search-64.png";
+import IconFilter from "../../assets/Icons/IconFIlter.png";
+
 import Select from "react-select";
 import "./Transaction.css";
 
-import MobileTransactionCard from "../../components/dashboardcomponent/DashboardCardContainer/TransactionCard/MobileTransactionCard";
-import TransactionCard from "../../components/dashboardcomponent/DashboardCardContainer/TransactionCard/TransactionCard";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import BankTransactionCard from "../../components/dashboardcomponent/DashboardCardContainer/BankTransactionCard/BankTransactionCard";
 import PaymentModal from "../../components/dashboardcomponent/Modal/PaymentModal";
 import AccountBankTransactionListTable from "../../components/dashboardcomponent/DataTable";
+import moment from "moment";
+import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
+const { RangePicker } = DatePicker;
+
 export default function Transactions() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
+  // Function to handle date changes
+  const handleDateChange = (dates, dateStrings) => {
+    console.log("Selected Dates:", dates);
+    console.log("Formatted Dates:", dateStrings);
+  };
+
+  const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
+
+  const handleOpenFilterDrawer = () => {
+    setFilterDrawerVisible(true);
+  };
+
+  const handleCloseFilterDrawer = () => {
+    setFilterDrawerVisible(false);
+  };
   const [insuranceCompaniesList, setInsuranceCompaniesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   // const [data, setData] = useState();
@@ -35,6 +52,13 @@ export default function Transactions() {
     start_date: "",
     end_date: "",
   });
+  const [state, setState] = useState([
+    {
+      startDate: new Date(),
+      endDate: null,
+      key: "selection",
+    },
+  ]);
 
   const options = [
     { value: "Bank A", label: "Bank A" },
@@ -233,8 +257,24 @@ export default function Transactions() {
       </div>
       <div className="  w-[85%] mb:px-8 mb-20 bg-white border border-neutral-light rounded relative">
         <div className="container mx-auto p-4">
-          <h1 className="text-2xl font-bold mb-4">Transaction List</h1>
-          {false && (
+          <div className="flex gap-5">
+            <h1 className="text-2xl font-bold mb-4">Transaction List</h1>
+            {true && (
+              <img
+                src={IconFilter}
+                className="w-[35px]  h-[30px]"
+                alt="search_image"
+                onClick={handleOpenFilterDrawer}
+              />
+            )}
+          </div>
+          {/* <button onClick={handleOpenFilterDrawer}>Open Filter Drawer</button> */}
+          <FilterDrawer
+            visible={filterDrawerVisible}
+            onClose={handleCloseFilterDrawer}
+          />
+
+          {isMobile && (
             <div
               style={{
                 backgroundColor: "white",
@@ -283,63 +323,16 @@ export default function Transactions() {
                   }}
                   // other props as needed
                 />
-                <label>Start Date: </label>{" "}
-                <DatePicker
-                  id="date"
-                  selected={searchParam.start_date}
-                  onKeyDown={(event) => {
-                    const allowedCharacters = /^[0-9/]*$/;
 
-                    if (
-                      !(
-                        allowedCharacters.test(event.key) ||
-                        event.key === "Backspace" ||
-                        event.key === "/"
-                      )
-                    ) {
-                      event.preventDefault();
-                    }
-                  }}
-                  onChange={(date) => {
-                    console.log(date);
-                    setSearchParam({ ...searchParam, start_date: date });
-                  }}
-                  preventOpenOnFocus={false}
-                  autoComplete="false"
-                  dateFormat="yyyy/MM/dd"
-                  placeholderText="YYYY/MM/DD"
-                  className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
-                />
-                <div
-                  style={{ color: "#aaaaaa" }}
-                  className="border-[0.5px] h-[25px]  mx-4"
-                />
-                <label>End Date: </label>{" "}
-                <DatePicker
-                  id="date"
-                  selected={searchParam.end_date}
-                  onKeyDown={(event) => {
-                    const allowedCharacters = /^[0-9/]*$/;
-
-                    if (
-                      !(
-                        allowedCharacters.test(event.key) ||
-                        event.key === "Backspace" ||
-                        event.key === "/"
-                      )
-                    ) {
-                      event.preventDefault();
-                    }
-                  }}
-                  onChange={(date) => {
-                    console.log(date);
-                    setSearchParam({ ...searchParam, end_date: date });
-                  }}
-                  preventOpenOnFocus={false}
-                  autoComplete="false"
-                  dateFormat="yyyy/MM/dd"
-                  placeholderText="YYYY/MM/DD"
-                  className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
+                <RangePicker
+                  onChange={handleDateChange}
+                  allowClear // Show clear button
+                  bordered="0px solid #ffff"
+                  style={{
+                    border: "5px solid #fffff",
+                    borderRadius: "4px",
+                    backgroundColor: "white",
+                  }} // Custom border style
                 />
               </div>
               <div

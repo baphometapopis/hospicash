@@ -12,7 +12,6 @@ const DealerCancelledPolicyTable = ({ data }) => {
       field: "id",
       headerName: "SR No",
       width: 55,
-      headerClassName: "super-app-theme--header",
     },
     {
       headerClassName: "super-app-theme--header",
@@ -150,7 +149,7 @@ const DealerCancelledPolicyTable = ({ data }) => {
       {" "}
       <DataGrid
         pagination={false}
-        rows={data}
+        rows={data || []}
         rowCount={[]}
         columns={columns}
         rowsPerPageOptions={[]}

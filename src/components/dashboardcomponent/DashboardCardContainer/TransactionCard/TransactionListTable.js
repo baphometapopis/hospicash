@@ -41,7 +41,6 @@ const TransactionListTable = ({ data, role }) => {
         };
     }
   };
-  const statusStyle = getStatusStyle(data.approval_status);
 
   const columns = [
     {
@@ -100,34 +99,6 @@ const TransactionListTable = ({ data, role }) => {
         return formattedDate;
       },
     },
-    // {
-    //   field: "",
-    //   headerName: "Action",
-    //   headerClassName: "super-app-theme--header",
-
-    //   width: 205,
-    //   renderCell: (params) => (
-    //     <>
-    //       {params.row.approval_status === "pending" && (
-    //         <div
-    //           style={{
-    //             color: "white",
-
-    //             paddingRight: "10px",
-    //             paddingLeft: "10px",
-    //             borderRadius: "4px",
-    //             fontSize: "16px",
-    //             backgroundColor: "#0089d1",
-    //             justifyContent: "center",
-    //             cursor: "pointer",
-    //           }}
-    //         >
-    //           Approve
-    //         </div>
-    //       )}
-    //     </>
-    //   ),
-    // },
   ];
   if (role === "admin") {
     columns.push({
@@ -137,7 +108,7 @@ const TransactionListTable = ({ data, role }) => {
       width: 205,
       renderCell: (params) => (
         <>
-          {params.row.approval_status === "pending" && (
+          {params?.row?.approval_status === "pending" && (
             <div
               style={{
                 color: "white",
@@ -248,7 +219,7 @@ const TransactionListTable = ({ data, role }) => {
         page={page}
         onPageChange={(newPage) => setPage(newPage)}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-        rows={data}
+        rows={data || []}
         rowCount={[]} // The total number of rows on the server
         columns={columns}
         rowsPerPageOptions={[]}
