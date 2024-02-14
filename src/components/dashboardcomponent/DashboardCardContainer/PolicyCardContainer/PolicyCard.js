@@ -20,8 +20,7 @@ const PolicyCard = ({ Policy, iscancelled }) => {
 
   const handleDownloadPDF = async () => {
     try {
-      const pdfUrl =
-        "https://demo.mypolicynow.com/api/api/downloadProposal/quote-00b1773c89649e7143aed4f7e635dff6";
+      const pdfUrl = `https://hospicash.mylmsnow.com/api/api/downloadPolicy/${Policy?.id}`;
       const response = await fetch(pdfUrl);
       const blob = await response.blob();
 

@@ -4,6 +4,7 @@ import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
 import PolicyCard from "../PolicyCardContainer/PolicyCard";
+import { Button, message, Popconfirm } from "antd";
 
 const TransactionListTable = ({ data, role }) => {
   const [page, setPage] = useState(1); // State to track current page
@@ -100,7 +101,8 @@ const TransactionListTable = ({ data, role }) => {
       },
     },
   ];
-  if (role === "admin") {
+  // if (role === "admin") {
+  if (true) {
     columns.push({
       field: "",
       headerName: "Action",
@@ -109,20 +111,29 @@ const TransactionListTable = ({ data, role }) => {
       renderCell: (params) => (
         <>
           {params?.row?.approval_status === "pending" && (
-            <div
-              style={{
-                color: "white",
-                paddingRight: "10px",
-                paddingLeft: "10px",
-                borderRadius: "4px",
-                fontSize: "16px",
-                backgroundColor: "#0089d1",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
+            <Popconfirm
+              title="Approve Transaction"
+              description="Are you sure you want to Approve this Transaction?"
+              onConfirm={() => console.log("CLicked on COnfirm")}
+              okText="Yes"
+              okButtonProps={{ style: { backgroundColor: "#0089D1" } }}
+              cancelText="No"
             >
-              Approve
-            </div>
+              <div
+                style={{
+                  color: "white",
+                  paddingRight: "10px",
+                  paddingLeft: "10px",
+                  borderRadius: "4px",
+                  fontSize: "16px",
+                  backgroundColor: "#0089d1",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                Approve
+              </div>
+            </Popconfirm>
           )}
         </>
       ),

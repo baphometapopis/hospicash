@@ -25,7 +25,7 @@ const FilterDrawer = ({ visible, onClose }) => {
           style={{
             border: "1px solid #6d6d6d",
             outline: "none",
-            width: "120px",
+            width: "100%",
           }}
           placeholder="transaction ID"
         />
