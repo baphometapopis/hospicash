@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import DatePicker from "react-datepicker";
@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { get_ICPaymentRequest } from "../../../Api/getICpaymentRequestApi";
 
 const PaymentModal = ({ isOpen, onClose, icList }) => {
-  const [ setinsuranceCompaniesList] = useState([]);
+  const [setinsuranceCompaniesList] = useState([]);
   const [LocalData, setLocalData] = useState();
   const navigate = useNavigate();
   async function handleSubmit(values, { resetForm }) {
@@ -42,13 +42,13 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
     }
   }
 
-  const getlocalData = async () => {
+  const getlocalData = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
     if (data) {
       const decryptdata = decryptData(data);
       setLocalData(decryptdata);
 
-      //api function if needed or  store in a state
+      // api function if needed or store in a state
     } else {
       navigate("/");
 
@@ -60,7 +60,7 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
         pauseOnHover: true,
       });
     }
-  };
+  }, [setLocalData, navigate]);
 
   const handleAmountChange = (e) => {
     // Allow only numeric input for the amount field
@@ -112,7 +112,7 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
       setinsuranceCompaniesList(icList);
     }
     getlocalData();
-  }, []);
+  }, [getlocalData, icList, setinsuranceCompaniesList]);
 
   return (
     <div
