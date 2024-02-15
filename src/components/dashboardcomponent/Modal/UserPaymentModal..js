@@ -153,7 +153,7 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
         pauseOnHover: true,
       });
     }
-  }, [formik.values, navigate]);
+  }, [formik, navigate]);
   useEffect(() => {
     if (isOpen) {
       getLocalData();
