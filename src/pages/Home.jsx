@@ -1,42 +1,32 @@
 import React, { useEffect, useState } from "react";
-import coverImage from "../assets/img/hospicashcoverimage.jpeg";
-import PieChart from "../components/dashboardcomponent/PieChart";
-import { MyDropzoneComponent } from "../components/dashboardcomponent/FileDropZone";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
-import Button from "../components/ui/Button";
-import { useNavigate } from "react-router-dom";
+
+// import { useNavigate } from "react-router-dom";
 import addicon1 from "../../src/assets/Icons/icons8-address-50.png";
 import email from "../../src/assets/Icons/icons8-email-50.png";
 import phone from "../../src/assets/Icons/icons8-phone-64.png";
 import "./Home.css";
-import { fileUpload } from "../Api/fileUpload";
-import type { RadioChangeEvent } from "antd";
-import { Radio, Timeline } from "antd";
-import { toast } from "react-toastify";
+// import { fileUpload } from "../Api/fileUpload";
+import { Timeline } from "antd";
+// import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { decryptData } from "../Utils/cryptoUtils";
-import { maskMiddle } from "../Utils/maskCharacter";
+// import { maskMiddle } from "../Utils/maskCharacter";
 import RadialBarChart from "../components/dashboardcomponent/DashboardCardContainer/Charts/RadialBarChart";
-import LineChart from "../components/dashboardcomponent/TransactionChart";
 import DateTimeChart from "../components/dashboardcomponent/DashboardCardContainer/Charts/DateTimeChart";
 import Total from "../assets/Icons/icons8-rupee-64.png";
 import Pending from "../assets/Icons/icons8-pending-50.png";
 import Success from "../assets/Icons/icons8-card-payment-80.png";
-import concile from "../assets/Icons/icons8-rupees-64.png";
-import id from "date-fns/locale/id";
 import CompanyBarChart from "../components/dashboardcomponent/DashboardCardContainer/Charts/companybarchart";
 export default function Home() {
-  const [selectedFile, setSelectedFile] = useState();
-  const [isuploadError, setisuploadError] = useState(false);
-  const [showUpload, setshowUpload] = useState(true);
+  // const [selectedFile, setSelectedFile] = useState();
+  // const [, setisuploadError] = useState(false);
+  // const [showUpload, setshowUpload] = useState(true);
   const [LoginData, setLoginData] = useState();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState(1);
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-  };
+  // const navigate = useNavigate();
+  // const [activeTab, setActiveTab] = useState(1);
+  // const handleTabChange = (event, newValue) => {
+  //   setActiveTab(newValue);
+  // };
 
   const sampledata = [
     {
@@ -1052,35 +1042,35 @@ export default function Home() {
       bgColor: "#e06f7f",
     },
   ];
-  const handleFileSelect = (file) => {
-    console.log("Selected file:", file);
-    setSelectedFile(file);
+  // const handleFileSelect = (file) => {
+  //   console.log("Selected file:", file);
+  //   setSelectedFile(file);
 
-    setisuploadError(false);
+  //   setisuploadError(false);
 
-    // setSelectedFile(file)
-  };
-  const handleDownload = async () => {
-    try {
-      const pdfUrl =
-        "https://media.githubusercontent.com/media/datablist/sample-csv-files/main/files/organizations/organizations-100.csv"; // Provide the actual URL of the PDF file
+  //   // setSelectedFile(file)
+  // };
+  // const handleDownload = async () => {
+  //   try {
+  //     const pdfUrl =
+  //       "https://media.githubusercontent.com/media/datablist/sample-csv-files/main/files/organizations/organizations-100.csv"; // Provide the actual URL of the PDF file
 
-      // Fetch the PDF file
-      const response = await fetch(pdfUrl);
-      const blob = await response.blob();
+  //     // Fetch the PDF file
+  //     const response = await fetch(pdfUrl);
+  //     const blob = await response.blob();
 
-      // Create a download link
-      const downloadLink = document.createElement("a");
-      downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = `hospicashSample.csv`; // Specify the desired file name
+  //     // Create a download link
+  //     const downloadLink = document.createElement("a");
+  //     downloadLink.href = URL.createObjectURL(blob);
+  //     downloadLink.download = `hospicashSample.csv`; // Specify the desired file name
 
-      // Trigger the download
-      downloadLink.click();
-    } catch (error) {
-      console.error("Error downloading PDF:", error);
-      // Handle error, e.g., display an error message to the user
-    }
-  };
+  //     // Trigger the download
+  //     downloadLink.click();
+  //   } catch (error) {
+  //     console.error("Error downloading PDF:", error);
+  //     // Handle error, e.g., display an error message to the user
+  //   }
+  // };
   const getLocalData = async () => {
     const localData = localStorage.getItem("LoggedInUser");
 
@@ -1090,40 +1080,40 @@ export default function Home() {
       setLoginData(decryptdata?.user_details);
     }
   };
-  const sendFile = async () => {
-    setshowUpload(false);
+  // const sendFile = async () => {
+  //   setshowUpload(false);
 
-    const data = await fileUpload(LoginData?.id, selectedFile);
-    if (data?.status) {
-      setisuploadError(false);
-      toast.success(data?.message, {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-      });
-    } else {
-      toast.error("File Upload Failed", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-      });
-      setisuploadError(true);
-    }
-    setshowUpload(true);
-  };
-  const [isMasked, setIsMasked] = useState(true);
+  //   const data = await fileUpload(LoginData?.id, selectedFile);
+  //   if (data?.status) {
+  //     setisuploadError(false);
+  //     toast.success(data?.message, {
+  //       position: "bottom-right",
+  //       autoClose: 1000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //     });
+  //   } else {
+  //     toast.error("File Upload Failed", {
+  //       position: "bottom-right",
+  //       autoClose: 1000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //     });
+  //     setisuploadError(true);
+  //   }
+  //   setshowUpload(true);
+  // };
+  // const [isMasked, setIsMasked] = useState(true);
 
-  const displayAccountNumber = isMasked
-    ? maskMiddle(LoginData?.banck_acc_no)
-    : LoginData?.banck_acc_no;
+  // const displayAccountNumber = isMasked
+  //   ? maskMiddle(LoginData?.banck_acc_no)
+  //   : LoginData?.banck_acc_no;
 
   useEffect(() => {
     getLocalData();
-  }, [showUpload]);
+  }, []);
   return (
     <div className="flex  w-full   flex-col h-[calc(100vh-48px)] ">
       <div className="dashboard-container ">
