@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
-import SearchIcon from "../assets/Icons/icons8-search-64.png";
+import IconFilter from "../assets/Icons/IconFIlter.png";
+import { useCallback } from "react";
 
-import Select from "react-select";
 import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
-import PolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/PolicyCard";
-import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
 import DealerSoldPolicyTable from "../components/dashboardcomponent/DealerSoldPolicyTable";
+import { SearchContainer } from "../components/dashboardcomponent/SearchContainer";
+import FilterDrawer from "../components/Mobile FIlterCOmponent/FilterDrawer";
 
 export default function SoldPolicy() {
   const [currentPage, setCurrentPage] = useState(1);
-  // const [data, setData] = useState();
+
+  const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
+
+  const handleOpenFilterDrawer = () => {
+    setFilterDrawerVisible(true);
+  };
+
+  const handleCloseFilterDrawer = () => {
+    setFilterDrawerVisible(false);
+  };
+
   const [totalRecords, setTotalRecords] = useState();
   const [poicyList, setPolicyList] = useState([]);
 
@@ -18,12 +28,6 @@ export default function SoldPolicy() {
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
-
-  const options = [
-    { value: "Bank A", label: "Bank A" },
-    { value: "Bank B", label: "Bank B" },
-    { value: "Bank C", label: "Bank C" },
-  ];
 
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
@@ -33,20 +37,32 @@ export default function SoldPolicy() {
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
 
-  const SoldCancelPolicy = async () => {
+  const SoldCancelPolicy = useCallback(() => {
     const listdata = {
       dealer_id: "1",
       start: indexOfFirstRecord,
       end: recordsPerPage,
       policy_type: "sold",
     };
+
     if (indexOfFirstRecord !== indexOfLastRecord) {
-      const data = await getSold_CancelPolicy(listdata);
-      setPolicyList(data?.data);
-      setTotalRecords(data?.recordsTotal);
-      console.log(data?.recordsTotal);
+      getSold_CancelPolicy(listdata)
+        .then((data) => {
+          setPolicyList(data?.data);
+          setTotalRecords(data?.recordsTotal);
+          console.log(data?.recordsTotal);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     }
-  };
+  }, [
+    indexOfFirstRecord,
+    indexOfLastRecord,
+    recordsPerPage,
+    setPolicyList,
+    setTotalRecords,
+  ]);
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -70,7 +86,7 @@ export default function SoldPolicy() {
 
   useEffect(() => {
     SoldCancelPolicy();
-  }, [indexOfLastRecord, indexOfFirstRecord]);
+  }, [indexOfLastRecord, indexOfFirstRecord, SoldCancelPolicy]);
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -87,78 +103,24 @@ export default function SoldPolicy() {
 
       <div className="-mt-20 md:w-[75%] w-[95%] mb:px-8 mb-20 bg-white border border-neutral-light rounded">
         <div className="container mx-auto p-4">
-          <h1 className="text-2xl font-bold mb-4">Sold Policy</h1>
-          <div
-            style={{
-              backgroundColor: "white",
-              borderRadius: "50px",
-              marginBottom: "20px",
-              marginTop: "5px",
-              border: "1px solid",
-              // width: "fit-content",
-              paddingLeft: "20px",
-              marginLeft: "auto",
-              zIndex: 5,
-
-              //   boxShadow:
-              //     "rgba(0, 137, 209, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
-            }}
-            className=" flex sticky top-12 "
-          >
-            <div
-              style={{ padding: "10px" }}
-              className=" flex items-center w-full "
-            >
-              <input
-                style={{ border: 0, outline: "none", width: "120px" }}
-                placeholder="transaction ID"
-              />
-              <div
-                style={{ color: "#aaaaaa" }}
-                className="border-[0.5px] h-[25px]  mx-4"
-              />
-              <Select
-                options={options}
-                styles={{
-                  option: (provided) => ({
-                    ...provided,
-                    zIndex: 9999, // Set your desired z-index value
-                  }),
-                  control: (provided) => ({
-                    ...provided,
-                    border: "none", // Remove the border
-                    outline: "none", // Remove the outline
-                  }),
-                  dropdownIndicator: (provided) => ({
-                    ...provided,
-                    color: "#0089d1", // Set the arrow color to blue
-                  }),
-                }}
-                // other props as needed
-              />
-              <div
-                style={{ color: "#aaaaaa" }}
-                className="border-[0.5px] h-[25px]  mx-4"
-              />
-            </div>
-            <div
-              style={{
-                backgroundColor: "#0089d1",
-                width: "100px",
-                borderTopRightRadius: "50px",
-                borderBottomRightRadius: "50px",
-                alignItems: "center",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
+          <div className="flex gap-5">
+            <h1 className="text-2xl font-bold mb-4">Sold Policy</h1>
+            {!isMobile && (
               <img
-                src={SearchIcon}
-                className="w-[50px]  object-cover"
+                src={IconFilter}
+                className="w-[35px]  h-[30px]"
                 alt="search_image"
+                onClick={handleOpenFilterDrawer}
               />
-            </div>
+            )}
           </div>
+          <FilterDrawer
+            visible={filterDrawerVisible}
+            onClose={handleCloseFilterDrawer}
+          />
+
+          {isMobile && <SearchContainer />}
+
           <DealerSoldPolicyTable data={poicyList} />
           {/*           
           {isMobile && (

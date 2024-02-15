@@ -12,7 +12,8 @@ import email from "../../src/assets/Icons/icons8-email-50.png";
 import phone from "../../src/assets/Icons/icons8-phone-64.png";
 import "./Home.css";
 import { fileUpload } from "../Api/fileUpload";
-
+import type { RadioChangeEvent } from "antd";
+import { Radio, Timeline } from "antd";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { decryptData } from "../Utils/cryptoUtils";
@@ -1050,12 +1051,6 @@ export default function Home() {
       value: "900",
       bgColor: "#e06f7f",
     },
-    {
-      icon: concile,
-      title: "Reconcile",
-      value: "20",
-      bgColor: "#f5c149",
-    },
   ];
   const handleFileSelect = (file) => {
     console.log("Selected file:", file);
@@ -1131,7 +1126,7 @@ export default function Home() {
   }, [showUpload]);
   return (
     <div className="flex  w-full   flex-col h-[calc(100vh-48px)] ">
-      <div className="dashboard-container">
+      <div className="dashboard-container ">
         <div className="grid-item item1">
           <h2>Name : {LoginData?.dealer_name}</h2>
           <h2>PanCard No : {LoginData?.pan_no}</h2>
@@ -1163,119 +1158,115 @@ export default function Home() {
             {LoginData?.role_type === "admin" ? (
               <CompanyBarChart />
             ) : (
-              <Box className=" h-full bg-white border border-neutral-light rounded">
-                <Tabs
-                  value={activeTab}
-                  onChange={handleTabChange}
-                  textColor="primary"
-                >
-                  <Tab label="Year" value={1} />
-                  <Tab label="Month" value={2} />
-                </Tabs>
-
-                <Box p={2}>
-                  {activeTab === 1 ? (
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      height="100%"
+              <div
+                style={{
+                  height: "100%",
+                }}
+              >
+                {cardsData?.map((data, index) => (
+                  <div className={`relative   w-full py-2`}>
+                    <div
+                      style={{
+                        backgroundColor: data.bgColor,
+                        boxShadow: " rgba(0, 0, 0, 0.24) 0px 3px 8px",
+                      }}
+                      className={`rounded-lg p-4 h-[70%]`}
                     >
-                      <div
-                        style={{
-                          backgroundColor: "#0089d1",
-
-                          cursor: "pointer",
-                          width: "80%",
-
-                          textAlign: "center",
-                          color: "white",
-                        }}
-                        className={` h-fit tab ${
-                          activeTab === 2 ? "active-tab" : ""
-                        } py-1 rounded`}
-                        onClick={() => {
-                          setActiveTab(2);
-                          navigate("/form");
-                        }}
+                      <h3
+                        style={{ zIndex: 2, position: "relative" }}
+                        className="text-white  "
                       >
-                        Yearly Proposal
-                      </div>
-                    </Box>
-                  ) : (
-                    <Box>
-                      <MyDropzoneComponent onFileSelect={handleFileSelect} />
+                        {data.title}
+                      </h3>
 
-                      <Box
-                        display="flex"
-                        flexDirection="row"
-                        gap={2}
-                        marginRight={2}
-                        marginLeft={2}
-                      >
-                        {selectedFile && !isuploadError && showUpload && (
-                          <Button
-                            onClick={sendFile}
-                            className={"w-fit"}
-                            type="submit"
-                            label="Upload"
-                            variant="primary"
-                          />
-                        )}
-                        {isuploadError && (
-                          <>
-                            <Button
-                              onClick={handleDownload}
-                              className={"w-fit"}
-                              type="submit"
-                              label="sample"
-                              variant="primary"
-                            />
-                            <Button
-                              className={"w-fit"}
-                              type="submit"
-                              label="Download"
-                              variant="secondary"
-                            />
-                          </>
-                        )}
-                      </Box>
-                    </Box>
-                  )}
-                </Box>
-              </Box>
+                      <img
+                        src={data.icon}
+                        alt={data.title}
+                        className="w-16 h-16 mx-auto mb-4 "
+                        style={{ position: "absolute", right: 5, bottom: -10 }}
+                      />
+                      <p className="text-white text-xl ">{data.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
         <div className="grid-item item3">
-          <div className=" flex  flex-col justify-between 	 	   gap-4">
-            {/* Map through the data and render a Card for each item */}
-            {cardsData.map((data, index) => (
-              <div className={`relative w-full h-fit`}>
-                <div
-                  style={{
-                    backgroundColor: data.bgColor,
-                    boxShadow: " rgba(0, 0, 0, 0.24) 0px 3px 8px",
-                  }}
-                  className={`rounded-lg p-4`}
-                >
-                  <h3
-                    style={{ zIndex: 2, position: "relative" }}
-                    className="text-white  "
-                  >
-                    {data.title}
-                  </h3>
+          <div className=" flex  flex-col justify-center 	  h-full	   gap-4 p-3  overflow-hidden">
+            <p className="text-center">TimeLine Series</p>
 
-                  <img
-                    src={data.icon}
-                    alt={data.title}
-                    className="w-16 h-16 mx-auto mb-4 "
-                    style={{ position: "absolute", right: 5, bottom: -10 }}
-                  />
-                  <p className="text-white text-xl ">{data.value}</p>
-                </div>
-              </div>
-            ))}
+            <>
+              <Timeline
+                className="hide-scrollbar"
+                mode={"left"}
+                style={{
+                  alignSelf: "flex-end",
+                  width: "100%",
+                  height: "100%",
+                  overflow: "auto", // Change from "scroll" to "auto"
+                  paddingTop: "10px",
+                }}
+                items={[
+                  {
+                    label: "2015-09-01 8:12 PM",
+                    children: "Transaction Done ",
+                  },
+                  {
+                    label: "2015-09-01 7:12 PM",
+                    children: "Wallet Reached ",
+                  },
+                  {
+                    label: "2015-09-01 6:12 PM",
+                    children: "Insufficient BAlance in Wallet ",
+                  },
+                  {
+                    label: "2015-09-01 5:12 PM",
+                    children: "File Uploaded ",
+                  },
+                  {
+                    label: "2015-09-01 4:12 PM",
+                    children: "4500 POlicy created ",
+                  },
+                  {
+                    label: "2015-09-01 3:12 PM",
+                    children: "7657u68687 policy Canceled ",
+                  },
+                  {
+                    label: "2015-09-01 2:12 PM",
+                    children: "jtughgkhkh tranaction No Accepted by Admin",
+                  },
+                  {
+                    label: "2015-09-01  12:12 PM",
+                    children: "7657u68687 policy Canceled ",
+                  },
+                  {
+                    label: "2015-09-01  11:12 AM",
+                    children: "7657u68687 policy created ",
+                  },
+                  {
+                    label: "2015-09-01  10:12 AM",
+                    children: "jtughgkhkh tranaction No Accepted by Admin",
+                  },
+                  {
+                    label: "2015-09-01  9:12 AM",
+                    children: "jtughgkhkh tranaction No Accepted by Admin",
+                  },
+                  {
+                    label: "2015-09-01  8:12 AM",
+                    children: "jtughgkhkh tranaction No Accepted by Admin",
+                  },
+                  {
+                    children: "Wallet Reached ",
+                  },
+                  {
+                    label: "2015-09-01 7:12 AM",
+                    children: "Wallet Reached ",
+                  },
+                ]}
+              />
+            </>
           </div>
         </div>
         <div className="grid-item item4">

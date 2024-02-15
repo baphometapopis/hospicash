@@ -3,7 +3,6 @@ import Box from "@mui/material/Box";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
-import PolicyCard from "./DashboardCardContainer/PolicyCardContainer/PolicyCard";
 
 const DealerCancelledPolicyTable = ({ data }) => {
   const columns = [
@@ -51,19 +50,7 @@ const DealerCancelledPolicyTable = ({ data }) => {
     },
   ];
 
-  const renderCell = (params) => {
-    return (
-      <div
-        style={{
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {params.value}
-      </div>
-    );
-  };
+
   const StyledGridOverlay = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",
@@ -131,7 +118,7 @@ const DealerCancelledPolicyTable = ({ data }) => {
             </g>
           </g>
         </svg>
-        <Box sx={{ mt: 1 }}>No Rows</Box>
+        <Box sx={{ mt: 1 }}>No Records Found</Box>
       </StyledGridOverlay>
     );
   }

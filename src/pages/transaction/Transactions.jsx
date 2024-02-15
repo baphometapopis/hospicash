@@ -1,31 +1,25 @@
 import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import AddPAyment from "../../assets/Icons/icons8-add-payment-24.png";
-import { DatePicker, Space } from "antd";
+import chooseImg from "../../assets/img/ChooseBank.jpeg";
+
 import { get_Insurance_Companies_List } from "../../Api/getInsuranceCompaniesList";
 import { getBankTransactionList } from "../../Api/getBankTransactionList";
 import { decryptData } from "../../Utils/cryptoUtils";
-import SearchIcon from "../../assets/Icons/icons8-search-64.png";
 import IconFilter from "../../assets/Icons/IconFIlter.png";
 
-import Select from "react-select";
 import "./Transaction.css";
 
 import "react-datepicker/dist/react-datepicker.css";
 import PaymentModal from "../../components/dashboardcomponent/Modal/PaymentModal";
 import AccountBankTransactionListTable from "../../components/dashboardcomponent/DataTable";
-import moment from "moment";
 import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
-const { RangePicker } = DatePicker;
+import { SearchContainer } from "../../components/dashboardcomponent/SearchContainer";
 
 export default function Transactions() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
   // Function to handle date changes
-  const handleDateChange = (dates, dateStrings) => {
-    console.log("Selected Dates:", dates);
-    console.log("Formatted Dates:", dateStrings);
-  };
 
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
 
@@ -46,25 +40,19 @@ export default function Transactions() {
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
-  const [searchParam, setSearchParam] = useState({
-    value: "",
-    param: "",
-    start_date: "",
-    end_date: "",
-  });
-  const [state, setState] = useState([
-    {
-      startDate: new Date(),
-      endDate: null,
-      key: "selection",
-    },
-  ]);
-
-  const options = [
-    { value: "Bank A", label: "Bank A" },
-    { value: "Bank B", label: "Bank B" },
-    { value: "Bank C", label: "Bank C" },
-  ];
+  // const [searchParam, setSearchParam] = useState({
+  //   value: "",
+  //   param: "",
+  //   start_date: "",
+  //   end_date: "",
+  // });
+  // const [state, setState] = useState([
+  //   {
+  //     startDate: new Date(),
+  //     endDate: null,
+  //     key: "selection",
+  //   },
+  // ]);
 
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
@@ -185,6 +173,9 @@ export default function Transactions() {
           <p style={{ textAlign: "center", padding: "12px", color: "white" }}>
             {selectedIC?.name || "select an IC "}
           </p>
+          {!selectedIC?.name && (
+            <img src={chooseImg} className="w-full h-[95%]" alt="cover_image" />
+          )}
           {selectedIC && (
             <>
               {" "}
@@ -192,7 +183,7 @@ export default function Transactions() {
                 <img
                   onClick={() => setIsPaymentModalOpen(true)}
                   src={AddPAyment}
-                  className="w-15 absolute right-3 -top-10"
+                  className="w-15 absolute right-3 -top-10 cursor-pointer"
                   alt="cover_image"
                 />
                 <p
@@ -274,86 +265,7 @@ export default function Transactions() {
             onClose={handleCloseFilterDrawer}
           />
 
-          {isMobile && (
-            <div
-              style={{
-                backgroundColor: "white",
-                borderRadius: "50px",
-                marginBottom: "20px",
-                marginTop: "5px",
-                border: "1px solid",
-                // width: "fit-content",
-                paddingLeft: "20px",
-                marginLeft: "auto",
-                zIndex: 5,
-
-                //   boxShadow:
-                //     "rgba(0, 137, 209, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
-              }}
-              className=" flex sticky top-12 "
-            >
-              <div
-                style={{ padding: "10px" }}
-                className=" flex items-center w-full "
-              >
-                <input
-                  style={{ border: 0, outline: "none", width: "120px" }}
-                  placeholder="transaction ID"
-                />
-                <div
-                  style={{ color: "#aaaaaa" }}
-                  className="border-[0.5px] h-[25px]  mx-4"
-                />
-                <Select
-                  options={options}
-                  styles={{
-                    option: (provided) => ({
-                      ...provided,
-                      zIndex: 9999, // Set your desired z-index value
-                    }),
-                    control: (provided) => ({
-                      ...provided,
-                      border: "none", // Remove the border
-                      outline: "none", // Remove the outline
-                    }),
-                    dropdownIndicator: (provided) => ({
-                      ...provided,
-                      color: "#0089d1", // Set the arrow color to blue
-                    }),
-                  }}
-                  // other props as needed
-                />
-
-                <RangePicker
-                  onChange={handleDateChange}
-                  allowClear // Show clear button
-                  bordered="0px solid #ffff"
-                  style={{
-                    border: "5px solid #fffff",
-                    borderRadius: "4px",
-                    backgroundColor: "white",
-                  }} // Custom border style
-                />
-              </div>
-              <div
-                style={{
-                  backgroundColor: "#0089d1",
-                  width: "100px",
-                  borderTopRightRadius: "50px",
-                  borderBottomRightRadius: "50px",
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <img
-                  src={SearchIcon}
-                  className="w-[50px]  object-cover"
-                  alt="search_image"
-                />
-              </div>
-            </div>
-          )}
+          {isMobile && <SearchContainer />}
 
           {/* {isMobile && (
             <div

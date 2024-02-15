@@ -46,7 +46,7 @@ const RadialBarChart = () => {
       show: true,
       floating: true,
       fontSize: "12px",
-      offsetX: 200,
+      offsetX: 260,
       offsetY: 15,
       labels: {
         useSeriesColors: true,
@@ -55,14 +55,15 @@ const RadialBarChart = () => {
         size: 0,
       },
       formatter: function (seriesName, opts) {
-        return (
-          seriesName +
-          ":  " +
-          opts.w.globals.series[opts.seriesIndex] +
-          " (" +
-          (opts.w.config.series[opts.seriesIndex] / 100) * totalPolicies +
-          ` / ${totalPolicies})`
-        );
+        return seriesName + ":  " + opts.w.globals.series[opts.seriesIndex];
+        // return (
+        //   seriesName +
+        //   ":  " +
+        //   opts.w.globals.series[opts.seriesIndex] +
+        //   " (" +
+        //   (opts.w.config.series[opts.seriesIndex] / 100) * totalPolicies +
+        //   ` / ${totalPolicies})`
+        // );
       },
       itemMargin: {
         vertical: 3,

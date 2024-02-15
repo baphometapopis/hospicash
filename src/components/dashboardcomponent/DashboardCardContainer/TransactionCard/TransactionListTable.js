@@ -3,12 +3,19 @@ import Box from "@mui/material/Box";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
-import PolicyCard from "../PolicyCardContainer/PolicyCard";
-import { Button, message, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
+import { Approve_Dealer_Transaction } from "../../../../Api/checkTransactionNo";
 
-const TransactionListTable = ({ data, role }) => {
+const TransactionListTable = ({ data, role, loginData }) => {
   const [page, setPage] = useState(1); // State to track current page
   const [pageSize, setPageSize] = useState(10);
+  const approveDealer = async (props) => {
+    const resdata = await Approve_Dealer_Transaction(
+      loginData?.user_details?.id,
+      props
+    );
+    console.log(resdata);
+  };
   const getStatusStyle = (status) => {
     switch (status) {
       case "pending":
@@ -114,7 +121,7 @@ const TransactionListTable = ({ data, role }) => {
             <Popconfirm
               title="Approve Transaction"
               description="Are you sure you want to Approve this Transaction?"
-              onConfirm={() => console.log("CLicked on COnfirm")}
+              onConfirm={() => approveDealer(params?.row)}
               okText="Yes"
               okButtonProps={{ style: { backgroundColor: "#0089D1" } }}
               cancelText="No"
@@ -207,7 +214,7 @@ const TransactionListTable = ({ data, role }) => {
             </g>
           </g>
         </svg>
-        <Box sx={{ mt: 1 }}>No Rows</Box>
+        <Box sx={{ mt: 1 }}>No Records Found</Box>
       </StyledGridOverlay>
     );
   }

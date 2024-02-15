@@ -1,23 +1,7 @@
-// get local Data
+import DealerCancelledPolicyTable from "./components/dashboardcomponent/DealerCancelledPolicyTable"
 
-const [LocalData, setLocalData] = useState();
+acemoney Pending Task 
 
-const getlocalData = async () => {
-  const data = localStorage.getItem("LoggedInUser");
-  if (data) {
-    const decryptdata = decryptData(data);
-    setLocalData(decryptdata)
-
-    //api function if needed or  store in a state
-  } else {
-    navigate("/");
-
-    toast.error("Session Expired, Login Again", {
-      position: "bottom-right",
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-    });
-  }
-};
+Filter 
+pagination in FileUpload List
+APi Error in  cancel policy ,approve DealerCancelledPolicyTable
