@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
 const RadialBarChart = () => {
@@ -9,9 +9,9 @@ const RadialBarChart = () => {
   const pendingPercentage = (pendingPolicies / totalPolicies) * 100;
   const donePercentage = (donePolicies / totalPolicies) * 100;
 
-  const [series, setSeries] = useState([pendingPercentage, donePercentage]);
+  const [series] = useState([pendingPercentage, donePercentage]);
 
-  const [chartOptions, setChartOptions] = useState({
+  const [chartOptions] = useState({
     chart: {
       height: 390,
       type: "radialBar",

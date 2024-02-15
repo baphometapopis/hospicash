@@ -5,24 +5,6 @@ const DateTimeChart = ({ data }) => {
   const [monthCount, setMonthCount] = useState({});
 
   useEffect(() => {
-    const countline = {
-      monthCount: {
-        January: 3,
-        Feb: 2,
-        March: 4,
-        April: 4,
-        May: 7,
-        June: 19,
-        July: 3,
-        August: 2,
-        September: 6,
-        October: 2,
-        November: 72,
-        December: 72,
-      },
-      totalRecords: 124,
-    };
-
     const sampleData = {
       monthCount: {
         January: 12,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,13 +6,13 @@ import { decryptData } from "../Utils/cryptoUtils";
 
 export default function Sidebar({ opened }) {
   const [isopened, setisopened] = useState(true);
-  const [loginData, setLoginData] = useState();
+  const [setLoginData] = useState();
   const [isAdmin, setisAdmin] = useState(false);
 
   const navigate = useNavigate();
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
-  const getlocalData = async () => {
+  const getlocalData = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
     if (data) {
       const decryptdata = decryptData(data);
@@ -25,7 +25,7 @@ export default function Sidebar({ opened }) {
     } else {
       navigate("/");
     }
-  };
+  }, [setLoginData, setisAdmin, navigate]);
 
   useEffect(() => {
     getlocalData();
@@ -42,7 +42,7 @@ export default function Sidebar({ opened }) {
     return () => {
       window.removeEventListener("resize", handleWindowResize);
     };
-  }, [windowWidth, opened]);
+  }, [windowWidth, opened, getlocalData]);
 
   const navItems = [
     {

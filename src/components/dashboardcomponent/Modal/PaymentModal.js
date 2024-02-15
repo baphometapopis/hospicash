@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { get_ICPaymentRequest } from "../../../Api/getICpaymentRequestApi";
 
 const PaymentModal = ({ isOpen, onClose, icList }) => {
-  const [insuranceCompaniesList, setinsuranceCompaniesList] = useState([]);
+  const [ setinsuranceCompaniesList] = useState([]);
   const [LocalData, setLocalData] = useState();
   const navigate = useNavigate();
   async function handleSubmit(values, { resetForm }) {

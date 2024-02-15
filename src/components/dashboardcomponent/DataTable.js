@@ -63,19 +63,6 @@ const AccountBankTransactionListTable = ({ data }) => {
     },
   ];
 
-  const renderCell = (params) => {
-    return (
-      <div
-        style={{
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        {params.value}
-      </div>
-    );
-  };
   const StyledGridOverlay = styled("div")(({ theme }) => ({
     display: "flex",
     flexDirection: "column",

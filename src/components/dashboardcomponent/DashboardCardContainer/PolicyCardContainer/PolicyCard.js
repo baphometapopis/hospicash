@@ -34,48 +34,30 @@ const PolicyCard = ({ Policy, iscancelled }) => {
     }
   };
 
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "Pending":
-        return {
-          backgroundColor: "#FCD34D",
-          color: "#ffffff",
-        };
-      case "Success":
-        return {
-          backgroundColor: "#68D391",
-          color: "#ffffff",
-        };
-      case "Cancelled":
-        return {
-          backgroundColor: "#dc143c",
-          color: "#ffffff",
-        };
-      default:
-        return {
-          backgroundColor: "#D1D5DB",
-          color: "#000000",
-        };
-    }
-  };
-
-  const statusStyle = getStatusStyle(Policy.status);
-
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp);
-    const formattedDate = date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-    });
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-
-    return `${formattedDate} ${formattedTime}`;
-  };
+  // const getStatusStyle = (status) => {
+  //   switch (status) {
+  //     case "Pending":
+  //       return {
+  //         backgroundColor: "#FCD34D",
+  //         color: "#ffffff",
+  //       };
+  //     case "Success":
+  //       return {
+  //         backgroundColor: "#68D391",
+  //         color: "#ffffff",
+  //       };
+  //     case "Cancelled":
+  //       return {
+  //         backgroundColor: "#dc143c",
+  //         color: "#ffffff",
+  //       };
+  //     default:
+  //       return {
+  //         backgroundColor: "#D1D5DB",
+  //         color: "#000000",
+  //       };
+  //   }
+  // };
 
   return (
     <div>

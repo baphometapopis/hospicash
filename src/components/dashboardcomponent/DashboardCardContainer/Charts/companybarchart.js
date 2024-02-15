@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactApexChart from "react-apexcharts";
 
 const CompanyBarChart = () => {
-  const [chartData, setChartData] = useState({
+  const [chartData] = useState({
     series: [
       {
         name: "New India Assurance",
