@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
-import AddPAyment from "../assets/Icons/icons8-add-payment-24.png";
 import { toast } from "react-toastify";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
@@ -10,42 +9,33 @@ import Download from "../assets/Icons/icons8-download-64 (2).png";
 import Cancel from "../assets/Icons/icons8-cancel-100 (1).png";
 
 import "react-toastify/dist/ReactToastify.css";
-import { get_Insurance_Companies_List } from "../Api/getInsuranceCompaniesList";
-import { getBankTransactionList } from "../Api/getBankTransactionList";
+
 import { decryptData } from "../Utils/cryptoUtils";
 import SearchIcon from "../assets/Icons/icons8-search-64.png";
 import Select from "react-select";
 import Excel from "../assets/Icons/icons8-microsoft-excel-50.png";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import PaymentModal from "../components/dashboardcomponent/Modal/PaymentModal";
-import DataGridExample from "../components/dashboardcomponent/ReactDatagrid/ReactDataGrid";
 import { MyDropzoneComponent } from "../components/dashboardcomponent/FileDropZone";
-import { Box, Button } from "@mui/material";
-import LinearProgress from "@mui/material/LinearProgress";
 
 import { fileUpload } from "../Api/fileUpload";
 import { BarLoader } from "react-spinners";
-import DataTable from "../components/dashboardcomponent/DataTable";
-import BasicTable from "../components/dashboardcomponent/DataTable";
+
 import { get_Excel_InQueue_List } from "../Api/getExcelInQueueList";
 
 export default function MonthlyFileUpload() {
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [LoginData, setLoginData] = useState();
 
-  const [insuranceCompaniesList, setInsuranceCompaniesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   // const [data, setData] = useState();
   const [totalRecords, setTotalRecords] = useState();
-  const [bankTransactionList, setBankTransactionList] = useState([]);
   const [inQueueList, setinQueueList] = useState([]);
   const [totalFileUploaded, settotalFileUploaded] = useState([]);
 
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const recordsPerPage = 10;
-  const [isMobile, setisMobile] = useState(false);
+  // const [isMobile, setisMobile] = useState(false);
   const [searchParam, setSearchParam] = useState({
     value: "",
     param: "",
@@ -59,7 +49,6 @@ export default function MonthlyFileUpload() {
     { value: "Bank C", label: "Bank C" },
   ];
   const [selectedFile, setSelectedFile] = useState();
-  const [isuploadError, setisuploadError] = useState(false);
   const [showUpload, setshowUpload] = useState(true);
 
   const handlePageChange = (pageNumber) => {
@@ -68,24 +57,12 @@ export default function MonthlyFileUpload() {
     setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
 
-  const getLocalData = async () => {
-    const localData = localStorage.getItem("LoggedInUser");
-
-    if (localData !== null || localData !== undefined) {
-      const decryptdata = decryptData(localData);
-      console.log(decryptdata);
-      setLoginData(decryptdata?.user_details);
-      getExcelInQueueList(decryptdata?.user_details?.id);
-      getExcelInQueueList(decryptdata?.user_details?.id, "all");
-    }
-  };
-  const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
+  // const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
   const sendFile = async () => {
     setshowUpload(false);
 
     const data = await fileUpload(LoginData?.id, selectedFile);
     if (data?.status) {
-      setisuploadError(false);
       toast.success(data?.message, {
         position: "bottom-right",
         autoClose: 1000,
@@ -101,25 +78,25 @@ export default function MonthlyFileUpload() {
         closeOnClick: true,
         pauseOnHover: true,
       });
-      setisuploadError(true);
     }
     setshowUpload(true);
   };
-  useEffect(() => {
-    const handleWindowResize = () => {
-      setWindowWidth([window.innerWidth]);
-    };
+  // useEffect(() => {
+  //   const handleWindowResize = () => {
+  //     setWindowWidth([window.innerWidth]);
+  //   };
 
-    window.addEventListener("resize", handleWindowResize);
-    if (windowWidth <= 768) {
-      setisMobile(false);
-    } else {
-      setisMobile(true);
-    }
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, [windowWidth]);
+  //   window.addEventListener("resize", handleWindowResize);
+  //   if (windowWidth <= 768) {
+  //     setisMobile(false);
+  //   } else {
+  //     setisMobile(true);
+  //   }
+  //   return () => {
+  //     window.removeEventListener("resize", handleWindowResize);
+  //   };
+  // }, [windowWidth]);
+
   const handleDownloadPDF = async (id, status) => {
     console.log(id, status);
     try {
@@ -137,6 +114,35 @@ export default function MonthlyFileUpload() {
       });
     }
   };
+  const getExcelInQueueList = useCallback(
+    async (id, status) => {
+      if (status) {
+        const data = await get_Excel_InQueue_List(id, status);
+        if (data?.status) {
+          settotalFileUploaded(data?.data);
+          setTotalRecords(data?.data?.length);
+        }
+      } else {
+        const data = await get_Excel_InQueue_List(id);
+        if (data?.status) {
+          setinQueueList(data?.data);
+        }
+      }
+    },
+    [settotalFileUploaded, setTotalRecords, setinQueueList]
+  );
+  const getLocalData = useCallback(async () => {
+    const localData = localStorage.getItem("LoggedInUser");
+
+    if (localData !== null && localData !== undefined) {
+      const decryptdata = decryptData(localData);
+      console.log(decryptdata);
+      setLoginData(decryptdata?.user_details);
+      getExcelInQueueList(decryptdata?.user_details?.id);
+      getExcelInQueueList(decryptdata?.user_details?.id, "all");
+    }
+  }, [getExcelInQueueList, setLoginData]);
+
   const dealerTransactionList = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
     const decryptdata = decryptData(data);
@@ -155,7 +161,7 @@ export default function MonthlyFileUpload() {
         }
       }
     }
-  }, [indexOfFirstRecord, indexOfLastRecord, recordsPerPage]);
+  }, [getExcelInQueueList, indexOfFirstRecord, indexOfLastRecord]);
   const handleFileSelect = (file) => {
     console.log("File Upload ", file);
     setSelectedFile(file);
@@ -163,30 +169,15 @@ export default function MonthlyFileUpload() {
 
   useEffect(() => {
     dealerTransactionList();
-  }, []);
+  }, [dealerTransactionList]);
 
   useEffect(() => {
     setIndexOfLastRecord(currentPage * recordsPerPage);
   }, [currentPage, recordsPerPage]);
 
-  const getExcelInQueueList = async (id, status) => {
-    if (status) {
-      const data = await get_Excel_InQueue_List(id, status);
-      if (data?.status) {
-        settotalFileUploaded(data?.data);
-        setTotalRecords(data?.data?.length);
-      }
-    } else {
-      const data = await get_Excel_InQueue_List(id);
-      if (data?.status) {
-        setinQueueList(data?.data);
-      }
-    }
-  };
-
   useEffect(() => {
     getLocalData();
-  }, [showUpload]);
+  }, [getLocalData, showUpload]);
   useEffect(() => {}, [selectedFile]);
   const [timeLeft, setTimeLeft] = useState(200 * 6);
 
@@ -200,12 +191,6 @@ export default function MonthlyFileUpload() {
   }, []);
   return (
     <div className="flex flex-col w-full items-center">
-      <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        icList={insuranceCompaniesList}
-      />
-
       <div className="  -z-10 w-full">
         <img
           src={coverImage}

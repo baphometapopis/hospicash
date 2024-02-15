@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import policyPurchaseSuccess from "../assets/img/undraw_certification_re_ifll (1).svg";
 import { toast } from "react-toastify";
@@ -15,32 +15,36 @@ export default function PurchaseStatus() {
   const [policy_id] = useState(location?.state?.policy_id);
 
   const [policyData, setPolicyData] = useState();
-  const getPolicyData = async () => {
+  const getPolicyData = useCallback(async () => {
     const localdata = localStorage.getItem("LoggedInUser");
     const decryptdata = decryptData(localdata);
 
     if (decryptdata) {
-      const data = await getSoldPolicyData(
-        decryptdata?.user_details?.id,
-        policy_id
-      );
-      if (data?.status) {
-        setPolicyData(data?.data[0]);
-      } else {
-        toast.error("Failed to get Policy Data", {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-        });
+      try {
+        const data = await getSoldPolicyData(
+          decryptdata?.user_details?.id,
+          policy_id
+        );
+        if (data?.status) {
+          setPolicyData(data?.data[0]);
+        } else {
+          toast.error("Failed to get Policy Data", {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching policy data:", error);
       }
     }
-  };
+  }, [policy_id, setPolicyData]);
 
   useEffect(() => {
     getPolicyData();
-  }, []);
+  }, [getPolicyData]);
   return (
     <div className="flex flex-col w-full items-center">
       <div className="sticky -z-10 top-12 w-full">

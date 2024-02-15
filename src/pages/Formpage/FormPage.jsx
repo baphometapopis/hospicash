@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import "./Formpage.css";
 import Input from "../../components/ui/Input.js";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -11,33 +10,13 @@ import CustomSelect from "../../components/ui/CustomSelect.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { generatePolicy } from "../../Api/generatePolicy.js";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserData } from "../../Redux/userSlice.js.js";
 import moment from "moment";
 import { decryptData } from "../../Utils/cryptoUtils.js";
-const validationSchema = Yup.object().shape({
-  // fname: Yup.string().required("Required"),
-  // salutation: Yup.string().required("Required"),
-  // dob: Yup.string().required("Required"),
-  // gender: Yup.string().required("Required"),
-  // mname: Yup.string(),
-  // lname: Yup.string().required("Required"),
-  // email: Yup.string().email("Invalid email").required("Required"),
-  // mobile_no: Yup.string()
-  //   .matches(/^[6-9]\d{9}$/, "Invalid number")
-  //   .required("Required"),
-  // addr1: Yup.string().required("Required"),
-  // addr2: Yup.string().required("Required"),
-  // pincode: Yup.string().required("Required"),
-  // city_id: Yup.string().required("Required"),
-  // state_id: Yup.string().required("Required"),
-  // nominee_full_name: Yup.string().required("Required"),
-  // nominee_age: Yup.number().required("Required").min(1, "Enter Valid Age"),
-  // nominee_relation: Yup.string().required("Required"),
-});
+
 export default function FormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -216,7 +195,7 @@ export default function FormPage() {
         pauseOnHover: true,
       });
     }
-  }, []);
+  }, [navigate]);
   const getFormData = async () => {
     const data = await get_policy_data();
     if (data?.status) {
@@ -247,10 +226,6 @@ export default function FormPage() {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, [windowWidth]);
-
-  const formatDate = (date) => {
-    return moment(date).format("YYYY/MM/DD");
-  };
 
   useEffect(() => {
     getFormData();
