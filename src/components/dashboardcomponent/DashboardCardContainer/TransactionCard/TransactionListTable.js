@@ -9,10 +9,13 @@ import { Approve_Dealer_Transaction } from "../../../../Api/checkTransactionNo";
 const TransactionListTable = ({ data, role, loginData }) => {
   const [page, setPage] = useState(1); // State to track current page
   const [pageSize, setPageSize] = useState(10);
-  const approveDealer = async (props) => {
+
+  const approveDealer = async (props, status) => {
+    console.log(props);
     const resdata = await Approve_Dealer_Transaction(
       loginData?.user_details?.id,
-      props
+      props,
+      status
     );
     console.log(resdata);
   };
@@ -119,12 +122,13 @@ const TransactionListTable = ({ data, role, loginData }) => {
         <>
           {params?.row?.approval_status === "pending" && (
             <Popconfirm
-              title="Approve Transaction"
-              description="Are you sure you want to Approve this Transaction?"
-              onConfirm={() => approveDealer(params?.row)}
-              okText="Yes"
+              title="Change Status"
+              description="Are you sure you want to Change this Transaction Status?"
+              onConfirm={() => approveDealer(params?.row, "approve")}
+              okText="Approve"
               okButtonProps={{ style: { backgroundColor: "#0089D1" } }}
-              cancelText="No"
+              cancelText="Reject"
+              onCancel={() => approveDealer(params?.row, "reject")}
             >
               <div
                 style={{
@@ -138,7 +142,7 @@ const TransactionListTable = ({ data, role, loginData }) => {
                   cursor: "pointer",
                 }}
               >
-                Approve
+                Change Status
               </div>
             </Popconfirm>
           )}
@@ -247,6 +251,9 @@ const TransactionListTable = ({ data, role, loginData }) => {
           [`& .super-app-theme--header`]: {
             backgroundColor: "#0089d1",
             color: "white",
+          },
+          [`& .${gridClasses.footerContainer}`]: {
+            display: "none",
           },
           [`& .${gridClasses.cell}`]: {
             py: 2,

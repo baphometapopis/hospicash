@@ -15,6 +15,8 @@ const initialState = {
   addr2: "",
   pincode: "",
   city_id: "",
+  cityName: "",
+  StateName: "",
   state_id: "",
   nominee_full_name: "",
   nominee_age: "",
@@ -34,8 +36,11 @@ const userSlice = createSlice({
       console.log(action);
       return { ...state, ...action.payload };
     },
+    resetUserData: (state) => {
+      return { ...initialState };
+    },
   },
 });
 
-export const { updateUserData } = userSlice.actions;
+export const { updateUserData, resetUserData } = userSlice.actions;
 export default userSlice.reducer;

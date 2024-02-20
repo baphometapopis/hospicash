@@ -4,7 +4,7 @@ import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
 
-const AccountBankTransactionListTable = ({ data }) => {
+const AccountBankTransactionListTable = ({ data, totalRecords }) => {
   const columns = [
     {
       field: "id",
@@ -147,17 +147,23 @@ const AccountBankTransactionListTable = ({ data }) => {
     >
       {" "}
       <DataGrid
-        pagination={false}
         rows={data || []}
-        rowCount={[]}
         columns={columns}
-        rowsPerPageOptions={[]}
         getRowHeight={() => "auto"}
+        
         sx={{
           border: "none",
           [`& .super-app-theme--header`]: {
             backgroundColor: "#0089d1",
             color: "white",
+          },
+          [`& .${gridClasses.footerContainer}`]: {
+            
+            display: "none",
+          },
+           [`& .${gridClasses.footerContainer}`]: {
+            
+            display: "none",
           },
           [`& .${gridClasses.cell}`]: {
             py: 2,

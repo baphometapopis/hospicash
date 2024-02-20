@@ -11,11 +11,13 @@ import { getPaymentRequest } from "../../../Api/getPaymentRequest";
 import { decryptData } from "../../../Utils/cryptoUtils";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import Loader from "../../Loader";
 
 const UserPaymentModal = ({ isOpen, onClose }) => {
   const [LocalData, setLocalData] = useState();
   const navigate = useNavigate();
   const [istransactionidvalid, setistransactionidvalid] = useState();
+  const [loading, setLoading] = useState();
   const validateForm = (values) => {
     const errors = {};
 
@@ -70,6 +72,7 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
   ];
 
   async function handleSubmit(values, { resetForm }) {
+    setLoading(true);
     const data = await getPaymentRequest(LocalData?.user_details?.id, values);
     if (data?.status) {
       toast.success(data?.message, {
@@ -82,14 +85,20 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
       onClose();
       resetForm();
     } else {
-      toast.error(`${data?.message}`, {
-        position: "bottom-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-      });
+      toast.error(
+        `${
+          data?.message || "Internal Server Error Contact System Administrator"
+        }`,
+        {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        }
+      );
     }
+    setLoading(false);
   }
 
   function handleAmountChange(e) {
@@ -125,7 +134,6 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
         formik.values.bankIfscCode === ""
       ) {
         const dealerData = await getDealerData(decryptdata?.user_details?.id);
-
         if (dealerData?.status) {
           formik.setValues({
             ...formik.values,
@@ -134,13 +142,17 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
             bankIfscCode: dealerData?.data?.banck_ifsc_code,
           });
         } else {
-          toast.error(dealerData?.message, {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-          });
+          toast.error(
+            dealerData?.message ||
+              "Internal Server Contact System Administrator",
+            {
+              position: "bottom-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+            }
+          );
         }
       }
     } else {
@@ -153,7 +165,13 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
         pauseOnHover: true,
       });
     }
-  }, [formik, navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    formik.values.bankAccountNumber,
+    formik.values.bankIfscCode,
+    formik.values.bank_name,
+    navigate,
+  ]);
   useEffect(() => {
     if (isOpen) {
       getLocalData();
@@ -167,6 +185,8 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
       style={{ zIndex: 100 }}
       className={`fixed inset-0 ${isOpen ? "" : "hidden"}`}
     >
+      {loading && <Loader />}
+
       {/* Dark, transparent overlay */}
       <div
         className={`fixed inset-0 transition-opacity ${

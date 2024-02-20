@@ -79,7 +79,6 @@ const Input = ({
           }
         }}
       />
-      {console.log(formik.errors[name], id, !removeError, hasError)}
       {!removeError && (hasError || id === "dob") && (
         <p
           style={{

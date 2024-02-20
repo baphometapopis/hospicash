@@ -1259,7 +1259,7 @@ export default function Home() {
             </>
           </div>
         </div>
-        <div className="grid-item item4">
+        <div style={{ zIndex: 1 }} className="grid-item item4">
           <DateTimeChart data={sampledata} />
         </div>
       </div>

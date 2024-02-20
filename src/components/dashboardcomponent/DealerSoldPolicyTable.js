@@ -149,6 +149,9 @@ const DealerSoldPolicyTable = ({ data }) => {
             backgroundColor: "#0089d1",
             color: "white",
           },
+          [`& .${gridClasses.footerContainer}`]: {
+            display: "none",
+          },
           [`& .${gridClasses.cell}`]: {
             py: 2,
             border: "none",

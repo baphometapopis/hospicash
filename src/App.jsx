@@ -19,6 +19,14 @@ import AdminLogin from "./pages/AdminLogin";
 import MonthlyFileUpload from "./pages/FileUploadPage";
 
 function App() {
+  const { pathname, search } = window.location;
+  console.log(pathname, search);
+  console.log(window.location.origin);
+  // const referrer = document.referrer;
+  const referrer = new URLSearchParams(window.location.search).get("referrer");
+
+  console.log(referrer, ";ljihkujgyf");
+
   return (
     <>
       <Provider store={store}>

@@ -31,7 +31,9 @@ export default function Header({ toggle }) {
 
   // Example usage
   const closePaymentModal = () => {
-    setIsPaymentModalOpen(false);
+    // setIsPaymentModalOpen(false);
+    setIsUserPaymentModalOpen(false);
+
   };
   const getwalletBalance = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");

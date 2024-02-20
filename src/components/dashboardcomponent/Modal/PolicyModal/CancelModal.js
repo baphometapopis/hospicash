@@ -2,13 +2,12 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "react-datepicker/dist/react-datepicker.css";
+import Select from "react-select";
 
 const CancelModal = ({ isOpen, onClose, data }) => {
   const handleSubmit = (values, { resetForm }) => {
     console.log(values);
-    // Perform payment processing or other logic here
 
-    // Close the modal after
     resetForm();
 
     onClose();
@@ -16,8 +15,10 @@ const CancelModal = ({ isOpen, onClose, data }) => {
 
   const formik = useFormik({
     initialValues: {
-      file: null, // new field for file upload
-      comments: "", // new field for textarea
+      file: null,
+      image: null,
+      cancelation_reason_type: "",
+      comments: "",
     },
     validationSchema: Yup.object({
       file: Yup.mixed().required("File is required"), // validation for file upload
@@ -30,6 +31,10 @@ const CancelModal = ({ isOpen, onClose, data }) => {
       console.log(formik.values, formik.errors);
     },
   });
+  const options = [
+    { value: "Duplicate Policy", label: "Duplicate Policy" },
+    { value: "Others", label: "Others" },
+  ];
 
   return (
     <div
@@ -58,7 +63,38 @@ const CancelModal = ({ isOpen, onClose, data }) => {
             <p>Policy No : {data?.policy_no}</p>
             <p>Insured Name : {data?.ins_name}</p>
           </div>
-          {/* File Upload */}
+          <p style={{ marginTop: "10px" }}>Select Cancellation Reason</p>
+          <Select
+            options={[
+              ...(options || []).map((value) => ({
+                value: value.value,
+                label: value.label,
+              })),
+            ]}
+            placeholder="Select Reason"
+            value={formik.values.cancelation_reason_type}
+            onChange={(option) =>
+              formik.setFieldValue(
+                "cancelation_reason_type",
+                option?.value || ""
+              )
+            }
+            styles={{
+              control: (provided, state) => ({
+                ...provided,
+
+                outline: "none", // Remove the outline
+
+                // Border color when focused
+                borderColor:
+                  state.isFocused && !formik.touched.ic_id
+                    ? "#6D6D6D" // Default border color when focused and not touched
+                    : formik.touched.ic_id && formik.errors.ic_id
+                    ? "red" // Border color on error
+                    : "#6D6D6D", // Default border color
+              }),
+            }}
+          />
 
           <div className="mt-4">
             <label

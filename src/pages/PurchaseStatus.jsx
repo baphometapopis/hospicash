@@ -25,6 +25,7 @@ export default function PurchaseStatus() {
           decryptdata?.user_details?.id,
           policy_id
         );
+        console.log(data);
         if (data?.status) {
           setPolicyData(data?.data[0]);
         } else {

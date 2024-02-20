@@ -9,6 +9,7 @@ export const getDealerTransactionList = async (formdata) => {
     body.append("length", formdata?.end);
     body.append("search", "");
     body.append("value", "");
+    body.append("role_type", formdata?.role_type);
 
     const result = await makeApiRequest(
       "dealer_transaction_data",

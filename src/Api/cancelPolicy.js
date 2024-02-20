@@ -1,12 +1,14 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
-export const checkTransactionNo = async (id, data) => {
+export const cancelPolicy = async (data) => {
   console.log(data);
   var myHeaders = new Headers();
 
   var urlencoded = new URLSearchParams();
-  urlencoded.append("transaction_no", data);
-  urlencoded.append("dealer_id", id);
+  urlencoded.append("cancellation_reson", data?.cancellation_reson);
+  urlencoded.append("policy_id", data?.policy_id);
+  urlencoded.append("cancelation_reason_type", data?.cancelation_reason_type);
+  urlencoded.append("image", data.image);
 
   var requestOptions = {
     method: "POST",
@@ -29,7 +31,7 @@ export const checkTransactionNo = async (id, data) => {
     });
 };
 
-export const Approve_Dealer_Transaction = async (id, data, status) => {
+export const Approve_Dealer_Transaction = async (id, data) => {
   console.log(data, "Approve_Dealer_Transaction");
   var myHeaders = new Headers();
 
@@ -39,7 +41,7 @@ export const Approve_Dealer_Transaction = async (id, data, status) => {
   urlencoded.append("amount", data?.deposit_amount);
   urlencoded.append("transaction_type", data?.transaction_type);
   urlencoded.append("user_id", id);
-  urlencoded.append("approval_status", status);
+  urlencoded.append("approval_status", "approve");
 
   var requestOptions = {
     method: "POST",

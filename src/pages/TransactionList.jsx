@@ -33,12 +33,10 @@ export default function TransactionsList() {
   //   end_date: "",
   // });
 
-
-
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
     setCurrentPage(pageNumber);
-    setIndexOfFirstRecord(pageNumber * recordsPerPage);
+    setIndexOfFirstRecord((pageNumber - 1) * 10 + 1);
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
@@ -69,6 +67,7 @@ export default function TransactionsList() {
         start: indexOfFirstRecord,
         end: recordsPerPage,
         policy_type: "sold",
+        role_type: decryptdata?.user_details?.role_type,
       };
       if (indexOfFirstRecord !== indexOfLastRecord) {
         try {

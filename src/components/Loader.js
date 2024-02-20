@@ -13,7 +13,7 @@ const Loader = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "rgba(255, 255, 255, 0.8)", // Add a semi-transparent background
+        backgroundColor: "rgba(255, 255, 255, 0.99)", // Add a semi-transparent background
         zIndex: 9999, // Ensure it appears on top of other content
       }}
     >

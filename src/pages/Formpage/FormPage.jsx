@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";
 import { generatePolicy } from "../../Api/generatePolicy.js";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserData } from "../../Redux/userSlice.js.js";
+import { resetUserData, updateUserData } from "../../Redux/userSlice.js.js";
 import moment from "moment";
 import { decryptData } from "../../Utils/cryptoUtils.js";
 
@@ -43,7 +43,6 @@ export default function FormPage() {
       formik.values
     );
     if (data?.status) {
-      console.log(data);
       navigation("/confirmed", { state: { policy_id: data?.policy_id } });
 
       toast.success(data?.message, {
@@ -53,8 +52,8 @@ export default function FormPage() {
         closeOnClick: true,
         pauseOnHover: true,
       });
+      dispatch(resetUserData());
     } else {
-      console.log(data);
       toast.error(data?.message, {
         position: "bottom-right",
         autoClose: 1000,
@@ -70,14 +69,22 @@ export default function FormPage() {
     initialValues: userData,
 
     onSubmit: (values) => {
-      console.log(values);
       if (
         location?.state?.Action === "Endorsment" ||
         location?.state?.Action === "NewPolicy"
       ) {
-        console.log("Data Submitted Successfully ");
         submitData();
       } else {
+        // dispatch(updateUserData({ StateName: StateName }));
+        // dispatch(updateUserData({ cityName: cityName }));
+
+        dispatch(
+          updateUserData({
+            stateName: StateName,
+            cityName: cityName,
+          })
+        );
+
         dispatch(updateUserData(formik.values));
 
         navigation("/plans", { state: { formdata } });
@@ -102,7 +109,6 @@ export default function FormPage() {
         return mobileRegex.test(mobileno);
       };
       const validatePanNo = (panNo) => {
-        console.log(panNo);
         const panRegex = /^[A-Za-z]{5}[0-9]{4}[A-Za-z]$/;
         return panRegex.test(panNo);
       };
@@ -139,8 +145,9 @@ export default function FormPage() {
 
       if (
         values.pincode.length === 6 &&
-        ((values.state_id === "" && values.city_id === "") ||
-          values.pincode !== formik.values.pincode)
+        (values.pincode !== formik.values.pincode ||
+          StateName === "" ||
+          cityName === "")
       ) {
         // Call your function here
         getPincode(values.pincode);
@@ -152,7 +159,6 @@ export default function FormPage() {
         validateRequired("appointee_relation", "Required");
       }
 
-      console.log(formik.errors);
       return errors;
     },
   });
@@ -160,7 +166,6 @@ export default function FormPage() {
   const getPincode = async (pincode) => {
     const data = await get_Pincode_Data(pincode);
     if (data?.status) {
-      console.log(data);
       setcityName(data?.data?.city_or_village_name);
       setStateName(data?.data?.state_name);
       formik.setFieldValue("city_id", data?.data?.city_id);
@@ -231,6 +236,16 @@ export default function FormPage() {
     getFormData();
     getlocalData();
   }, [getlocalData]);
+
+  useEffect(() => {
+    if (
+      formik.values.pincode.length === 6 &&
+      (StateName === "" || cityName === "")
+    ) {
+      // Call your function here
+      getPincode(formik.values.pincode);
+    }
+  }, [StateName, cityName]);
 
   return (
     <>
@@ -421,7 +436,7 @@ export default function FormPage() {
                     className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
                   />
                 </div> */}
-                <div className="flex flex-col w-[100%]">
+                <div className="flex flex-col md:w-[100%] w-[68%]">
                   <label
                     style={{ alignSelf: "flex-start", color: "#686464" }}
                     htmlFor="date"

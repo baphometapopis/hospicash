@@ -2,44 +2,37 @@ import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import AddPAyment from "../../assets/Icons/icons8-add-payment-24.png";
 import chooseImg from "../../assets/img/ChooseBank.jpeg";
-
 import { get_Insurance_Companies_List } from "../../Api/getInsuranceCompaniesList";
 import { getBankTransactionList } from "../../Api/getBankTransactionList";
 import { decryptData } from "../../Utils/cryptoUtils";
 import IconFilter from "../../assets/Icons/IconFIlter.png";
-
 import "./Transaction.css";
-
 import "react-datepicker/dist/react-datepicker.css";
 import PaymentModal from "../../components/dashboardcomponent/Modal/PaymentModal";
 import AccountBankTransactionListTable from "../../components/dashboardcomponent/DataTable";
 import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
 import { SearchContainer } from "../../components/dashboardcomponent/SearchContainer";
-
 export default function Transactions() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-
-  // Function to handle date changes
-
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
-
   const handleOpenFilterDrawer = () => {
     setFilterDrawerVisible(true);
   };
-
   const handleCloseFilterDrawer = () => {
     setFilterDrawerVisible(false);
   };
   const [insuranceCompaniesList, setInsuranceCompaniesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [data, setData] = useState();
   const [totalRecords, setTotalRecords] = useState();
   const [bankTransactionList, setBankTransactionList] = useState([]);
   const [selectedIC, setSelectedIC] = useState();
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
+  const [pageNumber, setpageNumber] = useState(0);
+
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
+
   // const [searchParam, setSearchParam] = useState({
   //   value: "",
   //   param: "",
@@ -57,7 +50,8 @@ export default function Transactions() {
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
     setCurrentPage(pageNumber);
-    setIndexOfFirstRecord(pageNumber * recordsPerPage);
+    setIndexOfFirstRecord((pageNumber - 1) * 10 + 1);
+    setpageNumber(pageNumber * recordsPerPage);
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
@@ -267,80 +261,10 @@ export default function Transactions() {
 
           {isMobile && <SearchContainer />}
 
-          {/* {isMobile && (
-            <div
-              style={{
-                backgroundColor: "#0089d1",
-                padding: "10px",
-                zIndex: 4,
-              }}
-              className="px-4 flex rounded-t items-center justify-between w-full sticky top-[50px] "
-            >
-              <table className="w-full">
-                <tbody>
-                  <tr>
-                    <td
-                      style={{ width: "20px", textAlign: "center" }}
-                      className="text-white"
-                    >
-                      SR No
-                    </td>
-                    <td
-                      style={{ width: "90px", textAlign: "center" }}
-                      className="text-white"
-                    >
-                      Company Name
-                    </td>
-                    <td
-                      style={{ width: "100px", textAlign: "center" }}
-                      className="text-white"
-                    >
-                      Transaction No
-                    </td>
-                    <td
-                      style={{
-                        width: "20px",
-                        textAlign: "center",
-                        minWidth: "fitcontent",
-                      }}
-                      className="text-white "
-                    >
-                      Amount
-                    </td>
-                    <td
-                      style={{ width: "20px", textAlign: "center" }}
-                      className="text-white"
-                    >
-                      Account no
-                    </td>
-                    <td
-                      style={{ textAlign: "center", width: "20px" }}
-                      className="text-white w-['10%']"
-                    >
-                      Bank Name
-                    </td>
-                    <td
-                      style={{ textAlign: "center", width: "20px" }}
-                      className="text-white"
-                    >
-                      IFSC Code
-                    </td>
-                    <td
-                      style={{
-                        color: "white",
-                        width: "20px",
-                        textAlign: "center",
-                      }}
-                    >
-                      Payment Date
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          )} */}
-          {/* <DataGridExample data={bankTransactionList} /> */}
-          <AccountBankTransactionListTable data={bankTransactionList} />
+          <AccountBankTransactionListTable
+            data={bankTransactionList}
+            totalRecords={totalRecords}
+          />
 
           {/* {bankTransactionList?.map((data) => (
             <>
@@ -351,11 +275,11 @@ export default function Transactions() {
               )}
             </>
           ))} */}
-          <div className="bg-white w-[97%] mx-1 h-8 absolute bottom-24"></div>
+          {/* <div className="bg-white w-[97%] mx-1 h-8 absolute bottom-24"></div> */}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
-              Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
-              {totalRecords} entries
+              Showing {pageNumber + 1} to {pageNumber + 10} of {totalRecords}{" "}
+              entries
             </span>
             <div className="flex items-center mt-4">
               <span className="text-gray-600 mx-2">
@@ -380,8 +304,7 @@ export default function Transactions() {
               </button>
             </div>
           </div>
-          {/* <DataTable data={bankTransactionList} /> */}
-        </div>{" "}
+        </div>
       </div>
     </div>
   );
