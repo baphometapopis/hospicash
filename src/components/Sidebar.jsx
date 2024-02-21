@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
@@ -6,6 +7,7 @@ import { decryptData } from "../Utils/cryptoUtils";
 
 export default function Sidebar({ opened }) {
   const [isopened, setisopened] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [loginData, setLoginData] = useState();
   const [isAdmin, setisAdmin] = useState(false);
 

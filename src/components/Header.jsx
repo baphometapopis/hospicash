@@ -12,6 +12,7 @@ import UserPaymentModal from "./dashboardcomponent/Modal/UserPaymentModal.";
 export default function Header({ toggle }) {
   const navigate = useNavigate();
   const [iswalletopened, setwalletopened] = useState(true);
+  // eslint-disable-next-line no-unused-vars
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isUserPaymentModalOpen, setIsUserPaymentModalOpen] = useState(false);
   const [loginData, setLoginData] = useState();
@@ -33,7 +34,6 @@ export default function Header({ toggle }) {
   const closePaymentModal = () => {
     // setIsPaymentModalOpen(false);
     setIsUserPaymentModalOpen(false);
-
   };
   const getwalletBalance = useCallback(async () => {
     const data = localStorage.getItem("LoggedInUser");
