@@ -49,7 +49,7 @@ const DealerSoldPolicyTable = ({ data }) => {
       headerClassName: "super-app-theme--header",
 
       width: 210,
-      renderCell: () => <PolicyCard Policy={data} />,
+      renderCell: (params) => <PolicyCard Policy={params?.row} />, // Pass policy_no or id to PolicyCard
     },
   ];
 

@@ -1,7 +1,6 @@
 import makeApiRequest from "./apiCaller";
 
 export const getBankTransactionList = async (formdata) => {
-  console.log(formdata);
   try {
     const body = new URLSearchParams();
     body.append("dealer_id", formdata?.dealer_id);

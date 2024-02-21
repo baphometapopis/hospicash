@@ -16,30 +16,35 @@ import { useDispatch, useSelector } from "react-redux";
 import { resetUserData, updateUserData } from "../../Redux/userSlice.js.js";
 import moment from "moment";
 import { decryptData } from "../../Utils/cryptoUtils.js";
+import { getSoldPolicyData } from "../../Api/getSoldPolicyData.js";
 
 export default function FormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-
   const [selectedPlan] = useState(location?.state?.selectedPlan);
   const [salutation, setSalutation] = useState([]);
+  const [isEndorsment, setIsEndorsment] = useState(
+    location?.state?.Action === "Endorsment" ? true : false
+  );
+
   const [nom_relation, setNom_relation] = useState([]);
   const [genderOption, setgenderOption] = useState([]);
-
+  const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
+  const userData = useSelector((state) => state.user);
   const [formdata, setFormdata] = useState("");
-
   const [cityName, setcityName] = useState("");
   const [StateName, setStateName] = useState("");
-  const [LocalData, setLocalData] = useState();
-
+  const [LoginData, setLoginData] = useState();
   const navigation = useNavigate();
-
   const submitData = async () => {
-    dispatch(updateUserData({ dealer_id: LocalData?.user_details?.id }));
-
+    dispatch(updateUserData({ dealer_id: LoginData?.user_details?.id }));
+    console.log(
+      location?.state?.Action,
+      "lllllllllllllllllllllllllllllllllllll"
+    );
     const data = await generatePolicy(
-      LocalData?.user_details?.id,
+      LoginData?.user_details?.id,
       formik.values
     );
     if (data?.status) {
@@ -63,7 +68,6 @@ export default function FormPage() {
       });
     }
   };
-  const userData = useSelector((state) => state.user);
 
   const formik = useFormik({
     initialValues: userData,
@@ -144,7 +148,7 @@ export default function FormPage() {
       }
 
       if (
-        values.pincode.length === 6 &&
+        values.pincode?.length === 6 &&
         (values.pincode !== formik.values.pincode ||
           StateName === "" ||
           cityName === "")
@@ -186,7 +190,7 @@ export default function FormPage() {
     const data = localStorage.getItem("LoggedInUser");
     if (data) {
       const decryptdata = decryptData(data);
-      setLocalData(decryptdata);
+      setLoginData(decryptdata);
 
       //api function if needed or  store in a state
     } else {
@@ -218,8 +222,6 @@ export default function FormPage() {
     setNom_relation(data?.nominee_relation_data);
   };
 
-  const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
-
   useEffect(() => {
     const handleWindowResize = () => {
       setWindowWidth([window.innerWidth]);
@@ -231,15 +233,71 @@ export default function FormPage() {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, [windowWidth]);
+  const getEndorsmentDetails = async () => {
+    const data = await getSoldPolicyData(
+      LoginData?.user_details?.id,
+      location?.state?.policyID
+    );
+
+    formik.setFieldValue("addr1", data?.data[0]?.addr1);
+    formik.setFieldValue("addr2", data?.data[0]?.addr2);
+    formik.setFieldValue("appointee_age", data?.data[0]?.appointee_age);
+    formik.setFieldValue(
+      "appointee_full_name",
+      data?.data[0]?.appointee_full_name
+    );
+    formik.setFieldValue(
+      "appointee_relation",
+      Number(data?.data[0]?.appointee_relation)
+    );
+    formik.setFieldValue("city_id", data?.data[0]?.city);
+    formik.setFieldValue("state_id", data?.data[0]?.state);
+    formik.setFieldValue("fname", data?.data[0]?.fname);
+    formik.setFieldValue("pincode", data?.data[0]?.pincode);
+
+    setStateName(data?.data[0]?.state_name);
+    setcityName(data?.data[0]?.city_name);
+
+    formik.setFieldValue("pan_number", data?.data[0]?.pan_number);
+    formik.setFieldValue("dob", data?.data[0]?.dob);
+    formik.setFieldValue("email", data?.data[0]?.email);
+    formik.setFieldValue("gender", Number(data?.data[0]?.gender));
+    formik.setFieldValue("mobile_no", data?.data[0]?.mobile_no);
+    formik.setFieldValue("nominee_age", data?.data[0]?.nominee_age);
+    formik.setFieldValue("nominee_full_name", data?.data[0]?.nominee_full_name);
+    formik.setFieldValue(
+      "nominee_relation",
+      Number(data?.data[0]?.nominee_relation)
+    );
+    formik.setFieldValue("appointee_age", data?.data[0]?.appointee_age);
+    formik.setFieldValue("salutation", Number(data?.data[0]?.salutation));
+
+    formik.setFieldValue(
+      "appointee_full_name",
+      data?.data[0]?.appointee_full_name
+    );
+    formik.setFieldValue(
+      "appointee_relation",
+      data?.data[0]?.appointee_relation
+    );
+    formik.setFieldValue("mname", data?.data[0]?.mname);
+    formik.setFieldValue("lname", data?.data[0]?.lname);
+
+    console.log(data?.data[0]);
+  };
 
   useEffect(() => {
+    if (location?.state?.Action === "Endorsment") {
+      console.log("jhgjk");
+      getEndorsmentDetails();
+    }
     getFormData();
     getlocalData();
   }, [getlocalData]);
 
   useEffect(() => {
     if (
-      formik.values.pincode.length === 6 &&
+      formik.values.pincode?.length === 6 &&
       (StateName === "" || cityName === "")
     ) {
       // Call your function here
@@ -284,8 +342,12 @@ export default function FormPage() {
           )}
           <div className="mx-6 md:min-w-fit md:w-1/2 bg-white h-full -mt-20 border border-neutral-light rounded mb-20">
             <div className="bg-base-white h-24 border-b border-neutral-light rounded-t p-4">
-              <p className="text-2xl">User Details</p>
-              <p>Start punching policy by filling in the User's details</p>
+              <p className="text-2xl">
+                {!isEndorsment ? "User Details" : "Update User Details"}
+              </p>
+              {!isEndorsment && (
+                <p>Start punching policy by filling in the User's details</p>
+              )}
             </div>
 
             <form onSubmit={formik.handleSubmit}>
@@ -302,6 +364,7 @@ export default function FormPage() {
                         label: salutation.name,
                       })),
                     ]}
+                    disabled={isEndorsment}
                     required
                     placeholder="Select Salutation"
                     value={formik.values.salutation}
@@ -393,6 +456,7 @@ export default function FormPage() {
                     onChange={(selectedOption) => {
                       formik.setFieldValue("gender", selectedOption.value);
                     }}
+                    disabled={isEndorsment}
                     showError={false} // Set this prop to control error visibility
                   />
                 )}
@@ -408,6 +472,7 @@ export default function FormPage() {
                   value={formik.values.pan_number}
                   alphanumeric
                   maxLength={10}
+                  disabled={isEndorsment}
                   capitalize
                 />
 
@@ -454,6 +519,7 @@ export default function FormPage() {
                     required={true}
                     placeholder="dob"
                     value={formik.values.dob}
+                    disabled={isEndorsment}
                     className="w-full"
                   />
                 </div>

@@ -10,6 +10,7 @@ const CustomSelect = ({
   formik,
   placeholder,
   className,
+  disabled,
   onChange,
   label,
   required,
@@ -67,6 +68,7 @@ const CustomSelect = ({
             onChange(selectedOption);
           }
         }}
+        isDisabled={disabled}
         styles={customStyles}
       />
       {showError && hasError && (

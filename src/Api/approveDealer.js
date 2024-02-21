@@ -2,7 +2,6 @@ import { API_BASE_URL } from "./api_Endpoint";
 
 export const ApproveDealerTransaction = async (id, data) => {
   console.log(id, data);
-  debugger;
 
   var myHeaders = new Headers();
 

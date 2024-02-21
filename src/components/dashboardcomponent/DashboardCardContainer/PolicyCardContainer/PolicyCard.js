@@ -9,7 +9,7 @@ import Cancel from "../../../../assets/Icons/icons8-cancel-100 (1).png";
 import Edit from "../../../../assets/Icons/icons8-edit-64 (2).png";
 
 const PolicyCard = ({ Policy, iscancelled }) => {
-  const truncatedContent = Policy.cancel_remark;
+  const truncatedContent = Policy?.cancel_remark;
   const onShowHandler = (instance) => {
     if (instance.props.content !== truncatedContent) {
       instance.setContent(truncatedContent);
@@ -20,13 +20,13 @@ const PolicyCard = ({ Policy, iscancelled }) => {
 
   const handleDownloadPDF = async () => {
     try {
-      const pdfUrl = `https://hospicash.mylmsnow.com/api/api/downloadPolicy/${Policy?.id}`;
+      const pdfUrl = `https://hospicash.mylmsnow.com/api/api/downloadPolicy/${Policy?.policy_id}`;
       const response = await fetch(pdfUrl);
       const blob = await response.blob();
 
       const downloadLink = document.createElement("a");
       downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = `${Policy?.policy_no}_${Policy?.ins_name}.pdf`;
+      downloadLink.download = `${Policy?.policy_no}_${Policy?.full_name}.pdf`;
 
       downloadLink.click();
     } catch (error) {
@@ -93,7 +93,9 @@ const PolicyCard = ({ Policy, iscancelled }) => {
               color: "#ffff",
             }}
             onClick={() =>
-              navigate("/Form", { state: { Action: "Endorsment" } })
+              navigate("/Form", {
+                state: { Action: "Endorsment", policyID: Policy?.policy_id },
+              })
             }
             className="rounded-md cursor-pointer h-fit"
           >

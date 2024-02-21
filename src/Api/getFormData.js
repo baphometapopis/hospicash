@@ -7,7 +7,6 @@ export const get_policy_data = async () => {
 
     const result = await makeApiRequest("get_policy_data", "POST", body);
     const data = JSON.parse(result);
-    console.log(data);
     return data;
   } catch (error) {
     // Handle errors
@@ -16,7 +15,6 @@ export const get_policy_data = async () => {
 };
 
 export const get_Pincode_Data = async (pincode) => {
-  console.log(pincode);
   try {
     const body = new URLSearchParams();
     body.append("pincode", pincode);

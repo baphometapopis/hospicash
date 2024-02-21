@@ -21,7 +21,6 @@ export const getSoldPolicyData = async (dealer_id, policy_id) => {
       requestOptions
     );
     const result = await response.text();
-    console.log(result);
 
     return JSON.parse(result);
   } catch (error) {
