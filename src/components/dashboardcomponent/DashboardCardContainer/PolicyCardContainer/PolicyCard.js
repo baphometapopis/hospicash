@@ -8,14 +8,13 @@ import Download from "../../../../assets/Icons/icons8-download-64 (2).png";
 import Cancel from "../../../../assets/Icons/icons8-cancel-100 (1).png";
 import Edit from "../../../../assets/Icons/icons8-edit-64 (2).png";
 
-const PolicyCard = ({ Policy, iscancelled }) => {
+const PolicyCard = ({ Policy, iscancelled, openCancelModal }) => {
   const truncatedContent = Policy?.cancel_remark;
   const onShowHandler = (instance) => {
     if (instance.props.content !== truncatedContent) {
       instance.setContent(truncatedContent);
     }
   };
-  const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleDownloadPDF = async () => {
@@ -119,7 +118,7 @@ const PolicyCard = ({ Policy, iscancelled }) => {
               color: "#ffff",
             }}
             className="rounded-md cursor-pointer h-fit"
-            onClick={() => setisCancelModalOpen(true)}
+            onClick={() => openCancelModal(Policy)}
           >
             <Tippy
               content={"Cancel Proposal"}
@@ -144,11 +143,6 @@ const PolicyCard = ({ Policy, iscancelled }) => {
           </p>
         </Tippy>
       )}
-      <CancelModal
-        isOpen={isCancelModalOpen}
-        onClose={() => setisCancelModalOpen(false)}
-        data={Policy}
-      />
     </div>
   );
 };

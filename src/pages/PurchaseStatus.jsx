@@ -10,13 +10,27 @@ import moment from "moment";
 import { decryptData } from "../Utils/cryptoUtils";
 
 export default function PurchaseStatus() {
+  const handleDownloadPDF = async (pdfUrl) => {
+    try {
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
+
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = `${policyData?.sold_policy_no}_${policyData?.fname}.pdf`;
+
+      downloadLink.click();
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
+  };
   const navigate = useNavigate();
   const location = useLocation();
   const [policy_id] = useState(location?.state?.policy_id);
 
   const [policyData, setPolicyData] = useState();
   const getPolicyData = useCallback(async () => {
-    const localdata = localStorage.getItem("LoggedInUser");
+    const localdata = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(localdata);
 
     if (decryptdata) {
@@ -25,9 +39,10 @@ export default function PurchaseStatus() {
           decryptdata?.user_details?.id,
           policy_id
         );
-        console.log(data);
+        // console.log(data);
         if (data?.status) {
-          setPolicyData(data?.data[0]);
+          console.log(data?.data);
+          setPolicyData(data?.data);
         } else {
           toast.error("Failed to get Policy Data", {
             position: "bottom-right",
@@ -69,6 +84,7 @@ export default function PurchaseStatus() {
               type="button"
               label="Download Policy PDF"
               variant="secondary"
+              onClick={() => handleDownloadPDF(policyData?.policy_url)}
             />
           </div>
           <div className="my-4">

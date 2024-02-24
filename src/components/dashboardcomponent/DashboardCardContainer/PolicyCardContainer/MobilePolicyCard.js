@@ -1,7 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import CancelModal from "../../Modal/PolicyModal/CancelModal";
+import { useNavigate } from "react-router-dom";
 
-const MobilePolicyCard = ({ policy }) => {
+const MobilePolicyCard = ({ policy, openCancelModal }) => {
+  const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
+  const navigate = useNavigate();
+
   const getStatusStyle = (status) => {
+
     switch (status) {
       case "Pending":
         return {
@@ -39,7 +45,21 @@ const MobilePolicyCard = ({ policy }) => {
   };
 
   const statusStyle = getStatusStyle(policy.status);
+  const handleDownloadPDF = async () => {
+    try {
+      const pdfUrl = `https://hospicash.mylmsnow.com/api/api/downloadPolicy/${policy?.policy_id}`;
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
 
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = `${policy?.policy_no}_${policy?.full_name}.pdf`;
+
+      downloadLink.click();
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
+  };
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     const formattedDate = date.toLocaleDateString("en-US", {
@@ -71,17 +91,17 @@ const MobilePolicyCard = ({ policy }) => {
           <span className="mr-2">#{policy.policy_no}</span>
         </div>
         {/* <div className="flex items-center mb-2 md:mb-0"> */}
-        <span style={{ fontSize: "14px" }} className="mr-2">
-          Cust Name: {policy.ins_name}
+        <span style={{ fontSize: "14px" }} className="mr-2 my-1">
+          Cust Name: {policy.full_name}
         </span>
-        <span style={{ fontSize: "14px" }} className="mr-2 my-2 ">
-           Ins Name:{policy.ins_cmp}
-        </span>
+        {/* <span style={{ fontSize: "14px" }} className="mr-2 my-2 ">
+          Ins Name:{policy.ins_cmp}
+        </span> */}
         {/* </div> */}
-        <span className="px-4 rounded-lg" style={statusStyle}>
+        <span className="px-4 rounded-lg " style={statusStyle}>
           {/* {policy.status} */}
         </span>
-        <div className="flex items-center mb-2 md:mb-0">
+        <div className="flex items-center mb-2 md:mb-0 my-1">
           <span
             style={{
               position: "absolute",
@@ -91,7 +111,7 @@ const MobilePolicyCard = ({ policy }) => {
             }}
             className="mr-2"
           >
-            Plan:{policy.paymentDate}
+            Plan:{policy.plan_name}
           </span>
 
           <span
@@ -102,7 +122,7 @@ const MobilePolicyCard = ({ policy }) => {
               fontSize: "12px",
             }}
           >
-            {formatDate(policy.crt_date)}
+            {formatDate(policy.created_date)}
           </span>
         </div>
         <div
@@ -127,6 +147,7 @@ const MobilePolicyCard = ({ policy }) => {
               width: "100%",
               color: "white",
             }}
+            onClick={handleDownloadPDF}
           >
             Download
           </button>
@@ -140,6 +161,7 @@ const MobilePolicyCard = ({ policy }) => {
               width: "100%",
               color: "white",
             }}
+            onClick={() => setisCancelModalOpen(true)}
           >
             Cancel
           </button>
@@ -153,11 +175,21 @@ const MobilePolicyCard = ({ policy }) => {
               width: "100%",
               color: "white",
             }}
+            onClick={() =>
+              navigate("/Form", {
+                state: { Action: "Endorsment", policyID: policy?.policy_id },
+              })
+            }
           >
             Endorsement
           </button>
         </div>
       </div>
+      <CancelModal
+        isOpen={isCancelModalOpen}
+        onClose={() => setisCancelModalOpen(false)}
+        data={policy}
+      />
     </div>
   );
 };

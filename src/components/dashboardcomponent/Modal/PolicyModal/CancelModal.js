@@ -3,20 +3,21 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
+import { cancelSoldPolicy } from "../../../../Api/cancelSoldPolicy";
 
 const CancelModal = ({ isOpen, onClose, data }) => {
-  const handleSubmit = (values, { resetForm }) => {
+  console.log(data?.policy_id);
+  const handleSubmit = async (values, { resetForm }) => {
     console.log(values);
-
+    const resdata = await cancelSoldPolicy(values, data?.policy_id);
+    console.log(resdata);
     resetForm();
-
     onClose();
   };
 
   const formik = useFormik({
     initialValues: {
       file: null,
-      image: null,
       cancelation_reason_type: "",
       comments: "",
     },
@@ -27,9 +28,6 @@ const CancelModal = ({ isOpen, onClose, data }) => {
     onSubmit: handleSubmit,
     validateOnChange: true,
     validateOnBlur: true,
-    validate: () => {
-      console.log(formik.values, formik.errors);
-    },
   });
   const options = [
     { value: "Duplicate Policy", label: "Duplicate Policy" },
@@ -38,7 +36,7 @@ const CancelModal = ({ isOpen, onClose, data }) => {
 
   return (
     <div
-      style={{ zIndex: 100 }}
+      style={{ zIndex: 100, position: "absolute" }}
       className={`fixed inset-0 flex items-center justify-center ${
         isOpen ? "" : "hidden"
       }`}
@@ -61,7 +59,7 @@ const CancelModal = ({ isOpen, onClose, data }) => {
 
           <div style={{ marginTop: "10px" }}>
             <p>Policy No : {data?.policy_no}</p>
-            <p>Insured Name : {data?.ins_name}</p>
+            <p>Insured Name : {data?.full_name}</p>
           </div>
           <p style={{ marginTop: "10px" }}>Select Cancellation Reason</p>
           <Select
@@ -73,12 +71,9 @@ const CancelModal = ({ isOpen, onClose, data }) => {
             ]}
             placeholder="Select Reason"
             value={formik.values.cancelation_reason_type}
-            onChange={(option) =>
-              formik.setFieldValue(
-                "cancelation_reason_type",
-                option?.value || ""
-              )
-            }
+            onChange={(option) => {
+              formik.setFieldValue("cancelation_reason_type", option);
+            }}
             styles={{
               control: (provided, state) => ({
                 ...provided,
@@ -109,6 +104,7 @@ const CancelModal = ({ isOpen, onClose, data }) => {
               name="file"
               accept=".pdf, .png, .jpg, .jpeg"
               onChange={(e) => formik.setFieldValue("file", e.target.files[0])}
+              // onChange={(e) => console.log(e)}
             />
             {formik.errors.file && (
               <p className="text-red-500 text-sm mt-1">{formik.errors.file}</p>

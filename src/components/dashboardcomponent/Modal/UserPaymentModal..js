@@ -63,7 +63,7 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
 
   const partyOptions = [
     { value: "Deposit", label: "Deposit" },
-    { value: "Withdraw", label: "Withdraw" },
+    { value: "Withdrawal", label: "Withdrawal" },
   ];
 
   const accType = [
@@ -122,7 +122,7 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
   }
 
   const getLocalData = useCallback(async () => {
-    const data = localStorage.getItem("LoggedInUser");
+    const data = localStorage.getItem("Acemoney_Cache");
 
     if (data) {
       const decryptdata = decryptData(data);

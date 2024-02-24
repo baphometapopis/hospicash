@@ -132,7 +132,7 @@ export default function MonthlyFileUpload() {
     [settotalFileUploaded, setTotalRecords, setinQueueList]
   );
   const getLocalData = useCallback(async () => {
-    const localData = localStorage.getItem("LoggedInUser");
+    const localData = localStorage.getItem("Acemoney_Cache");
 
     if (localData !== null && localData !== undefined) {
       const decryptdata = decryptData(localData);
@@ -144,7 +144,7 @@ export default function MonthlyFileUpload() {
   }, [getExcelInQueueList, setLoginData]);
 
   const dealerTransactionList = useCallback(async () => {
-    const data = localStorage.getItem("LoggedInUser");
+    const data = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(data);
 
     if (decryptdata) {

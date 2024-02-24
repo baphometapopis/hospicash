@@ -13,7 +13,10 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import "react-datepicker/dist/react-datepicker.css";
-import { generatePolicy } from "../../Api/generatePolicy.js";
+import {
+  Update_generatePolicy,
+  generatePolicy,
+} from "../../Api/generatePolicy.js";
 import { useDispatch, useSelector } from "react-redux";
 import { resetUserData, updateUserData } from "../../Redux/userSlice.js.js";
 import moment from "moment";
@@ -45,29 +48,58 @@ export default function FormPage() {
       location?.state?.Action,
       "lllllllllllllllllllllllllllllllllllll"
     );
-    const data = await generatePolicy(
-      LoginData?.user_details?.id,
-      formik.values
-    );
-    if (data?.status) {
-      navigation("/confirmed", { state: { policy_id: data?.policy_id } });
+    if (!isEndorsment) {
+      const data = await generatePolicy(
+        LoginData?.user_details?.id,
+        formik.values
+      );
+      if (data?.status) {
+        navigation("/confirmed", { state: { policy_id: data?.policy_id } });
 
-      toast.success(data?.message, {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-      });
-      dispatch(resetUserData());
+        toast.success(data?.message, {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+        dispatch(resetUserData());
+      } else {
+        toast.error(data?.message, {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+      }
     } else {
-      toast.error(data?.message, {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-      });
+      console.log("hitting endorsmwnt api ");
+      const data = await Update_generatePolicy(
+        LoginData?.user_details?.id,
+        formik.values,
+        location?.state?.policyID
+      );
+      if (data?.status) {
+        navigation("/confirmed", { state: { policy_id: data?.policy_id } });
+
+        toast.success(data?.message, {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+        dispatch(resetUserData());
+      } else {
+        toast.error(data?.message, {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+      }
     }
   };
 
@@ -189,7 +221,7 @@ export default function FormPage() {
   };
 
   const getlocalData = useCallback(async () => {
-    const data = localStorage.getItem("LoggedInUser");
+    const data = localStorage.getItem("Acemoney_Cache");
     if (data) {
       const decryptdata = decryptData(data);
       setLoginData(decryptdata);
@@ -244,10 +276,7 @@ export default function FormPage() {
     formik.setFieldValue("addr1", data?.data[0]?.addr1);
     formik.setFieldValue("addr2", data?.data[0]?.addr2);
     formik.setFieldValue("appointee_age", data?.data[0]?.appointee_age);
-    formik.setFieldValue(
-      "appointee_full_name",
-      data?.data[0]?.appointee_full_name
-    );
+    formik.setFieldValue("appointee_name", data?.data[0]?.appointee_full_name);
     formik.setFieldValue(
       "appointee_relation",
       Number(data?.data[0]?.appointee_relation)
@@ -271,17 +300,8 @@ export default function FormPage() {
       "nominee_relation",
       Number(data?.data[0]?.nominee_relation)
     );
-    formik.setFieldValue("appointee_age", data?.data[0]?.appointee_age);
     formik.setFieldValue("salutation", Number(data?.data[0]?.salutation));
 
-    formik.setFieldValue(
-      "appointee_full_name",
-      data?.data[0]?.appointee_full_name
-    );
-    formik.setFieldValue(
-      "appointee_relation",
-      data?.data[0]?.appointee_relation
-    );
     formik.setFieldValue("mname", data?.data[0]?.mname);
     formik.setFieldValue("lname", data?.data[0]?.lname);
 

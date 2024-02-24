@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
 import PolicyCard from "./DashboardCardContainer/PolicyCardContainer/PolicyCard";
+import CancelModal from "./Modal/PolicyModal/CancelModal";
 
 const DealerSoldPolicyTable = ({ data }) => {
+  const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
+  const [seletedCancelPolicyData, setseletedCancelPolicyData] = useState("");
+
+  const openCancelModal = (prop) => {
+    console.log(prop);
+    setisCancelModalOpen(true);
+    setseletedCancelPolicyData(prop);
+  };
+
   const columns = [
     {
       field: "id",
@@ -49,7 +59,9 @@ const DealerSoldPolicyTable = ({ data }) => {
       headerClassName: "super-app-theme--header",
 
       width: 210,
-      renderCell: (params) => <PolicyCard Policy={params?.row} />, // Pass policy_no or id to PolicyCard
+      renderCell: (params) => (
+        <PolicyCard Policy={params?.row} openCancelModal={openCancelModal} />
+      ), // Pass policy_no or id to PolicyCard
     },
   ];
 
@@ -135,7 +147,11 @@ const DealerSoldPolicyTable = ({ data }) => {
         border: "none",
       }}
     >
-      {" "}
+      <CancelModal
+        isOpen={isCancelModalOpen}
+        onClose={() => setisCancelModalOpen(false)}
+        data={seletedCancelPolicyData}
+      />
       <DataGrid
         pagination={false}
         rows={data || []}

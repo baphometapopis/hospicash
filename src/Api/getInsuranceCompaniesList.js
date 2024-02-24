@@ -1,4 +1,5 @@
 import makeApiRequest from "./apiCaller";
+import { API_BASE_URL } from "./api_Endpoint";
 
 export const get_Insurance_Companies_List = async () => {
   try {
@@ -12,3 +13,29 @@ export const get_Insurance_Companies_List = async () => {
   }
 };
 
+export const Getpartypaymentdetails = async (id) => {
+  var myHeaders = new Headers();
+
+  var urlencoded = new URLSearchParams();
+  urlencoded.append("ic_id", id);
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: urlencoded,
+    redirect: "follow",
+  };
+
+  // Returning the fetch promise
+  return fetch(`${API_BASE_URL}/party-payment-details`, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      // Returning the JSON data
+      return result;
+    })
+    .catch((error) => {
+      console.log("error", error);
+      // Returning an error object or message if needed
+      return { error: "An error occurred while fetching data." };
+    });
+};

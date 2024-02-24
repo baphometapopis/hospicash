@@ -1,21 +1,22 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { Link, useNavigate } from "react-router-dom";
 import { decryptData } from "../Utils/cryptoUtils";
+import { Popconfirm } from "antd";
 
 export default function Sidebar({ opened }) {
   const [isopened, setisopened] = useState(true);
   // eslint-disable-next-line no-unused-vars
   const [loginData, setLoginData] = useState();
   const [isAdmin, setisAdmin] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false); // State for confirmation popup
 
   const navigate = useNavigate();
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
   const getlocalData = async () => {
-    const data = localStorage.getItem("LoggedInUser");
+    const data = localStorage.getItem("Acemoney_Cache");
     if (data) {
       const decryptdata = decryptData(data);
       setLoginData(decryptdata);
@@ -56,7 +57,6 @@ export default function Sidebar({ opened }) {
       Admin: true,
       user: true,
     },
-
     {
       id: 2,
       order: 2,
@@ -75,7 +75,6 @@ export default function Sidebar({ opened }) {
       Admin: true,
       user: true,
     },
-
     {
       id: 4,
       order: 4,
@@ -84,6 +83,15 @@ export default function Sidebar({ opened }) {
       path: "/soldPolicy",
       Admin: false,
       user: true,
+    },
+    {
+      id: 4,
+      order: 4,
+      label: "Pending Policy",
+      icon: "Pending_actions",
+      path: "/Pending_Policy",
+      Admin: true,
+      user: false,
     },
     {
       id: 5,
@@ -112,7 +120,29 @@ export default function Sidebar({ opened }) {
       Admin: false,
       user: true,
     },
+    // {
+    //   id: 8,
+    //   order: 8,
+    //   label: "logout",
+    //   icon: "settings_power",
+    //   // path: "",
+    //   Admin: true,
+    //   user: true,
+    // },
   ];
+
+  // Function to handle logout and display confirmation
+  const handleLogout = () => {
+    setShowConfirmation(true);
+  };
+
+  // Function to confirm logout and perform logout action
+  const confirmLogout = () => {
+    // Perform logout action here, such as clearing local storage, etc.
+    localStorage.removeItem("LoggedInUser");
+    navigate("/"); // Navigate to login page after logout
+  };
+
   return (
     <>
       {isopened && (
@@ -159,19 +189,45 @@ export default function Sidebar({ opened }) {
                   </Tippy>
                 </li>
               ))}
+            {/* Logout button with red color if showConfirmation is true */}
+            <Popconfirm
+              title="Logout"
+              description="Are you sure you want to Logout?"
+              onConfirm={confirmLogout}
+              destroyTooltipOnHide={true}
+              okText="Yes"
+              okButtonProps={{ style: { backgroundColor: "#0089D1" } }}
+              cancelText="No"
+              placement="right"
+              onCancel={() => console.log("kjhkjgcfd")}
+            >
+              <li
+                className={`hover:bg-secondary focus-within:bg-secondary focus-within:hover:bg-secondary w-full `}
+                key="logout"
+              >
+                <Tippy
+                  content="Logout"
+                  placement="right"
+                  arrow={false}
+                  className="rounded-sm text-xs"
+                >
+                  <button
+                    onClick={handleLogout}
+                    className="flex w-full py-2 px-4 items-center justify-start md:justify-center "
+                  >
+                    <span className="material-symbols-outlined mr-3 md:mr-0   focus-within:text-warn-darkest focus-within:hover:text-white">
+                      settings_power
+                    </span>
+                    <span className="md:hidden text-white text-sm">Logout</span>
+                  </button>
+                </Tippy>
+              </li>
+            </Popconfirm>
           </ul>
         </aside>
       )}
+
+      {/* Confirmation popup */}
     </>
   );
 }
-
-// .sidebar-opened {
-//   opacity: 1;
-//   transition: opacity 0.3s ease-in-out;
-// }
-
-// .sidebar-closed {
-//   opacity: 0;
-//   transition: opacity 0.3s ease-in-out;
-// }

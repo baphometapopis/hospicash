@@ -2,11 +2,16 @@ import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import AddPAyment from "../../assets/Icons/icons8-add-payment-24.png";
 import chooseImg from "../../assets/img/ChooseBank.jpeg";
-import { get_Insurance_Companies_List } from "../../Api/getInsuranceCompaniesList";
+import {
+  Getpartypaymentdetails,
+  get_Insurance_Companies_List,
+} from "../../Api/getInsuranceCompaniesList";
 import { getBankTransactionList } from "../../Api/getBankTransactionList";
 import { decryptData } from "../../Utils/cryptoUtils";
 import IconFilter from "../../assets/Icons/IconFIlter.png";
 import "./Transaction.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "react-datepicker/dist/react-datepicker.css";
 import PaymentModal from "../../components/dashboardcomponent/Modal/PaymentModal";
 import AccountBankTransactionListTable from "../../components/dashboardcomponent/DataTable";
@@ -26,6 +31,8 @@ export default function Transactions() {
   const [totalRecords, setTotalRecords] = useState();
   const [bankTransactionList, setBankTransactionList] = useState([]);
   const [selectedIC, setSelectedIC] = useState();
+  const [selectedICPaymentDetails, setselectedICPaymentDetails] = useState();
+
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const [pageNumber, setpageNumber] = useState(0);
@@ -56,6 +63,23 @@ export default function Transactions() {
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
 
+  const getICPartyPAymentDetails = async (id) => {
+    setSelectedIC(id);
+    console.log(id?.id);
+    const data = await Getpartypaymentdetails(id?.id);
+    if (data?.status) {
+      setselectedICPaymentDetails(data?.data);
+    } else {
+      toast.error(data?.message, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
+    console.log(id);
+  };
   useEffect(() => {
     const handleWindowResize = () => {
       setWindowWidth([window.innerWidth]);
@@ -72,7 +96,7 @@ export default function Transactions() {
     };
   }, [windowWidth]);
   const dealerTransactionList = useCallback(async () => {
-    const data = localStorage.getItem("LoggedInUser");
+    const data = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(data);
 
     if (decryptdata) {
@@ -87,7 +111,6 @@ export default function Transactions() {
           const data = await getBankTransactionList(listdata);
           setBankTransactionList(data?.data);
           setTotalRecords(data?.recordsTotal);
-          console.log(data?.recordsTotal);
         } catch (error) {
           console.error("Error fetching data:", error);
           // Handle the error as needed
@@ -130,13 +153,13 @@ export default function Transactions() {
           alt="cover_image"
         />
       </div>
-      <div className=" grid md:grid-cols-3    gap-2 w-[85%]  lg:max-h-80 min-h-fit -mt-20  rounded mb-4 ">
-        <div className=" bg-white h-64 overflow-y-scroll hide-scrollbar p-2 row-span-2 col-span-2 w-full">
+      <div className=" grid md:grid-cols-3    gap-2 w-[85%]  lg:max-h-80 min-h-fit -mt-20  rounded-lg mb-4  ">
+        <div className=" border border-neutral-light rounded bg-white h-64 overflow-y-scroll hide-scrollbar p-2 row-span-2 col-span-2 w-full">
           {" "}
           {insuranceCompaniesList?.map((data, index) => (
             <div
-              onClick={() => setSelectedIC(data)}
-              className={`relative w-full h-fit border mb-1`}
+              onClick={() => getICPartyPAymentDetails(data)}
+              className={`relative w-full h-fit border mb-1 rounded  border-neutral-light`}
             >
               <div
                 style={{
@@ -154,7 +177,7 @@ export default function Transactions() {
                 <img
                   src={data.icon}
                   alt={data.title}
-                  className="w-8 h-10 mx-auto mb-4 "
+                  className="w-8 h-10 mx-auto mb-4  rounded-full"
                   style={{ position: "absolute", right: 5, bottom: -10 }}
                 />
                 <p className="text-white text-xl ">{data.value}</p>
@@ -162,7 +185,7 @@ export default function Transactions() {
             </div>
           ))}
         </div>
-        <div className="h-64 min-w-[250px] bg-[#0071ab] col-span-2 md:col-span-1 overflow-scroll hide-scrollbar justify-between">
+        <div className="border border-neutral-light rounded h-64 min-w-[250px] bg-[#0071ab] col-span-2 md:col-span-1 overflow-scroll hide-scrollbar justify-between">
           {" "}
           <p style={{ textAlign: "center", padding: "12px", color: "white" }}>
             {selectedIC?.name || "select an IC "}
@@ -189,7 +212,8 @@ export default function Transactions() {
                     fontSize: "14px",
                   }}
                 >
-                  DEPOSIT AMOUNT <span> 1174118.00</span>
+                  DEPOSIT AMOUNT{" "}
+                  <span> {selectedICPaymentDetails?.deposite_amount}</span>
                 </p>
                 <p
                   style={{
@@ -200,7 +224,11 @@ export default function Transactions() {
                     fontSize: "14px",
                   }}
                 >
-                  SOLD POLICY COUNT <span> 1174118.00</span>
+                  SOLD POLICY COUNT{" "}
+                  <span>
+                    {" "}
+                    {`${selectedICPaymentDetails?.policy_count ?? "-"}`}
+                  </span>
                 </p>
                 <p
                   style={{
@@ -211,7 +239,10 @@ export default function Transactions() {
                     fontSize: "14px",
                   }}
                 >
-                  SOLD POLICY AMOUNT <span> 1174118.00</span>
+                  SOLD POLICY AMOUNT{" "}
+                  <span>
+                    {`${selectedICPaymentDetails?.policy_primium ?? "-"}`}
+                  </span>
                 </p>
                 <p
                   style={{
@@ -222,7 +253,11 @@ export default function Transactions() {
                     fontSize: "14px",
                   }}
                 >
-                  BALANCE AMOUNT <span> 1174118.00</span>
+                  BALANCE AMOUNT{" "}
+                  <span>
+                    {" "}
+                    {`${selectedICPaymentDetails?.balance_amount ?? "-"}`}
+                  </span>
                 </p>
                 {/* <p
                   style={{
@@ -244,7 +279,7 @@ export default function Transactions() {
         <div className="container mx-auto p-4">
           <div className="flex gap-5">
             <h1 className="text-2xl font-bold mb-4">Transaction List</h1>
-            {true && (
+            {!isMobile && (
               <img
                 src={IconFilter}
                 className="w-[35px]  h-[30px]"

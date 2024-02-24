@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import BrandLogo from "../assets/img/brandLogo.png";
 
@@ -7,7 +7,7 @@ import Input from "../components/ui/Input";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { login } from "../Api/loginApi";
+import { Globallogin, login } from "../Api/loginApi";
 import { encryptData } from "../Utils/cryptoUtils";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -56,7 +56,7 @@ export default function Login() {
         // Attempt to store data in local storage
         // Check if the user is logged in after storing data
         const isSetSuccessful = setItemToLocalStorage(
-          "LoggedInUser",
+          "Acemoney_Cache",
           encryptedData
         );
 
@@ -89,6 +89,83 @@ export default function Login() {
     }
     setLoading(false);
   };
+
+  const { pathname, search } = window.location;
+  console.log(pathname, search);
+  console.log(window.location.origin);
+
+  // Parse the URL parameters
+  const urlParams = new URLSearchParams(search);
+  const redirectionKey = urlParams.get("redirection_key");
+  const GlobalhandleLoginApi = async (key) => {
+    setLoading(true);
+
+    try {
+      const loginResponse = await Globallogin(key);
+
+      if (loginResponse?.status) {
+        const encryptedData = encryptData(loginResponse.data);
+        console.log(loginResponse);
+
+        // Attempt to store data in local storage
+        // Check if the user is logged in after storing data
+        const isSetSuccessful = setItemToLocalStorage(
+          "Acemoney_Cache",
+          encryptedData
+        );
+
+        if (isSetSuccessful) {
+          toast.success(loginResponse?.message, {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+          });
+
+          navigation("/Home");
+        }
+      } else {
+        console.log(loginResponse.message);
+
+        toast.error(loginResponse?.message, {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+        });
+        navigation("/");
+      }
+    } catch (error) {
+      console.error("Error during Global login:", error);
+      // Handle other errors if needed
+      toast.error("An error occurred during login");
+    }
+    setLoading(false);
+  };
+  // Check if the redirection_key exists
+  useEffect(() => {
+    if (redirectionKey) {
+      console.log("Redirection Key Found:", redirectionKey);
+      GlobalhandleLoginApi(redirectionKey);
+    }
+  }, []);
+  //   useEffect(() => {
+  //   const disableBack = () => {
+  //     window.history.pushState(null, "", window.location.href);
+  //     window.onpopstate = () => {
+  //       window.history.pushState(null, "", window.location.href);
+  //     };
+  //   };
+
+  //   disableBack();
+
+  //   return () => {
+  //     window.onpopstate = null;
+  //   };
+  // }, []);
+
   return (
     <div className="flex justify-center  items-center p-2 h-[100vh]">
       {loading && <Loader />}

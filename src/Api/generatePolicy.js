@@ -1,15 +1,15 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
-export const generatePolicy = (id, data) => {
+export const generatePolicy = async (id, data) => {
   console.log(id, data);
   var myHeaders = new Headers();
   var urlencoded = new URLSearchParams();
   urlencoded.append("dealer_id", id);
   urlencoded.append("plan_id", data?.plan_id);
   urlencoded.append("salutation", data?.salutation);
-  urlencoded.append("first_name", data?.fname);
-  urlencoded.append("middel_name", data?.mname);
-  urlencoded.append("last_name", data?.lname);
+  urlencoded.append("fname", data?.fname);
+  urlencoded.append("mname", data?.mname);
+  urlencoded.append("lname", data?.lname);
   urlencoded.append("mobile_no", data?.mobile_no);
   urlencoded.append("gender", data?.gender);
   urlencoded.append("dob", data?.dob);
@@ -49,16 +49,16 @@ export const generatePolicy = (id, data) => {
     });
 };
 
-export const Update_generatePolicy = (id, data) => {
+export const Update_generatePolicy = async (id, data, policy_id) => {
   console.log(id, data);
   var myHeaders = new Headers();
   var urlencoded = new URLSearchParams();
   urlencoded.append("dealer_id", id);
-  // urlencoded.append("plan_id", data?.plan_id);
+  urlencoded.append("policy_id", policy_id);
   urlencoded.append("salutation", data?.salutation);
-  urlencoded.append("first_name", data?.fname);
-  urlencoded.append("middel_name", data?.mname);
-  urlencoded.append("last_name", data?.lname);
+  urlencoded.append("fname", data?.fname);
+  urlencoded.append("mname", data?.mname);
+  urlencoded.append("lname", data?.lname);
   urlencoded.append("mobile_no", data?.mobile_no);
   urlencoded.append("gender", data?.gender);
   urlencoded.append("dob", data?.dob);
@@ -85,7 +85,10 @@ export const Update_generatePolicy = (id, data) => {
   };
 
   // Returning the fetch promise
-  return fetch(`${API_BASE_URL}/generated_policy_data`, requestOptions)
+  return fetch(
+    `${API_BASE_URL}/updated-endorsement-policy-data`,
+    requestOptions
+  )
     .then((response) => response.json())
     .then((result) => {
       // Returning the JSON data

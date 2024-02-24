@@ -57,7 +57,7 @@ export default function TransactionsList() {
     };
   }, [windowWidth]);
   const dealerTransactionList = useCallback(async () => {
-    const data = localStorage.getItem("LoggedInUser");
+    const data = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(data);
     setloginData(decryptdata);
 

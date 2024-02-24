@@ -31,10 +31,9 @@ export const checkTransactionNo = async (id, data) => {
 
 export const Approve_Dealer_Transaction = async (id, data, status) => {
   console.log(data, "Approve_Dealer_Transaction");
-  var myHeaders = new Headers();
 
   var urlencoded = new URLSearchParams();
-  urlencoded.append("dealer_bank_tran_id", data?.dealer_bank_tran_id);
+  urlencoded.append("dealer_bank_tran_id", data?.dealer_transaction_id);
   urlencoded.append("dealer_id", data?.dealer_id);
   urlencoded.append("amount", data?.deposit_amount);
   urlencoded.append("transaction_type", data?.transaction_type);
@@ -43,7 +42,6 @@ export const Approve_Dealer_Transaction = async (id, data, status) => {
 
   var requestOptions = {
     method: "POST",
-    headers: myHeaders,
     body: urlencoded,
     redirect: "follow",
   };

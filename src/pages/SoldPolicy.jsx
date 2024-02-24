@@ -7,6 +7,7 @@ import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 import DealerSoldPolicyTable from "../components/dashboardcomponent/DealerSoldPolicyTable";
 import { SearchContainer } from "../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../components/Mobile FIlterCOmponent/FilterDrawer";
+import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
 
 export default function SoldPolicy() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -121,7 +122,15 @@ export default function SoldPolicy() {
 
           {isMobile && <SearchContainer />}
 
-          <DealerSoldPolicyTable data={poicyList} />
+          {isMobile ? (
+            <DealerSoldPolicyTable data={poicyList} />
+          ) : (
+            <>
+              {poicyList?.map((data) => (
+                <MobilePolicyCard key={data.id} policy={data} />
+              ))}
+            </>
+          )}
           {/*           
           {isMobile && (
             <div

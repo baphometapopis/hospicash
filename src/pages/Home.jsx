@@ -1072,7 +1072,7 @@ export default function Home() {
   //   }
   // };
   const getLocalData = async () => {
-    const localData = localStorage.getItem("LoggedInUser");
+    const localData = localStorage.getItem("Acemoney_Cache");
 
     if (localData !== null || localData !== undefined) {
       const decryptdata = decryptData(localData);

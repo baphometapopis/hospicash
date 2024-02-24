@@ -1,6 +1,12 @@
 import "./App.css";
 
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./AppLayout";
@@ -17,16 +23,23 @@ import { Provider } from "react-redux";
 import store from "./Redux/store";
 import AdminLogin from "./pages/AdminLogin";
 import MonthlyFileUpload from "./pages/FileUploadPage";
+import ApprovePendingPolicy from "./pages/Admin/ApprovePendingPolicy";
+import { useEffect, useState } from "react";
 
 function App() {
-  const { pathname, search } = window.location;
-  console.log(pathname, search);
-  console.log(window.location.origin);
-  // const referrer = document.referrer;
-  const referrer = new URLSearchParams(window.location.search).get("referrer");
+  // Check for redirection_key
+  const [isRedirect, setIsRedirect] = useState(false);
+  const { search } = window.location;
+  const urlParams = new URLSearchParams(search);
+  const redirectionKey = urlParams.get("redirection_key");
 
-  console.log(referrer, ";ljihkujgyf");
+  // If redirection_key is found, redirect to Login
 
+  useEffect(() => {
+    if (redirectionKey) {
+      setIsRedirect(true);
+    }
+  }, []);
   return (
     <>
       <Provider store={store}>
@@ -39,6 +52,11 @@ function App() {
               <Route path="transaction" element={<Transactions />}></Route>
               <Route path="soldPolicy" element={<SoldPolicy />}></Route>
               <Route path="confirmed" element={<PurchaseStatus />}></Route>
+              <Route
+                path="Pending_Policy"
+                element={<ApprovePendingPolicy />}
+              ></Route>
+
               <Route
                 path="Monthly_Policy"
                 element={<MonthlyFileUpload />}
@@ -61,7 +79,7 @@ function App() {
             <Route path="login" element={<Login />}></Route>
             <Route path="Admin" element={<AdminLogin />}></Route>
 
-            <Route path="*" element={<PageNotFound />} />
+            {/* {!isRedirect && <Route path="*" element={<PageNotFound />} />} */}
           </Routes>
         </BrowserRouter>
       </Provider>

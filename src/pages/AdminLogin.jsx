@@ -55,7 +55,7 @@ export default function AdminLogin() {
         // Attempt to store data in local storage
         // Check if the user is logged in after storing data
         const isSetSuccessful = setItemToLocalStorage(
-          "LoggedInUser",
+          "Acemoney_Cache",
           encryptedData
         );
 

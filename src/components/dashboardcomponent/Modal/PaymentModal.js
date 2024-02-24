@@ -44,7 +44,7 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
   }
 
   const getlocalData = useCallback(async () => {
-    const data = localStorage.getItem("LoggedInUser");
+    const data = localStorage.getItem("Acemoney_Cache");
     if (data) {
       const decryptdata = decryptData(data);
       setLocalData(decryptdata);

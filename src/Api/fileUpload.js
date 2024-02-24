@@ -1,6 +1,7 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
 export const fileUpload = async (id, file) => {
+  console.log(id, file);
   try {
     var myHeaders = new Headers();
 
