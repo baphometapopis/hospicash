@@ -7,7 +7,7 @@ import { Popconfirm } from "antd";
 import { Approve_Dealer_Transaction } from "../../../../Api/checkTransactionNo";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const TransactionListTable = ({ data, role, loginData }) => {
+const TransactionListTable = ({ data, role, loginData, handlePageChange }) => {
   const [page, setPage] = useState(1); // State to track current page
   const [pageSize, setPageSize] = useState(10);
   const approveDealer = async (props, status) => {
@@ -18,7 +18,9 @@ const TransactionListTable = ({ data, role, loginData }) => {
       status
     );
     if (resdata?.status) {
+      handlePageChange();
     } else {
+      handlePageChange();
       toast.error("Failed to Update Status", {
         position: "bottom-right",
         autoClose: 1000,
@@ -121,8 +123,8 @@ const TransactionListTable = ({ data, role, loginData }) => {
       },
     },
   ];
-  // if (role === "admin") {
-  if (true) {
+  if (role === "admin") {
+    // if (true) {
     columns.push({
       field: "",
       headerName: "Action",
@@ -138,7 +140,7 @@ const TransactionListTable = ({ data, role, loginData }) => {
               okText="Approve"
               okButtonProps={{ style: { backgroundColor: "#0089D1" } }}
               cancelText="Reject"
-              onCancel={() => approveDealer(params?.row, "reject")}
+              onCancel={() => approveDealer(params?.row, "rejected")}
             >
               <div
                 style={{

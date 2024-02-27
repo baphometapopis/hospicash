@@ -26,6 +26,7 @@ export default function TransactionsList() {
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
+
   // const [searchParam, setSearchParam] = useState({
   //   value: "",
   //   param: "",
@@ -34,7 +35,8 @@ export default function TransactionsList() {
   // });
 
   const handlePageChange = (pageNumber) => {
-    console.log(pageNumber);
+    console.log(pageNumber, "jhfd");
+
     setCurrentPage(pageNumber);
     setIndexOfFirstRecord((pageNumber - 1) * 10 + 1);
   };
@@ -127,6 +129,7 @@ export default function TransactionsList() {
             data={poicyList}
             role={loginData?.user_details?.role_type}
             loginData={loginData}
+            handlePageChange={dealerTransactionList}
           />
           {false && (
             <div
