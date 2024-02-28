@@ -17,6 +17,7 @@ import Total from "../assets/Icons/icons8-rupee-64.png";
 import Pending from "../assets/Icons/icons8-pending-50.png";
 import Success from "../assets/Icons/icons8-card-payment-80.png";
 import CompanyBarChart from "../components/dashboardcomponent/DashboardCardContainer/Charts/companybarchart";
+import SparklineChart from "../components/dashboardcomponent/DashboardCardContainer/Charts/AdminChart1";
 export default function Home() {
   // const [selectedFile, setSelectedFile] = useState();
   // const [, setisuploadError] = useState(false);
@@ -1117,29 +1118,50 @@ export default function Home() {
   return (
     <div className="flex  w-full   flex-col h-[calc(100vh-48px)] ">
       <div className="dashboard-container ">
-        <div className="grid-item item1">
-          <h2>Name : {LoginData?.dealer_name}</h2>
-          <h2>PanCard No : {LoginData?.pan_no}</h2>
-          <div className="flex  items-center">
-            <span>
-              <img src={phone} className="w-6 pr-2" alt="email" />
-            </span>{" "}
-            {LoginData?.mobile}
+        {LoginData?.role_type === "admin" ? (
+          <div className="grid-item item1Admin">
+            <div className="item1Admin-left">
+              <SparklineChart title={"Pending"} />
+            </div>
+            <div className="item1Admin-left">
+              <SparklineChart title={"Success"} />
+            </div>{" "}
           </div>
-          <div className="flex  items-center">
-            <span>
-              <img src={email} className="w-6 pr-2 h-4" alt="email" />
-            </span>{" "}
-            {LoginData?.email}
+        ) : (
+          <div
+            style={{
+              boxShadow:
+                "rgba(149, 157, 165, 0.2) 0px 8px 24px;    transition: background-color 0.3s ease, transform 0.3s ease" /* Smooth transition for background color and transform */,
+            }}
+            className="grid-item item1"
+          >
+            <h2>Name : {LoginData?.dealer_name}</h2>
+            <h2>PanCard No : {LoginData?.pan_no}</h2>
+            <div className="flex  items-center">
+              <span>
+                <img src={phone} className="w-6 pr-2" alt="email" />
+              </span>{" "}
+              {LoginData?.mobile}
+            </div>
+            <div className="flex  items-center">
+              <span>
+                <img src={email} className="w-6 pr-2 h-4" alt="email" />
+              </span>{" "}
+              {LoginData?.email}
+            </div>
+            <div className="flex  items-center">
+              <span>
+                <img
+                  src={addicon1}
+                  className="w-6 pr-2 h-4"
+                  alt="address icon"
+                />
+              </span>{" "}
+              {LoginData?.add1} {LoginData?.add2} {LoginData?.location}{" "}
+              {LoginData?.state} {LoginData?.pin_code}
+            </div>
           </div>
-          <div className="flex  items-center">
-            <span>
-              <img src={addicon1} className="w-6 pr-2 h-4" alt="address icon" />
-            </span>{" "}
-            {LoginData?.add1} {LoginData?.add2} {LoginData?.location}{" "}
-            {LoginData?.state} {LoginData?.pin_code}
-          </div>
-        </div>
+        )}
         <div className="grid-item item2">
           <div className="item2-left">
             <RadialBarChart />

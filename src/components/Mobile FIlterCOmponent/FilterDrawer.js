@@ -4,9 +4,9 @@ const { RangePicker } = DatePicker;
 
 const FilterDrawer = ({ visible, onClose }) => {
   const options = [
-    { value: "Bank A", label: "Bank A" },
-    { value: "Bank B", label: "Bank B" },
-    { value: "Bank C", label: "Bank C" },
+    { value: "Option1", label: "Option1" },
+    { value: "Option2", label: "Option2" },
+    { value: "Option3", label: "Option3" },
   ];
   const handleDateChange = (dates, dateStrings) => {
     console.log("Selected Dates:", dates);

@@ -45,14 +45,6 @@ export default function Header({ toggle }) {
         const formattedNumber = formatIndianRupees(balance?.wallet_balance);
 
         setavailableBalance(formattedNumber);
-      } else {
-        toast.error("Failed to Fetch Wallet Balance", {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-        });
       }
     } else {
       navigate("/");
@@ -65,7 +57,7 @@ export default function Header({ toggle }) {
         pauseOnHover: true,
       });
     }
-  }, [setavailableBalance, navigate]);
+  }, []);
 
   useEffect(() => {
     getwalletBalance();
@@ -115,7 +107,7 @@ export default function Header({ toggle }) {
           )}
 
           <div className="hidden md:block">
-            <div className="bg-primary-lightest rounded-full h-8 w-8"></div>
+            {/* <div className="bg-primary-lightest rounded-full h-8 w-8 cursor-not-allowed"></div> */}
           </div>
         </div>
         <PaymentModal isOpen={isPaymentModalOpen} onClose={closePaymentModal} />

@@ -135,7 +135,7 @@ const TransactionListTable = ({ data, role, loginData, handlePageChange }) => {
           {params?.row?.approval_status === "pending" && (
             <Popconfirm
               title="Change Status"
-              description="Are you sure you want to Change this Transaction Status?"
+              description="Are you sure you want to Change +this Transaction Status?"
               onConfirm={() => approveDealer(params?.row, "approved")}
               okText="Approve"
               okButtonProps={{ style: { backgroundColor: "#0089D1" } }}

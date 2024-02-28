@@ -44,9 +44,9 @@ export default function MonthlyFileUpload() {
   });
 
   const options = [
-    { value: "Bank A", label: "Bank A" },
-    { value: "Bank B", label: "Bank B" },
-    { value: "Bank C", label: "Bank C" },
+    { value: "Option1", label: "Option1" },
+    { value: "Option2", label: "Option2" },
+    { value: "Option3", label: "Option3" },
   ];
   const [selectedFile, setSelectedFile] = useState();
   const [showUpload, setshowUpload] = useState(true);
@@ -71,7 +71,8 @@ export default function MonthlyFileUpload() {
         pauseOnHover: true,
       });
     } else {
-      toast.error("File Upload Failed", {
+      console.log(data);
+      toast.error(data?.message, {
         position: "bottom-right",
         autoClose: 1000,
         hideProgressBar: false,
@@ -136,7 +137,6 @@ export default function MonthlyFileUpload() {
 
     if (localData !== null && localData !== undefined) {
       const decryptdata = decryptData(localData);
-      console.log(decryptdata);
       setLoginData(decryptdata?.user_details);
       getExcelInQueueList(decryptdata?.user_details?.id);
       getExcelInQueueList(decryptdata?.user_details?.id, "all");

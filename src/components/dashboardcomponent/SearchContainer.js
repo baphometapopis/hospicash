@@ -12,7 +12,7 @@ export const SearchContainer = () => {
   };
 
   const options = [
-    { value: "Bank A", label: "Bank A" },
+    { value: "Option1", label: "Option1" },
     { value: "Bank B", label: "Bank B" },
     { value: "Bank C", label: "Bank C" },
   ];

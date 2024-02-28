@@ -249,7 +249,7 @@ export default function TransactionsList() {
               </button>
             </div>
           </div>
-        </div>{" "}
+        </div>
       </div>
     </div>
   );

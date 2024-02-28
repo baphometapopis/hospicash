@@ -6,6 +6,7 @@ import {
   Route,
   Navigate,
   useNavigate,
+  useNavigation,
 } from "react-router-dom";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
@@ -25,17 +26,38 @@ import AdminLogin from "./pages/AdminLogin";
 import MonthlyFileUpload from "./pages/FileUploadPage";
 import ApprovePendingPolicy from "./pages/Admin/ApprovePendingPolicy";
 import { useEffect, useState } from "react";
+import { IdleTimeout } from "./Utils/IdleTimeout";
+import { decryptData } from "./Utils/cryptoUtils";
 
 function App() {
   // Check for redirection_key
   const [isRedirect, setIsRedirect] = useState(false);
+  const [isLoggedIn, setisLoggedIn] = useState(false);
   const { search } = window.location;
   const urlParams = new URLSearchParams(search);
   const redirectionKey = urlParams.get("redirection_key");
 
   // If redirection_key is found, redirect to Login
 
+  const getLocalData = async () => {
+    const localData = localStorage.getItem("Acemoney_Cache");
+
+    if (localData !== null || localData !== undefined) {
+      setisLoggedIn(true);
+    } else {
+      setisLoggedIn(false);
+    }
+  };
+  const handleTimeout = () => {
+    // Do your logout logic here
+    console.log("User is idle for too long, logging out...");
+    // alert("Idle for Too long ");
+    localStorage.removeItem("Acemoney_Cache");
+
+    // Call your logout function or set a state to log out the user
+  };
   useEffect(() => {
+    getLocalData();
     if (redirectionKey) {
       setIsRedirect(true);
     }
@@ -43,6 +65,10 @@ function App() {
   return (
     <>
       <Provider store={store}>
+        {/* {isLoggedIn && (
+          <IdleTimeout timeout={30000} onTimeout={handleTimeout} />
+        )} */}
+        {/* 5 minutes in milliseconds */}
         <BrowserRouter>
           <ToastContainer />
           <Routes>

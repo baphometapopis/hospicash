@@ -92,7 +92,7 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
       transaction_no: Yup.string().required("Cheque No is required"),
       ifsc_code: Yup.string().required("Bank IFSC Code is required"),
       bank_name: Yup.string().required("Bank Name is required"),
-      account_no: Yup.string().required("Bank Account Number is required"),
+      account_no: Yup.string().required("Bank account Number is required"),
       amount: Yup.number().required("Amount is required"),
       payment_date: Yup.date().required("Date is required"),
     }),
@@ -144,7 +144,7 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
                 <label htmlFor="transaction_no">Transaction No : </label>
                 <label htmlFor="ifsc_code">Bank IFSC Code :</label>
                 <label htmlFor="bank_name">Bank Name :</label>
-                <label htmlFor="account_no">Bank Account Number :</label>
+                <label htmlFor="account_no">Option1ccount Number :</label>
                 <label htmlFor="amount">Amount :</label>
                 <label htmlFor="payment_date" className="text-lg">
                   Date :

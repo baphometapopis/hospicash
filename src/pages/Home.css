@@ -31,6 +31,8 @@ body {
   }
   
   .item1 {
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+    
     grid-column: span 1;
     grid-row: span 1;
     padding: 20px;
@@ -47,8 +49,50 @@ body {
     gap:15px;
 
   }
+
+  .item1Admin{
+    
+    /* grid-column: span 2; */
+    /* grid-row: span 2; */
+    /* background-color: aqua; */
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-rows: repeat(2, 1fr); */
+    /* height:415px; */
+    gap:15px;
+
+  }
   
+  .item1Admin-left{
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
+    border-radius: 15px;
+    /* padding: px/; */
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: #ffffff; 
+  }
+
+   .item1Admin-right {
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
+    border-radius: 15px;
+    background-color: #ffffff; 
+
+    
+    grid-column: span 1;
+    grid-row: span 2;
+    /* background-color: #ffffff;  Medium gray background */
+  }
+
+
+
   .item2-left{
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
     border-radius: 15px;
 
     grid-column: span 1;
@@ -56,6 +100,10 @@ body {
     background-color: #ffffff; 
   }
    .item2-right {
+    /* background-color: #ffffff;  Light gray background */
+
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
     border-radius: 15px;
     
     grid-column: span 1;
@@ -63,7 +111,31 @@ body {
     /* background-color: #ffffff;  Medium gray background */
   }
   
+  .item1:hover {
+    transform: scale(1.02); /* Scale up by 5% on hover */
+  }
+  .item1Admin-left:hover {
+    transform: scale(1.02); /* Scale up by 5% on hover */
+  } .item1Admin-right:hover {
+    transform: scale(1.02); /* Scale up by 5% on hover */
+  } .item2-left:hover {
+    transform: scale(1.02); /* Scale up by 5% on hover */
+  }
+     .item2-right:hover {
+    transform: scale(1.02); /* Scale up by 5% on hover */
+  }
+  .item3:hover {
+    transform: scale(1.02); /* Scale up by 5% on hover */
+  }
+  .item4:hover {
+    transform: scale(1.02); /* Scale up by 5% on hover */
+  }
+  
   .item3 {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+    
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
     grid-column: span 1;
     border-radius: 15px;
 
@@ -72,6 +144,10 @@ body {
   }
   
   .item4 {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for background color and transform */
+
     grid-column: span 2;
     grid-row: span 3;
     background-color: #ffffff;  /* Gray background */

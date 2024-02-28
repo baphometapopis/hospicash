@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import AddPAyment from "../../assets/Icons/icons8-add-payment-24.png";
 import chooseImg from "../../assets/img/ChooseBank.jpeg";
+import { WalletOutlined, PlusOutlined } from "@ant-design/icons";
+import { FloatButton } from "antd";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 import {
   Getpartypaymentdetails,
   get_Insurance_Companies_List,
@@ -36,6 +40,7 @@ export default function Transactions() {
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const [pageNumber, setpageNumber] = useState(0);
+  const [isFloatButton, setFloatButtonOpen] = useState(true);
 
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
@@ -197,12 +202,12 @@ export default function Transactions() {
             <>
               {" "}
               <div style={{ position: "relative" }}>
-                <img
+                {/* <img
                   onClick={() => setIsPaymentModalOpen(true)}
                   src={AddPAyment}
                   className="w-15 absolute right-3 -top-10 cursor-pointer"
                   alt="cover_image"
-                />
+                /> */}
                 <p
                   style={{
                     display: "flex",
@@ -341,6 +346,26 @@ export default function Transactions() {
           </div>
         </div>
       </div>
+      <>
+        <FloatButton.Group
+          onClick={() => {
+            setFloatButtonOpen(!isFloatButton);
+          }}
+          open={isFloatButton}
+          trigger="click"
+          type="primary"
+          style={{ right: 24 }}
+          icon={<PlusOutlined />}
+        >
+          {/* <FloatButton /> */}
+          <Tippy content="Add Payment" placement="right" arrow={true}>
+            <FloatButton
+              icon={<WalletOutlined />}
+              onClick={() => setIsPaymentModalOpen(true)}
+            />
+          </Tippy>
+        </FloatButton.Group>
+      </>
     </div>
   );
 }

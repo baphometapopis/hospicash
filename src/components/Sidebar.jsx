@@ -139,8 +139,9 @@ export default function Sidebar({ opened }) {
   // Function to confirm logout and perform logout action
   const confirmLogout = () => {
     // Perform logout action here, such as clearing local storage, etc.
-    localStorage.removeItem("LoggedInUser");
-    navigate("/"); // Navigate to login page after logout
+    const data = localStorage.removeItem("Acemoney_Cache");
+    console.log(data);
+    navigate("/Login");
   };
 
   return (

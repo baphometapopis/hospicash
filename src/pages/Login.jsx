@@ -90,6 +90,20 @@ export default function Login() {
     setLoading(false);
   };
 
+  const getLocalData = async () => {
+    const localData = localStorage.getItem("Acemoney_Cache");
+    console.log(localData, "the Login PAge ");
+
+    if (localData === null || localData === undefined) {
+      console.log("redirect to login");
+      navigation("/Login");
+    } else {
+      navigation("/Home");
+
+      console.log("redirect to Dashboatd");
+    }
+  };
+
   const { pathname, search } = window.location;
   console.log(pathname, search);
   console.log(window.location.origin);
@@ -150,6 +164,7 @@ export default function Login() {
       console.log("Redirection Key Found:", redirectionKey);
       GlobalhandleLoginApi(redirectionKey);
     }
+    getLocalData();
   }, []);
   //   useEffect(() => {
   //   const disableBack = () => {
