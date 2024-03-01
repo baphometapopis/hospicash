@@ -177,8 +177,6 @@ export default function FormPage() {
       }
       if (values.pan_number && !validatePanNo(values.pan_number)) {
         errors.pan_number = "Invalid Pan Number";
-      } else {
-        delete errors.pan_number;
       }
 
       if (
@@ -196,6 +194,7 @@ export default function FormPage() {
         validateRequired("appointee_age", "Required");
         validateRequired("appointee_relation", "Required");
       }
+      console.log(values, errors);
 
       return errors;
     },
@@ -273,37 +272,37 @@ export default function FormPage() {
       location?.state?.policyID
     );
 
-    formik.setFieldValue("addr1", data?.data[0]?.addr1);
-    formik.setFieldValue("addr2", data?.data[0]?.addr2);
-    formik.setFieldValue("appointee_age", data?.data[0]?.appointee_age);
-    formik.setFieldValue("appointee_name", data?.data[0]?.appointee_full_name);
+    formik.setFieldValue("addr1", data?.data?.addr1);
+    formik.setFieldValue("addr2", data?.data?.addr2);
+    formik.setFieldValue("appointee_age", data?.data?.appointee_age);
+    formik.setFieldValue("appointee_name", data?.data?.appointee_full_name);
     formik.setFieldValue(
       "appointee_relation",
-      Number(data?.data[0]?.appointee_relation)
+      Number(data?.data?.appointee_relation)
     );
-    formik.setFieldValue("city_id", data?.data[0]?.city);
-    formik.setFieldValue("state_id", data?.data[0]?.state);
-    formik.setFieldValue("fname", data?.data[0]?.fname);
-    formik.setFieldValue("pincode", data?.data[0]?.pincode);
+    formik.setFieldValue("city_id", data?.data?.city);
+    formik.setFieldValue("state_id", data?.data?.state);
+    formik.setFieldValue("fname", data?.data?.fname);
+    formik.setFieldValue("pincode", data?.data?.pincode);
 
-    setStateName(data?.data[0]?.state_name);
-    setcityName(data?.data[0]?.city_name);
+    setStateName(data?.data?.state_name);
+    setcityName(data?.data?.city_name);
 
-    formik.setFieldValue("pan_number", data?.data[0]?.pan_number);
-    formik.setFieldValue("dob", data?.data[0]?.dob);
-    formik.setFieldValue("email", data?.data[0]?.email);
-    formik.setFieldValue("gender", Number(data?.data[0]?.gender));
-    formik.setFieldValue("mobile_no", data?.data[0]?.mobile_no);
-    formik.setFieldValue("nominee_age", data?.data[0]?.nominee_age);
-    formik.setFieldValue("nominee_full_name", data?.data[0]?.nominee_full_name);
+    formik.setFieldValue("pan_number", data?.data?.pan_number);
+    formik.setFieldValue("dob", data?.data?.dob);
+    formik.setFieldValue("email", data?.data?.email);
+    formik.setFieldValue("gender", Number(data?.data?.gender));
+    formik.setFieldValue("mobile_no", data?.data?.mobile_no);
+    formik.setFieldValue("nominee_age", data?.data?.nominee_age);
+    formik.setFieldValue("nominee_full_name", data?.data?.nominee_full_name);
     formik.setFieldValue(
       "nominee_relation",
-      Number(data?.data[0]?.nominee_relation)
+      Number(data?.data?.nominee_relation)
     );
-    formik.setFieldValue("salutation", Number(data?.data[0]?.salutation));
+    formik.setFieldValue("salutation", Number(data?.data?.salutation));
 
-    formik.setFieldValue("mname", data?.data[0]?.mname);
-    formik.setFieldValue("lname", data?.data[0]?.lname);
+    formik.setFieldValue("mname", data?.data?.mname);
+    formik.setFieldValue("lname", data?.data?.lname);
 
     console.log(data?.data[0]);
   };
@@ -523,7 +522,7 @@ export default function FormPage() {
                     className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
                   />
                 </div> */}
-                <div className="flex flex-col md:w-[100%] w-[68%]">
+                <div className="flex flex-col w-[220px]">
                   <label
                     style={{ alignSelf: "flex-start", color: "#686464" }}
                     htmlFor="date"

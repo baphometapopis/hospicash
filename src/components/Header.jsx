@@ -40,11 +40,14 @@ export default function Header({ toggle }) {
     if (data) {
       const decryptdata = decryptData(data);
       setLoginData(decryptdata);
-      const balance = await walletBalance(decryptdata?.user_details?.id);
-      if (balance?.status) {
-        const formattedNumber = formatIndianRupees(balance?.wallet_balance);
+      console.log(decryptdata?.user_details?.is_wallet_head, "header");
+      if (decryptdata?.user_details?.is_wallet_head === 1) {
+        const balance = await walletBalance(decryptdata?.user_details?.id);
+        if (balance?.status) {
+          const formattedNumber = formatIndianRupees(balance?.wallet_balance);
 
-        setavailableBalance(formattedNumber);
+          setavailableBalance(formattedNumber);
+        }
       }
     } else {
       navigate("/");
@@ -83,28 +86,29 @@ export default function Header({ toggle }) {
             cursor: "pointer",
           }}
         >
-          {loginData?.user_details?.role_type === "dealer" && (
-            <>
-              {iswalletopened ? (
-                <img
-                  onClick={() => setwalletopened(!iswalletopened)}
-                  src={walletClosed}
-                  alt="wallet-money"
-                  className="w-6"
-                />
-              ) : (
-                <>
+          {loginData?.user_details?.role_type === "dealer" &&
+            loginData?.user_details?.is_wallet_head === 1 && (
+              <>
+                {iswalletopened ? (
                   <img
                     onClick={() => setwalletopened(!iswalletopened)}
-                    src={walletOpened}
+                    src={walletClosed}
                     alt="wallet-money"
                     className="w-6"
                   />
-                  <p onClick={() => openPaymentModal()}>{availableBalance}</p>
-                </>
-              )}
-            </>
-          )}
+                ) : (
+                  <>
+                    <img
+                      onClick={() => setwalletopened(!iswalletopened)}
+                      src={walletOpened}
+                      alt="wallet-money"
+                      className="w-6"
+                    />
+                    <p onClick={() => openPaymentModal()}>{availableBalance}</p>
+                  </>
+                )}
+              </>
+            )}
 
           <div className="hidden md:block">
             {/* <div className="bg-primary-lightest rounded-full h-8 w-8 cursor-not-allowed"></div> */}

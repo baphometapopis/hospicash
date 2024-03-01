@@ -124,6 +124,7 @@ export default function MonthlyFileUpload() {
           setTotalRecords(data?.data?.length);
         }
       } else {
+        
         const data = await get_Excel_InQueue_List(id);
         if (data?.status) {
           setinQueueList(data?.data);

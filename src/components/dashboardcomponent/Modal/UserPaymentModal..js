@@ -63,7 +63,7 @@ const UserPaymentModal = ({ isOpen, onClose }) => {
 
   const partyOptions = [
     { value: "Deposit", label: "Deposit" },
-    { value: "Withdrawal", label: "Withdrawal" },
+    // { value: "Withdrawal", label: "Withdrawal" },
   ];
 
   const accType = [

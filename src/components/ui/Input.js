@@ -79,6 +79,19 @@ const Input = ({
           }
         }}
       />
+      {!removeError && hasError && (
+        <p
+          style={{
+            fontSize: "12px",
+            position: "absolute",
+            bottom: "-16px",
+            alignSelf: "flex-start",
+            color: "red",
+          }}
+        >
+          {formik.errors[name]}
+        </p>
+      )}
       {!removeError && (hasError || id === "dob") && (
         <p
           style={{

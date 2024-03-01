@@ -3,17 +3,24 @@ import { Drawer, Select, DatePicker } from "antd";
 const { RangePicker } = DatePicker;
 
 const FilterDrawer = ({ visible, onClose }) => {
+  const [selectedOption, setSelectedOption] = useState(null);
+
   const options = [
-    { value: "Option1", label: "Option1" },
-    { value: "Option2", label: "Option2" },
-    { value: "Option3", label: "Option3" },
+    { value: "transaction_no", label: "Transaction No" },
+    { value: "status", label: "Status" },
+    { value: "transaction_type", label: "Transaction Type" },
   ];
   const handleDateChange = (dates, dateStrings) => {
     console.log("Selected Dates:", dates);
     console.log("Formatted Dates:", dateStrings);
   };
   const [inputValue, setInputValue] = useState("");
-
+  const [isTextboxEnabled, setIsTextboxEnabled] = useState(false);
+  const handleOptionChange = (selectedOption) => {
+    console.log(selectedOption)
+    setSelectedOption(selectedOption);
+    setIsTextboxEnabled(true); // Enable text box when an option is selected
+  };
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
@@ -26,35 +33,18 @@ const FilterDrawer = ({ visible, onClose }) => {
       visible={visible}
     >
       <div style={{ padding: "10px" }}>
-        <div>
-          <label
-            htmlFor="myInput"
-            style={{ alignSelf: "flex-start", color: "#686464" }}
-          >
-            Transaction No:{" "}
-          </label>{" "}
-          <br />
-          <input
-            type="text"
-            id="myInput"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder="Transaction No"
-            className="     ` h-[40px] px-3 py-1 placeholder-neutral-dark w-full  border border-neutral-dark rounded-md focus:outline-none focus:border focus:border-primary`,
-            "
-          />
-        </div>
         <div className="py-2">
           <label
             htmlFor="bank"
             style={{ alignSelf: "flex-start", color: "#686464" }}
           >
-            Select Bank:{" "}
+            Select Option:{" "}
           </label>
           <Select
-            id="bank"
             className="w-full h-[40px]"
             options={options}
+            onChange={handleOptionChange}
+            placeholder="select Options"
             styles={{
               option: (provided) => ({
                 ...provided,
@@ -74,6 +64,27 @@ const FilterDrawer = ({ visible, onClose }) => {
             // other props as needed
           />
         </div>
+        <div>
+          <label
+            htmlFor="myInput"
+            style={{ alignSelf: "flex-start", color: "#686464" }}
+          >
+            Search :
+          </label>{" "}
+          <br />
+          <input
+            type="text"
+            id="myInput"
+            value={inputValue}
+            onChange={handleInputChange}
+            className="     ` h-[40px] px-3 py-1 placeholder-neutral-dark w-full  border border-neutral-dark rounded-md focus:outline-none focus:border focus:border-primary`,
+            "
+            placeholder={
+              isTextboxEnabled ? `search ${selectedOption}` : "select Options"
+            }
+          />
+        </div>
+
         <div className="py-2">
           <label
             htmlFor="bank"
@@ -105,8 +116,7 @@ const FilterDrawer = ({ visible, onClose }) => {
             color: "white",
           }}
         >
-          
-        Add Filter
+          Add Filter
         </div>
       </div>
       {/* </div> */}

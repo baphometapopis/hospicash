@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchIcon from "../../assets/Icons/icons8-search-64.png";
 import Select from "react-select";
 import { DatePicker } from "antd";
@@ -6,16 +6,31 @@ import { DatePicker } from "antd";
 const { RangePicker } = DatePicker;
 
 export const SearchContainer = () => {
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isTextboxEnabled, setIsTextboxEnabled] = useState(false);
+
+  const handleOptionChange = (selectedOption) => {
+    setSelectedOption(selectedOption);
+    setIsTextboxEnabled(true); // Enable text box when an option is selected
+  };
+
   const handleDateChange = (dates, dateStrings) => {
     console.log("Selected Dates:", dates);
     console.log("Formatted Dates:", dateStrings);
   };
 
   const options = [
-    { value: "Option1", label: "Option1" },
-    { value: "Bank B", label: "Bank B" },
-    { value: "Bank C", label: "Bank C" },
+    { value: "transaction_no", label: "Transaction No" },
+    { value: "status", label: "Status" },
+    { value: "transaction_type", label: "Transaction Type" },
   ];
+
+  const handleTextboxClick = () => {
+    if (!selectedOption) {
+      alert("Please select an option from the dropdown.");
+    }
+  };
+
   return (
     <>
       <div
@@ -29,41 +44,54 @@ export const SearchContainer = () => {
           paddingLeft: "20px",
           marginLeft: "auto",
           zIndex: 5,
-
-          //   boxShadow:
-          //     "rgba(0, 137, 209, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px",
         }}
-        className=" flex sticky top-12 "
+        className="flex sticky top-12"
       >
-        <div style={{ padding: "10px" }} className=" flex items-center w-full ">
-          <input
-            style={{ border: 0, outline: "none", width: "120px" }}
-            placeholder="transaction ID"
-          />
+        <div style={{ padding: "10px" }} className="flex items-center w-full">
+          <div style={{ paddingRight: "25px", width: "250px" }}>
+            <Select
+              options={options}
+              placeholder="Select Option"
+              onChange={handleOptionChange}
+              styles={{
+                option: (provided) => ({
+                  ...provided,
+                  zIndex: 9999, // Set your desired z-index value
+                }),
+                control: (provided) => ({
+                  ...provided,
+                  width: "100%",
+                  outline: "none", // Remove the outline
+                }),
+                dropdownIndicator: (provided) => ({
+                  ...provided,
+                  color: "#0089d1", // Set the arrow color to blue
+                }),
+              }}
+            />
+          </div>
           <div
             style={{ color: "#aaaaaa" }}
-            className="border-[0.5px] h-[25px]  mx-4"
+            className=" border border- h-[25px] mx-4"
           />
-          <Select
-            options={options}
-            styles={{
-              option: (provided) => ({
-                ...provided,
-                zIndex: 9999, // Set your desired z-index value
-              }),
-              control: (provided) => ({
-                ...provided,
-                border: "none", // Remove the border
-                outline: "none", // Remove the outline
-              }),
-              dropdownIndicator: (provided) => ({
-                ...provided,
-                color: "#0089d1", // Set the arrow color to blue
-              }),
+          <input
+            style={{
+              outline: "none",
+              width: "180px",
+              cursor: !isTextboxEnabled ? "not-allowed" : "",
+              border: "1px solid #6d6d6d",
+              padding: "4px",
+              borderRadius: "4px",
             }}
-            // other props as needed
+            placeholder={
+              isTextboxEnabled
+                ? `search ${selectedOption?.label}`
+                : "select Options"
+            }
+            disabled={!isTextboxEnabled}
+            onClick={handleTextboxClick}
+            className="mx-4"
           />
-
           <RangePicker
             onChange={handleDateChange}
             allowClear // Show clear button
@@ -79,6 +107,7 @@ export const SearchContainer = () => {
           style={{
             backgroundColor: "#0089d1",
             width: "100px",
+            minWidth: "50px",
             borderTopRightRadius: "50px",
             borderBottomRightRadius: "50px",
             alignItems: "center",
@@ -88,7 +117,7 @@ export const SearchContainer = () => {
         >
           <img
             src={SearchIcon}
-            className="w-[50px]  object-cover"
+            className="w-[50px] object-cover h-[50px]"
             alt="search_image"
           />
         </div>

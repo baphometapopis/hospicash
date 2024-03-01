@@ -4,7 +4,9 @@
     grid-template-columns:repeat(4,1fr) ;
 }
 
-
+.dateofBIrthContainer{
+  width: 100%;
+}
 @media screen and (max-width: 1427px) {
     .formContainer{
     grid-template-columns:repeat(3,1fr) ;
@@ -22,6 +24,9 @@
   @media screen and (max-width: 918px) {
     .formContainer{
     grid-template-columns:repeat(1,1fr) ;
+}
+.dateofBIrthContainer{
+  width: 70%;
 }
 
 

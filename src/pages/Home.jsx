@@ -6,7 +6,7 @@ import email from "../../src/assets/Icons/icons8-email-50.png";
 import phone from "../../src/assets/Icons/icons8-phone-64.png";
 import "./Home.css";
 // import { fileUpload } from "../Api/fileUpload";
-import { Timeline } from "antd";
+import { Flex, Timeline } from "antd";
 // import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { decryptData } from "../Utils/cryptoUtils";
