@@ -34,14 +34,12 @@ export default function SoldPolicy() {
   const [isMobile, setisMobile] = useState(false);
 
   const handlePageChange = (pageNumber) => {
-    console.log(pageNumber);
     setCurrentPage(pageNumber);
     const pagination = calculatePagination(
       totalRecords,
       recordsPerPage,
       pageNumber
     );
-    console.log(pagination);
     settotalPage(pagination?.totalPages);
     // setIndexOfFirstRecord()
     setIndexOfFirstRecord(pagination?.startIndex);
@@ -70,7 +68,6 @@ export default function SoldPolicy() {
             recordsPerPage,
             0
           );
-          console.log(pagination);
           settotalPage(pagination?.totalPages);
         })
         .catch((error) => {
@@ -145,83 +142,7 @@ export default function SoldPolicy() {
               ))}
             </>
           )}
-          {/*           
-          {isMobile && (
-            <div
-              style={{
-                backgroundColor: "#0089d1",
-                padding: "10px",
-                zIndex: 4,
-              }}
-              className="px-4 flex rounded-t item-center justify-between  w-full sticky top-[115px] "
-            >
-              <span
-                style={{
-                  width: "8%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                SR No
-              </span>
-              <span
-                style={{
-                  width: "15%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                Policy No
-              </span>
-              <span
-                style={{
-                  width: "25%",
-                  textAlign: "center",
-                }}
-                className="text-white "
-              >
-                Customer Name
-              </span>
-              <span
-                style={{
-                  width: "10%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                Pan No
-              </span>
-              <span
-                style={{
-                  textAlign: "center",
-                  width: "10%",
-                }}
-                className="text-white w-['10%']"
-              >
-                Plan
-              </span>
 
-              <span
-                style={{
-                  color: "white",
-                  width: "20%",
-                  textAlign: "center",
-                  marginRight: "100px",
-                }}
-              >
-                Created At
-              </span>
-            </div>
-          )} */}
-          {/* {poicyList?.map((data) => (
-            <>
-              {isMobile ? (
-                <PolicyCard key={data.id} Policy={data} />
-              ) : (
-                <MobilePolicyCard key={data.id} policy={data} />
-              )}
-            </>
-          ))} */}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}

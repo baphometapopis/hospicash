@@ -40,7 +40,6 @@ export default function Header({ toggle }) {
     if (data) {
       const decryptdata = decryptData(data);
       setLoginData(decryptdata);
-      console.log(decryptdata?.user_details?.is_wallet_head, "header");
       const balance = await walletBalance(decryptdata?.user_details?.id);
       if (balance?.status) {
         const formattedNumber = formatIndianRupees(balance?.wallet_balance);
@@ -50,13 +49,13 @@ export default function Header({ toggle }) {
     } else {
       navigate("/");
 
-      toast.error("Session Expired, Login Again", {
-        position: "bottom-right",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-      });
+      // toast.error("Session Expired, Login Again", {
+      //   position: "bottom-right",
+      //   autoClose: 1000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      // });
     }
   }, [navigate]);
 

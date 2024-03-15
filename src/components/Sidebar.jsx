@@ -139,8 +139,7 @@ export default function Sidebar({ opened }) {
   // Function to confirm logout and perform logout action
   const confirmLogout = () => {
     // Perform logout action here, such as clearing local storage, etc.
-    const data = localStorage.removeItem("Acemoney_Cache");
-    console.log(data);
+   localStorage.removeItem("Acemoney_Cache");
     navigate("/Login");
   };
 
@@ -200,7 +199,7 @@ export default function Sidebar({ opened }) {
               okButtonProps={{ style: { backgroundColor: "#0089D1" } }}
               cancelText="No"
               placement="right"
-              onCancel={() => console.log("kjhkjgcfd")}
+              // onCancel={() => console.log("kjhkjgcfd")}
             >
               <li
                 className={`hover:bg-secondary focus-within:bg-secondary focus-within:hover:bg-secondary w-full `}

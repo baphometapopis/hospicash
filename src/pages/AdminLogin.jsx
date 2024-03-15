@@ -35,7 +35,6 @@ export default function AdminLogin() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       handleLoginApi(); // navigate("/dashboard ");
     },
   });
@@ -45,12 +44,12 @@ export default function AdminLogin() {
     try {
       const loginResponse = await login(
         formik.values.username,
-        formik.values.password,'admin'
+        formik.values.password,
+        "admin"
       );
 
       if (loginResponse?.status) {
         const encryptedData = encryptData(loginResponse.data);
-        console.log(loginResponse);
 
         // Attempt to store data in local storage
         // Check if the user is logged in after storing data
@@ -71,7 +70,6 @@ export default function AdminLogin() {
           navigation("/Home");
         }
       } else {
-        console.log(loginResponse.message);
 
         toast.error(loginResponse?.message, {
           position: "bottom-right",
@@ -89,7 +87,10 @@ export default function AdminLogin() {
     setLoading(false);
   };
   return (
-    <div style={{backgroundColor:'#0089D1'}} className="flex justify-center  items-center p-2 h-[100vh]">
+    <div
+      style={{ backgroundColor: "#0089D1" }}
+      className="flex justify-center  items-center p-2 h-[100vh]"
+    >
       {loading && <Loader />}
       <div className="flex flex-col items-center">
         <div className=" bg-white border border-neutral-light rounded flex flex-col items-center w-full">

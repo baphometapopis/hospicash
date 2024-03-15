@@ -37,14 +37,12 @@ export default function TransactionsList() {
   // });
 
   const handlePageChange = (pageNumber) => {
-    console.log(pageNumber);
     setCurrentPage(pageNumber);
     const pagination = calculatePagination(
       totalRecords,
       recordsPerPage,
       pageNumber
     );
-    console.log(pagination);
     settotalPage(pagination?.totalPages);
     // setIndexOfFirstRecord()
     setIndexOfFirstRecord(pagination?.startIndex);
@@ -92,9 +90,7 @@ export default function TransactionsList() {
             recordsPerPage,
             0
           );
-          console.log(pagination);
           settotalPage(pagination?.totalPages);
-          console.log(data?.recordsTotal);
         } catch (error) {
           console.error("Error fetching data:", error);
           // Handle the error as needed

@@ -15,9 +15,11 @@ import CompanyBarChart from "../components/dashboardcomponent/DashboardCardConta
 import SparklineChart from "../components/dashboardcomponent/DashboardCardContainer/Charts/AdminChart1";
 import { getActivityLogsApi } from "../Api/getActivityLogs";
 import {
+  countSoldCancelPolicyApi,
   policyCountByDayApi,
   policyCountByMonth,
   policyCountByMonthApi,
+  totalPendingTransactionRequestApi,
 } from "../Api/DashBoardApi/policyCountByDay";
 import { getDefaultMonthCount, getMonthName } from "../Utils/getMonthname";
 import SkeletonLoader from "../components/SkeletonLoader/SkeletonLoader";
@@ -27,13 +29,19 @@ export default function Home() {
   const [LoginData, setLoginData] = useState();
   const [cardsData, setcardsData] = useState();
   const [isgetpolicyCountloading, setisgetpolicyCountloading] = useState(false);
+
   const [isgetActivitylogloading, setisgetActivitylogloading] = useState(false);
+  const [isgetPolicySoldCancel, setIsgetPolicySoldCancel] = useState(false);
 
   const [isgetpolicyCountByMonthloading, setisgetpolicyCountByMonthloading] =
     useState(false);
 
   const [policyCountByMonth, setpolicyCountByMonth] = useState();
+  const [totalpendingtransaction, settotalpendingtransaction] = useState();
 
+  const [PolicySoldCancelCount, setPolicySoldCancelCount] = useState();
+
+  // daily policyCount  Api Call cardsData
   const getpolicyCount = async (id, role_type) => {
     setisgetpolicyCountloading(true);
     const apires = await policyCountByDayApi(id, role_type);
@@ -80,10 +88,52 @@ export default function Home() {
       };
     });
 
-    console.log(transformedData, ";kojikhugcf");
     setcardsData(transformedData);
     setisgetpolicyCountloading(false);
   };
+
+  const getTotalPendingTransactionCount = async (id, role_type) => {
+    setisgetpolicyCountloading(true);
+    const apires = await totalPendingTransactionRequestApi(id, role_type);
+    settotalpendingtransaction(apires?.data[0]?.total);
+    setisgetpolicyCountloading(false);
+  };
+
+  //RadialBar chart  Api Call
+  const getPolicySoldCancel = async (id, role_type) => {
+    setIsgetPolicySoldCancel(true);
+    const apires = await countSoldCancelPolicyApi(id, role_type);
+
+    const transformedData = apires?.data?.map((item) => {
+      let title = "";
+      let total = "";
+      switch (item.policy_status) {
+        case "SOLD":
+          title = "Success";
+          total = item.total.toString() ?? 0;
+
+          break;
+        case "CANCELED":
+          total = item.total.toString() ?? 0;
+          title = "Cancelled";
+
+          break;
+
+        default:
+          title = "Unknown";
+      }
+
+      return {
+        title: title,
+        value: total,
+      };
+    });
+    setPolicySoldCancelCount(transformedData);
+
+    setIsgetPolicySoldCancel(false);
+  };
+
+  //barlineChart Api Call
   const getpolicyCountByMonth = async (id, role_type) => {
     setisgetpolicyCountByMonthloading(true);
     const apires = await policyCountByMonthApi(id, role_type);
@@ -95,7 +145,6 @@ export default function Home() {
       result[monthName] = total.toString();
       return result;
     }, getDefaultMonthCount());
-    console.log(transformedData, "transformedData");
     setpolicyCountByMonth(transformedData);
     setisgetpolicyCountByMonthloading(false);
   };
@@ -104,7 +153,6 @@ export default function Home() {
     async (id, roleType) => {
       setisgetActivitylogloading(true);
       const today = moment().format("yyyy-MM-DD");
-      console.log(today);
       const activityRes = await getActivityLogsApi(id, roleType, today);
       setactivityLogs(activityRes?.data);
       setisgetActivitylogloading(false);
@@ -121,6 +169,15 @@ export default function Home() {
         decryptdata?.user_details?.id,
         decryptdata?.user_details?.role_type
       );
+      getTotalPendingTransactionCount(
+        decryptdata?.user_details?.id,
+        decryptdata?.user_details?.role_type
+      );
+      getPolicySoldCancel(
+        decryptdata?.user_details?.id,
+        decryptdata?.user_details?.role_type
+      );
+
       getpolicyCount(
         decryptdata?.user_details?.id,
         decryptdata?.user_details?.role_type
@@ -155,11 +212,17 @@ export default function Home() {
       <div className="dashboard-container ">
         {LoginData?.role_type === "admin" ? (
           <div className="grid-item item1Admin">
-            <div className="item1Admin-left">
-              <SparklineChart title={"Pending"} />
+            <div className="item1Admin-left text-center">
+              <span style={{ fontSize: "75px", color: "#494F55" }}>{totalpendingtransaction}</span>
+              <p>Toatal Pending Transaction</p>
             </div>
-            <div className="item1Admin-left">
-              <SparklineChart title={"Success"} />
+            <div className="item1Admin-left text-center">
+              <p style={{ fontSize: "75px", color: "#494F55" }}>
+                {totalpendingtransaction}
+              </p>
+              <p> Total Approved Transaction</p>
+
+              {/* <SparklineChart title={"Success"} /> */}
             </div>{" "}
           </div>
         ) : (
@@ -198,14 +261,29 @@ export default function Home() {
           </div>
         )}
         <div className="grid-item item2">
-          <div className="item2-left">
+          {LoginData?.role_type !== "admin" && (
+            <div className="item2-left">
+              {isgetPolicySoldCancel ? (
+                <Skeleton.Button
+                  active
+                  size="large"
+                  shape="square"
+                  block={true}
+                  style={{ height: "350px" }}
+                />
+              ) : (
+                <RadialBarChart data={PolicySoldCancelCount} />
+              )}
+            </div>
+          )}
 
-
-            <RadialBarChart />
-            
-          </div>
-
-          <div className="item2-right p-3">
+          <div
+            className={`item2-right p-3  ${
+              LoginData?.role_type === "admin"
+                ? "col-span-2 bg-white"
+                : "col-span-1"
+            }  `}
+          >
             {LoginData?.role_type === "admin" ? (
               <CompanyBarChart />
             ) : (

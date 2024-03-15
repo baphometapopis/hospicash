@@ -98,6 +98,7 @@ body {
     grid-column: span 1;
     grid-row: span 2;
     background-color: #ffffff; 
+    overflow: hidden;
   }
    .item2-right {
     /* background-color: #ffffff;  Light gray background */

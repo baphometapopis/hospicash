@@ -33,14 +33,12 @@ export default function CancelledPolicy() {
   const [isMobile, setisMobile] = useState(false);
 
   const handlePageChange = (pageNumber) => {
-    console.log(pageNumber);
     setCurrentPage(pageNumber);
     const pagination = calculatePagination(
       totalRecords,
       recordsPerPage,
       pageNumber
     );
-    console.log(pagination);
     settotalPage(pagination?.totalPages);
     // setIndexOfFirstRecord()
     setIndexOfFirstRecord(pagination?.startIndex);
@@ -69,7 +67,6 @@ export default function CancelledPolicy() {
             recordsPerPage,
             0
           );
-          console.log(pagination);
           settotalPage(pagination?.totalPages);
         })
         .catch((error) => {

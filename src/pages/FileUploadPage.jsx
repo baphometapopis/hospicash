@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import moment from "moment";
-
+import Refresh from "../assets/Icons/icons8-refresh-64.png";
 import Download from "../assets/Icons/icons8-download-64 (2).png";
 import Cancel from "../assets/Icons/icons8-cancel-100 (1).png";
 
@@ -27,40 +27,17 @@ import TimeDifferenceTimer from "../Utils/TimeDifferenceTimer";
 
 export default function MonthlyFileUpload() {
   const [LoginData, setLoginData] = useState();
+  const [isRefreshButtonDisabled, setIsRefreshButtonDisabled] = useState(false);
+  const [isSampleButtonDisabled, setIsSampleButtonDisabled] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
   // const [data, setData] = useState();
-  const [totalRecords, setTotalRecords] = useState();
   const [inQueueList, setinQueueList] = useState([]);
   const [totalFileUploaded, settotalFileUploaded] = useState([]);
 
-  const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
-  const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
-  const recordsPerPage = 10;
-  // const [isMobile, setisMobile] = useState(false);
-  const [searchParam, setSearchParam] = useState({
-    value: "",
-    param: "",
-    start_date: "",
-    end_date: "",
-  });
-
-  const options = [
-    { value: "Option1", label: "Option1" },
-    { value: "Option2", label: "Option2" },
-    { value: "Option3", label: "Option3" },
-  ];
   const [selectedFile, setSelectedFile] = useState();
   const [showUpload, setshowUpload] = useState(true);
 
-  const handlePageChange = (pageNumber) => {
-    console.log(pageNumber);
-    setCurrentPage(pageNumber);
-    setIndexOfFirstRecord(pageNumber * recordsPerPage);
-  };
-
-  // const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
-  const sendFile = async () => {
+  const UploadExcelFile = async () => {
     setshowUpload(false);
 
     const data = await fileUpload(LoginData?.id, selectedFile);
@@ -73,7 +50,6 @@ export default function MonthlyFileUpload() {
         pauseOnHover: true,
       });
     } else {
-      console.log(data);
       toast.error(data?.message, {
         position: "bottom-right",
         autoClose: 1000,
@@ -84,24 +60,8 @@ export default function MonthlyFileUpload() {
     }
     setshowUpload(true);
   };
-  // useEffect(() => {
-  //   const handleWindowResize = () => {
-  //     setWindowWidth([window.innerWidth]);
-  //   };
-
-  //   window.addEventListener("resize", handleWindowResize);
-  //   if (windowWidth <= 768) {
-  //     setisMobile(false);
-  //   } else {
-  //     setisMobile(true);
-  //   }
-  //   return () => {
-  //     window.removeEventListener("resize", handleWindowResize);
-  //   };
-  // }, [windowWidth]);
 
   const handleDownloadPDF = async (id, status) => {
-    console.log(id, status);
     try {
       const href_url = `${FileURL}/downloadMonthExcel?excel_id=${id}&status=${status}`;
       window.open(href_url, "_blank");
@@ -122,7 +82,6 @@ export default function MonthlyFileUpload() {
         const data = await get_Excel_InQueue_List(id, status);
         if (data?.status) {
           settotalFileUploaded(data?.data);
-          setTotalRecords(data?.data?.length);
         }
       } else {
         const data = await get_Excel_InQueue_List(id);
@@ -131,7 +90,7 @@ export default function MonthlyFileUpload() {
         }
       }
     },
-    [settotalFileUploaded, setTotalRecords, setinQueueList]
+    [settotalFileUploaded, setinQueueList]
   );
   const getLocalData = useCallback(async () => {
     const localData = localStorage.getItem("Acemoney_Cache");
@@ -144,44 +103,15 @@ export default function MonthlyFileUpload() {
     }
   }, [getExcelInQueueList, setLoginData]);
 
-  const dealerTransactionList = useCallback(async () => {
-    const data = localStorage.getItem("Acemoney_Cache");
-    const decryptdata = decryptData(data);
-
-    if (decryptdata) {
-      if (indexOfFirstRecord !== indexOfLastRecord) {
-        try {
-          const data = await getExcelInQueueList(
-            decryptdata?.user_details?.id,
-            "all"
-          );
-          settotalFileUploaded(data?.data);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          // Handle the error as needed
-        }
-      }
-    }
-  }, [getExcelInQueueList, indexOfFirstRecord, indexOfLastRecord]);
   const handleFileSelect = (file) => {
-    console.log("File Upload ", file);
     setSelectedFile(file);
   };
 
   useEffect(() => {
-    dealerTransactionList();
-  }, [dealerTransactionList]);
-
-  useEffect(() => {
-    setIndexOfLastRecord(currentPage * recordsPerPage);
-  }, [currentPage, recordsPerPage]);
-
-  useEffect(() => {
     getLocalData();
   }, [getLocalData, showUpload]);
-  useEffect(() => {}, [selectedFile]);
-  const [timeLeft, setTimeLeft] = useState(200 * 6);
-  const handleDownload = () => {
+
+  const handleSampleDownload = () => {
     const url = process.env.PUBLIC_URL + "/SampleFile/acemoney-hsopicash.csv";
     const link = document.createElement("a");
     link.href = url;
@@ -191,14 +121,36 @@ export default function MonthlyFileUpload() {
     document.body.removeChild(link);
   };
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
-    }, 1000);
+  //Disable Refresh Button for 10 sec to avoid continous api Hit
+  const handleRefresh = () => {
+    // Disable the button
+    setIsRefreshButtonDisabled(true);
+    // Call the API or any other logic
+    //sending all parameter will call all uploaded file list
+    getExcelInQueueList(LoginData?.id, "all");
+    //sending without parameter will  call the list which are in queue
+    getExcelInQueueList(LoginData?.id);
 
-    // Cleanup function to clear the interval when the component unmounts
-    return () => clearInterval(timer);
-  }, []);
+    setTimeout(() => {
+      // Enable the button after 10 seconds
+      setIsRefreshButtonDisabled(false);
+    }, 10000); // 10 seconds in milliseconds
+  };
+
+  const handleSampleDownloadRefresh = () => {
+    // Disable the button
+    setIsSampleButtonDisabled(true);
+    // Call the API or any other logic
+    handleSampleDownload();
+
+    setTimeout(() => {
+      // Enable the button after 10 seconds
+      setIsSampleButtonDisabled(false);
+    }, 10000); // 10 seconds in milliseconds
+  };
+
+  useEffect(() => {}, [selectedFile]);
+
   return (
     <div className="flex flex-col w-full items-center">
       <div className="  -z-10 w-full">
@@ -220,7 +172,10 @@ export default function MonthlyFileUpload() {
             }}
           >
             {showUpload ? (
-              <div onClick={sendFile} className=" bg-primary mx-5 w-[45%]">
+              <div
+                onClick={UploadExcelFile}
+                className=" bg-primary mx-5 w-[45%]"
+              >
                 <p
                   style={{
                     textAlign: "center",
@@ -245,14 +200,18 @@ export default function MonthlyFileUpload() {
               </div>
             )}
             <div
-              className=" bg-secondary mx-5 w-[45%]"
-              onClick={handleDownload}
+              className={` bg-secondary mx-5 w-[45%] ${
+                isSampleButtonDisabled ? "opacity-50" : ""
+              }`}
+              onClick={() =>
+                !isSampleButtonDisabled && handleSampleDownloadRefresh()
+              }
             >
               <p
                 style={{
                   textAlign: "center",
                   color: "white",
-                  cursor: "pointer",
+                  cursor: isSampleButtonDisabled ? "not-allowed" : "pointer",
                 }}
               >
                 Sample
@@ -309,11 +268,6 @@ export default function MonthlyFileUpload() {
                     />
                   </div>
                   <div className="mx-4 items-end">
-                    {/* {Math.floor(timeLeft / 60)
-                      .toString()
-                      .padStart(2, "0")}
-                    :{(timeLeft % 60).toString().padStart(2, "0")} */}
-
                     <TimeDifferenceTimer createDate={data.create_date} />
                   </div>
                 </div>
@@ -326,7 +280,28 @@ export default function MonthlyFileUpload() {
       </div>
       <div className="  w-[85%] mb:px-8 mb-20 bg-white border border-neutral-light rounded">
         <div className="container mx-auto p-4">
-          <h1 className="text-2xl font-bold mb-4">Uploaded FIle List</h1>
+          <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+            <h1 className="text-2xl font-bold mb-4">Uploaded File List</h1>
+            <Tippy
+              content={
+                isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
+              }
+              placement="right"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img
+                src={Refresh}
+                className={`w-[35px] h-[30px]   ${
+                  isRefreshButtonDisabled
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
+                alt="search_image"
+                onClick={() => !isRefreshButtonDisabled && handleRefresh()}
+              />
+            </Tippy>
+          </div>
 
           {totalFileUploaded?.map((data, index) => (
             <div
@@ -407,35 +382,6 @@ export default function MonthlyFileUpload() {
               </div>
             </div>
           ))}
-
-          <div className="flex justify-between items-center mt-4">
-            <span className="text-gray-600">
-              Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
-              {totalRecords} entries
-            </span>
-            <div className="flex items-center mt-4">
-              <span className="text-gray-600 mx-2">
-                Page {currentPage} of {Math.ceil(totalRecords / recordsPerPage)}
-              </span>
-
-              <button
-                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Prev
-              </button>
-              <button
-                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={
-                  currentPage === Math.ceil(totalRecords / recordsPerPage)
-                }
-              >
-                Next
-              </button>
-            </div>
-          </div>
         </div>{" "}
       </div>
     </div>

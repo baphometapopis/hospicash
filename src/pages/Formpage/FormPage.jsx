@@ -200,7 +200,6 @@ export default function FormPage() {
 
   const getPincode = async (pincode) => {
     const data = await get_Pincode_Data(pincode);
-    console.log(data?.data?.city_or_village_name);
     if (data?.status) {
       setcityName(data?.data?.city_or_village_name);
       setStateName(data?.data?.state_name);

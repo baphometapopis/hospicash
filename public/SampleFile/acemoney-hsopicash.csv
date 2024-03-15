@@ -1,2 +1,2 @@
-fname,lname,email,mobile_no,gender,dob,address_1,address_2,pincode,aadhar_card_no,pan_card_no,nominee_full_name,nominee_relation,nominee_age,appointee_full_name,appointee_relation,appoitee_age,plan_name,plan_validity
-joe,mark,joemark@example.com,9874563214,Male,07-06-2001,address1,aaaa,400015,6622-2350-9284,BAJPC4350M,nominee fullname,Sibling,11,appointeeNAme,Sibling,45,Gold,30
+fname,lname,email,mobile_no,gender,dob,address_1,address_2,pincode,aadhar_card_no,pan_card_no,nominee_full_name,nominee_relation,nominee_age,appointee_full_name,appointee_relation,appointee_age,plan_name,plan_validity,plan_amount
+sona,shukla,annushukla100@gmail.com,8898188910,male,07-06-2001,aaaaa,aaaa,400089,400701,ALBPR8421D,annu shukla,brother,11,,,,Gold,30,61

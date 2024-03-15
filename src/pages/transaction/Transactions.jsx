@@ -62,14 +62,12 @@ export default function Transactions() {
   // ]);
 
   const handlePageChange = (pageNumber) => {
-    console.log(pageNumber);
     setCurrentPage(pageNumber);
     const pagination = calculatePagination(
       totalRecords,
       recordsPerPage,
       pageNumber
     );
-    console.log(pagination);
     settotalPage(pagination?.totalPages);
     // setIndexOfFirstRecord()
     setIndexOfFirstRecord(pagination?.startIndex);
@@ -79,7 +77,6 @@ export default function Transactions() {
 
   const getICPartyPAymentDetails = async (id) => {
     setSelectedIC(id);
-    console.log(id?.id);
     const data = await Getpartypaymentdetails(id?.id);
     if (data?.status) {
       setselectedICPaymentDetails(data?.data);
@@ -92,7 +89,6 @@ export default function Transactions() {
         pauseOnHover: true,
       });
     }
-    console.log(id);
   };
   useEffect(() => {
     const handleWindowResize = () => {
@@ -130,8 +126,7 @@ export default function Transactions() {
             recordsPerPage,
             0
           );
-          console.log(pagination);
-    settotalPage(pagination?.totalPages);
+          settotalPage(pagination?.totalPages);
         } catch (error) {
           console.error("Error fetching data:", error);
           // Handle the error as needed
@@ -150,7 +145,6 @@ export default function Transactions() {
 
   const getinsCompaniesList = async () => {
     const data = await get_Insurance_Companies_List();
-    console.log(data);
     if (data?.status) {
       setInsuranceCompaniesList(data?.data);
     }
@@ -192,16 +186,16 @@ export default function Transactions() {
                   style={{ zIndex: 2, position: "relative" }}
                   // className="text-white  "
                 >
-                  {data.name}
+                  {data.code}
                 </h3>
 
                 <img
-                  src={data.icon}
-                  alt={data.title}
+                  src={`${data?.logo}`}
+                  alt={data.code}
                   className="w-8 h-10 mx-auto mb-4  rounded-full"
                   style={{ position: "absolute", right: 5, bottom: -10 }}
                 />
-                <p className="text-white text-xl ">{data.value}</p>
+                {/* <p className="text-white text-xl ">{data.code}</p> */}
               </div>
             </div>
           ))}
@@ -352,9 +346,7 @@ export default function Transactions() {
               <button
                 className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={
-                  currentPage === totalPage
-                }
+                disabled={currentPage === totalPage}
               >
                 Next
               </button>

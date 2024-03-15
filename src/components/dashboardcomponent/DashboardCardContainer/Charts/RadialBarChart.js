@@ -2,17 +2,15 @@ import React, { useContext, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import WindowSizeContext from "../../../../Utils/Context/WindowSizeContext";
 
-const RadialBarChart = () => {
+const RadialBarChart = (data) => {
+  // console.log(data,'RadialBarChart');
   const windowSize = useContext(WindowSizeContext);
 
   const totalPolicies = 5000;
   const pendingPolicies = 4000;
   const donePolicies = 1000;
 
-  const pendingPercentage = (pendingPolicies / totalPolicies) * 100;
-  const donePercentage = (donePolicies / totalPolicies) * 100;
-
-  const [series] = useState([pendingPercentage, donePercentage]);
+  const [series] = useState([pendingPolicies, donePolicies]);
 
   const [chartOptions] = useState({
     chart: {

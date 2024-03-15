@@ -16,7 +16,6 @@ const Plans = () => {
   const Navigation = useNavigate();
 
   const handleBuyClick = (selectedPlan) => {
-    console.log(`Buying ${selectedPlan.title} plan`);
     // Dispatching the action
     dispatch(updateUserData({ plan_id: selectedPlan?.id }));
 

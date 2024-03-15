@@ -34,13 +34,23 @@ function App() {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-
+ 
   const onIdle = () => {
     setState("Idle");
     if (isLoggedIn) {
       setIsIdleModalOpen(true);
     }
   };
+  function printWelcomeMessage() {
+    console.log(
+      "%c TVS Escalation ",
+      "background: #222; color: #bada55; font-size: 24px; padding: 10px;"
+    );
+    console.log(
+      "%c What are you doing here? Is there a bug? ",
+      "background: #222; color: #fff; font-size: 16px; padding: 10px;"
+    );
+    }
 
   const onActive = () => {
     setState("Active");
@@ -71,7 +81,7 @@ function App() {
     // Call the handler right away so state gets updated with initial window size
     handleResize();
 
-    console.log(windowSize);
+    // console.log(windowSize);
     // Clean up event listener on unmount
     return () => window.removeEventListener("resize", handleResize);
   }, []); // Empty dependency array ensures effect is only run on mount and unmount
@@ -86,6 +96,7 @@ function App() {
   }, [getRemainingTime]);
 
   useEffect(() => {
+    printWelcomeMessage();
     const getLocalData = () => {
       const localData = localStorage.getItem("Acemoney_Cache");
       setisLoggedIn(localData !== null);
