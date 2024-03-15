@@ -4,41 +4,42 @@ import { DataGrid, gridClasses } from "@mui/x-data-grid";
 import moment from "moment";
 import { styled } from "@mui/material/styles";
 import { Popconfirm } from "antd";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Approve_cancelled_Pending_Policy } from "../../Api/approvecancelledPolicy";
 
-const ApprovePendingPolicyDataTables = ({ data }) => {
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "pending":
-        return {
-          backgroundColor: "#FCD34D",
-          color: "#ffffff",
-          padding: "2px",
-          width: "fit-content",
-          height: "fit-content",
-        };
-      case "approved":
-        return {
-          backgroundColor: "#68D391",
-          color: "#ffffff",
-          width: "fit-content",
-          height: "fit-content",
-        };
-      case "concile":
-        return {
-          backgroundColor: "#4299E1",
-          color: "#ffffff",
-          width: "fit-content",
-          height: "fit-content",
-        };
-      default:
-        return {
-          backgroundColor: "#D1D5DB",
-          color: "#000000",
-          width: "fit-content",
-          height: "fit-content",
-        };
+const ApprovePendingPolicyDataTables = ({
+  data,
+  loginData,
+  handlePageChange,
+}) => {
+  const approveCancelledPolicy = async (props, status) => {
+    const resdata = await Approve_cancelled_Pending_Policy(
+      loginData?.id,
+      props,loginData?.role_type
+    );
+    if (resdata?.status) {
+      handlePageChange();
+      toast.success(resdata?.message, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    } else {
+      handlePageChange();
+      toast.error("Failed to Update Status", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
     }
   };
+
+
   const columns = [
     {
       headerClassName: "super-app-theme--header",
@@ -61,13 +62,11 @@ const ApprovePendingPolicyDataTables = ({ data }) => {
 
     {
       headerClassName: "super-app-theme--header",
-      field: "plan_name",
-      headerName: "Plan",
-      width: 150,
+      field: "cancellationReason",
+      headerName: "Cancellation Reason",
+      width: 200,
       renderCell: (value) => (
-        <span className="px-4 rounded-lg" style={getStatusStyle(value.value)}>
-          {value.value}
-        </span>
+        <span className="px-4 rounded-lg">{value.value}</span>
       ),
     },
     {
@@ -92,12 +91,12 @@ const ApprovePendingPolicyDataTables = ({ data }) => {
           {true && (
             <Popconfirm
               title="Change Status"
-              description="Are you sure you want to Approve?"
-              onConfirm={() => console.log("Approve")}
-              okText="Approve"
+              description="Are you sure you want to approve the cancellation?"
+              onConfirm={() => approveCancelledPolicy(params?.row, )}
+              okText="yes"
               okButtonProps={{ style: { backgroundColor: "#0089D1" } }}
-              cancelText="Reject"
-              onCancel={() => console.log("Cancel")}
+              cancelText="no"
+              // onCancel={() => console.log("Cancel")}
             >
               <div
                 style={{
@@ -202,7 +201,6 @@ const ApprovePendingPolicyDataTables = ({ data }) => {
         border: "none",
       }}
     >
-      {" "}
       <DataGrid
         pagination={false}
         rows={data || []}

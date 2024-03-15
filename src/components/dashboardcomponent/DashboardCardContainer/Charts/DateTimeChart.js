@@ -1,31 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ApexCharts from "react-apexcharts";
+import WindowSizeContext from "../../../../Utils/Context/WindowSizeContext";
+import { getDefaultMonthCount } from "../../../../Utils/getMonthname";
 
 const DateTimeChart = ({ data }) => {
-  const [monthCount, setMonthCount] = useState({});
+  const [monthCount, setMonthCount] = useState(data ?? getDefaultMonthCount());
 
   useEffect(() => {
-    const sampleData = {
-      monthCount: {
-        January: 12,
-        Feb: 10,
-        March: 45,
-        April: 40,
-        May: 75,
-        June: 19,
-        July: 3,
-        August: 2,
-        September: 6,
-        October: 2,
-        November: 72,
-        December: 100,
-      },
-    };
-
-    // Set the month count state for further use
-    setMonthCount(sampleData.monthCount);
+    if (data) {
+      setMonthCount(data);
+    } else {
+      setMonthCount(getDefaultMonthCount());
+    }
   }, [data]);
-
   const mixedChartOptions = {
     chart: {
       height: 400,
@@ -77,12 +64,12 @@ const DateTimeChart = ({ data }) => {
 
   const mixedChartData = [
     {
-      name: "Records Count",
+      name: "Month wise Policy Count",
       type: "column",
       data: Object.values(monthCount),
     },
     {
-      name: "Records Count (Line)",
+      name: "Month wise Policy Count(Line)",
       type: "line",
       data: Object.values(monthCount),
     },

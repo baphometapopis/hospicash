@@ -6,9 +6,8 @@ import Select from "react-select";
 import { cancelSoldPolicy } from "../../../../Api/cancelSoldPolicy";
 
 const CancelModal = ({ isOpen, onClose, data }) => {
-  console.log(data?.policy_id);
   const handleSubmit = async (values, { resetForm }) => {
-    console.log(values);
+    console.log(data);
     const resdata = await cancelSoldPolicy(values, data?.policy_id);
     console.log(resdata);
     resetForm();

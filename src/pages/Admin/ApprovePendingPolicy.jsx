@@ -8,9 +8,13 @@ import DealerCancelledPolicyTable from "../../components/dashboardcomponent/Deal
 import { SearchContainer } from "../../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
 import ApprovePendingPolicyDataTables from "../../components/dashboardcomponent/ApprovePendingPolicyDataTables";
+import { decryptData } from "../../Utils/cryptoUtils";
+import { getPendingPolicyListApi } from "../../Api/adminAPi/getPendingCancelledList";
+import { calculatePagination } from "../../Utils/calculationPagination";
 
 export default function ApprovePendingPolicy() {
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
+  const [totalPage, settotalPage] = useState();
 
   const handleOpenFilterDrawer = () => {
     setFilterDrawerVisible(true);
@@ -24,6 +28,7 @@ export default function ApprovePendingPolicy() {
   // const [data, setData] = useState();
   const [totalRecords, setTotalRecords] = useState();
   const [poicyList, setPolicyList] = useState([]);
+  const [LoginData, setLoginData] = useState("");
 
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
@@ -33,25 +38,51 @@ export default function ApprovePendingPolicy() {
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
     setCurrentPage(pageNumber);
-    setIndexOfFirstRecord(pageNumber * recordsPerPage);
+    const pagination = calculatePagination(
+      totalRecords,
+      recordsPerPage,
+      pageNumber
+    );
+    console.log(pagination);
+    settotalPage(pagination?.totalPages);
+    // setIndexOfFirstRecord()
+    setIndexOfFirstRecord(pagination?.startIndex);
+    // setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
+  const getLocalData = async () => {
+    const localData = localStorage.getItem("Acemoney_Cache");
 
-  const SoldCancelPolicy = useCallback(() => {
+    if (localData !== null || localData !== undefined) {
+      const decryptdata = decryptData(localData);
+      setLoginData(decryptdata?.user_details);
+    }
+    if (LoginData) {
+      getPendingCancelledlist();
+    }
+  };
+  const getPendingCancelledlist = useCallback(() => {
     const fetchData = async () => {
       const listdata = {
-        dealer_id: "1",
+        dealer_id: LoginData?.id,
         start: indexOfFirstRecord,
         end: recordsPerPage,
-        policy_type: "cancelled",
+        role_type: LoginData?.role_type,
       };
       if (indexOfFirstRecord !== indexOfLastRecord) {
         try {
-          const data = await getSold_CancelPolicy(listdata);
+          const data = await getPendingPolicyListApi(listdata);
           setPolicyList(data?.data);
           setTotalRecords(data?.recordsTotal);
-          console.log(data?.recordsTotal);
+          const pagination = calculatePagination(
+            totalRecords,
+            recordsPerPage,
+            0
+          );
+          console.log(pagination);
+    settotalPage(pagination?.totalPages);
+
         } catch (error) {
           console.error(error);
         }
@@ -59,13 +90,7 @@ export default function ApprovePendingPolicy() {
     };
 
     fetchData();
-  }, [
-    indexOfFirstRecord,
-    indexOfLastRecord,
-    recordsPerPage,
-    setPolicyList,
-    setTotalRecords,
-  ]);
+  }, [LoginData?.id, LoginData?.role_type, indexOfFirstRecord, indexOfLastRecord, totalRecords]);
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -85,11 +110,11 @@ export default function ApprovePendingPolicy() {
 
   useEffect(() => {
     setIndexOfLastRecord(currentPage * recordsPerPage);
-  }, [currentPage, recordsPerPage]);
+  }, [currentPage, recordsPerPage,totalPage]);
 
   useEffect(() => {
-    SoldCancelPolicy();
-  }, [indexOfLastRecord, indexOfFirstRecord, SoldCancelPolicy]);
+    getLocalData();
+  }, [indexOfLastRecord, indexOfFirstRecord, getPendingCancelledlist]);
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -123,7 +148,11 @@ export default function ApprovePendingPolicy() {
           />
           {isMobile && <SearchContainer />}
 
-          <ApprovePendingPolicyDataTables data={poicyList} />
+          <ApprovePendingPolicyDataTables
+            data={poicyList}
+            loginData={LoginData}
+            handlePageChange={getPendingCancelledlist}
+          />
 
           {/* {poicyList?.map((data) => (
             <>
@@ -138,36 +167,33 @@ export default function ApprovePendingPolicy() {
               )}
             </>
           ))} */}
-          <div className="flex justify-between items-center mt-4">
+       <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
               {totalRecords} entries
             </span>
-            {Math.floor(totalRecords / recordsPerPage) !== 0 && (
-              <div className="flex items-center mt-4">
-                <span className="text-gray-600 mx-2">
-                  Page {currentPage} of{" "}
-                  {Math.floor(totalRecords / recordsPerPage)}
-                </span>
+            <div className="flex items-center mt-4">
+              <span className="text-gray-600 mx-2">
+                Page {currentPage} of {totalPage}
+              </span>
 
-                <button
-                  className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  Prev
-                </button>
-                <button
-                  className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={
-                    currentPage === Math.floor(totalRecords / recordsPerPage)
-                  }
-                >
-                  Next
-                </button>
-              </div>
-            )}
+              <button
+                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <button
+                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={
+                  currentPage === totalPage
+                }
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </div>

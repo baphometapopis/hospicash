@@ -1,0 +1,1122 @@
+{
+	"info": {
+		"_postman_id": "bba1eec9-d3af-4fcd-be8d-0c52571521e0",
+		"name": "acemoney-hospicash",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27726749",
+		"_collection_link": "https://cloudy-shuttle-384836.postman.co/workspace/My-Workspace~d3ee053e-eb77-42df-898d-b112e12765f2/collection/27726749-bba1eec9-d3af-4fcd-be8d-0c52571521e0?action=share&source=collection_link&creator=27726749"
+	},
+	"item": [
+		{
+			"name": "walletBalances",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "email",
+						"value": "sush.rokade@gmail.com",
+						"type": "text"
+					},
+					{
+						"key": "password",
+						"value": "sush.rokade@gmail.com",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "11111",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/walletBalances",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"walletBalances"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pincode",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "pincode",
+							"value": "400078",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/get_city_state_by_pincode",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"get_city_state_by_pincode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_form_policy_data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/get_policy_data",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"get_policy_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generated_policy_data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"is_policy_schedule_type\": \"year\",\r\n    \"dealer_id\": \"1\",\r\n    \"plan_id\": 3821,\r\n    \"salutation\": 2,\r\n    \"fname\": \"MNMN\",\r\n    \"mname\": \"MNMNMn\",\r\n    \"lname\": \"MNMn\",\r\n    \"email\": \"a@gmail.com\",\r\n    \"mobile_no\": \"7718015767\",\r\n    \"addr1\": \",MN,MN,MN\",\r\n    \"addr2\": \",MN,MN,MN\",\r\n    \"pincode\": \"400089\",\r\n    \"city_id\": 470,\r\n    \"state_id\": 21,\r\n    \"nominee_full_name\": \"MNMNBMNB\",\r\n    \"nominee_age\": \"45\",\r\n    \"nominee_relation\": 4,\r\n    \"appointee_name\": \"\",\r\n    \"appointee_age\": \"\",\r\n    \"appointee_relation\": \"\",\r\n    \"gender\": 1,\r\n    \"pan_number\": \"EDWPB8289K\",\r\n    \"dob\": \"2024/01/29\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/generated_policy_data",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"generated_policy_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "sold-cancel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"type": "text"
+						},
+						{
+							"key": "length",
+							"value": "10",
+							"type": "text"
+						},
+						{
+							"key": "search",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "value",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "policy_type",
+							"value": "cancel",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/PolicyDatalist",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"PolicyDatalist"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSoldPolicyData",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "policy_id",
+							"value": "74",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/GetSoldPolicyData",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"GetSoldPolicyData"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "checkExistTransactionNO",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "transaction_no",
+							"value": "147465746456464",
+							"type": "text"
+						},
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/checkExistTransactionNO",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"checkExistTransactionNO"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetDealerData",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/GetDealerData",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"GetDealerData"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generate_payment_request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "bank_transaction_no",
+							"value": "23njbhvgvzxdsddss",
+							"type": "text"
+						},
+						{
+							"key": "ifsc_code",
+							"value": "HDFC0001588",
+							"type": "text"
+						},
+						{
+							"key": "deposit_amount",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "transaction_type",
+							"value": "deposit",
+							"type": "text"
+						},
+						{
+							"key": "acc_type",
+							"value": "saving",
+							"type": "text"
+						},
+						{
+							"key": "transaction_date",
+							"value": "11-11-2024",
+							"type": "text"
+						},
+						{
+							"key": "dealer_bank_trans_id",
+							"value": "dsdsdda",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "bank_name",
+							"value": "HDFC BANK",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{local_server}}/api/generate_payment_request",
+					"host": [
+						"{{local_server}}"
+					],
+					"path": [
+						"api",
+						"generate_payment_request"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "dealer_transaction_data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "length",
+							"value": "15",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/dealer_transaction_data",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"dealer_transaction_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insurance_companies",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "icpaymentprocess",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "ic_id",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "transaction_no",
+							"value": "kjnbv n",
+							"type": "text"
+						},
+						{
+							"key": "ifsc_code",
+							"value": "w23ssadd",
+							"type": "text"
+						},
+						{
+							"key": "account_no",
+							"value": "2345544",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "payment_date",
+							"value": "2023-01-12",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/icpaymentprocess",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"icpaymentprocess"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "BankTransactionListRequest",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "start",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "length",
+							"value": "10",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/BankTransactionList",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"BankTransactionList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approveDealer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "Request",
+							"value": " dealer_bank_tran_id:510",
+							"type": "text"
+						},
+						{
+							"key": "dealer_id",
+							"value": "11111",
+							"type": "text"
+						},
+						{
+							"key": "amount",
+							"value": "20000000",
+							"type": "text"
+						},
+						{
+							"key": "transaction_type",
+							"value": "withdrawal",
+							"type": "text"
+						},
+						{
+							"key": "user_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "approval_status",
+							"value": "approved",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/approveDealer",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"approveDealer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "transaction_file",
+							"type": "file",
+							"src": "/D:/Downloads/acemoney-hsopicash.csv"
+						},
+						{
+							"key": "login_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/uploadTransaction",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"uploadTransaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetExcelDataList",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "excel_id",
+							"value": "74",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/GetExcelDataList",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"GetExcelDataList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UsersUploadexcelDataList",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "dealer_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/UsersUploadexcelDataList",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"UsersUploadexcelDataList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download Excel File",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/downloadMonthExcel?excel_id=82&status=sold",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"downloadMonthExcel"
+					],
+					"query": [
+						{
+							"key": "excel_id",
+							"value": "82"
+						},
+						{
+							"key": "status",
+							"value": "sold"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancelPolicy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "cancellation_reson",
+							"value": "sdsddsdddddds",
+							"type": "text"
+						},
+						{
+							"key": "policy_id",
+							"value": "20240212101528",
+							"type": "text"
+						},
+						{
+							"key": "cancelation_reason_type",
+							"value": "ddd",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/D:/Downloads/icons8-check-32.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/cancelPolicy",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"cancelPolicy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": " 11111",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": " 11111",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "role_type",
+							"value": " dealer",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Account Admin Login",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "admin_master@opnrsa.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin_master@opnrsa.com",
+							"type": "text"
+						},
+						{
+							"key": "role_type",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "SuperAdmin Login",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "username",
+							"value": "admin_master@opnrsa.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "password",
+							"value": "admin_master@opnrsa.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "role_type",
+							"value": "admin",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/login",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updated-endorsement-policy-data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"policy_id\": \"27\",\r\n    \"dealer_id\": \"1\",\r\n    \"salutation\": 2,\r\n    \"fname\": \"MNMN\",\r\n    \"mname\": \"MNMNMn\",\r\n    \"lname\": \"MNMn\",\r\n    \"email\": \"a@gmail.com\",\r\n    \"mobile_no\": \"7718015767\",\r\n    \"addr1\": \",MN,MN,MN\",\r\n    \"addr2\": \",MN,MN,MN\",\r\n    \"pincode\": \"400089\",\r\n    \"city_id\": 470,\r\n    \"state_id\": 21,\r\n    \"nominee_full_name\": \"MNMNBMNB\",\r\n    \"nominee_age\": \"45\",\r\n    \"nominee_relation\": 4,\r\n    \"appointee_name\": \"\",\r\n    \"appointee_age\": \"\",\r\n    \"appointee_relation\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/ updated-endorsement-policy-data",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						" updated-endorsement-policy-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "party-payment-details",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "ic_id",
+							"value": "3",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/party-payment-details",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"party-payment-details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GlobalLogin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "redirection_key",
+							"value": "TTZIeFJneERGekE4SVRRWHovakJSQVFIYVExUGpvU3Q1UEJlaXRzR3g0OD0=",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://hospicash.mylmsnow.com/api/api/GlobalLogin",
+					"protocol": "https",
+					"host": [
+						"hospicash",
+						"mylmsnow",
+						"com"
+					],
+					"path": [
+						"api",
+						"api",
+						"GlobalLogin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get FIlter",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{local_server}}/api/get_filter",
+					"host": [
+						"{{local_server}}"
+					],
+					"path": [
+						"api",
+						"get_filter"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "pendingCanlceledList",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "role_type",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "dealer_id",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "start",
+							"value": "0",
+							"type": "text"
+						},
+						{
+							"key": "length",
+							"value": "10",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{local_server}}/api/pendingCanlceledList",
+					"host": [
+						"{{local_server}}"
+					],
+					"path": [
+						"api",
+						"pendingCanlceledList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approveCancelledPolicy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "policy_id",
+							"value": "5",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{local_server}}/api/approveCancelledPolicy",
+					"host": [
+						"{{local_server}}"
+					],
+					"path": [
+						"api",
+						"approveCancelledPolicy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "logMessage",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "role_type",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "from_date",
+							"value": "2024-03-09",
+							"type": "text"
+						},
+						{
+							"key": "to_date",
+							"value": "2024-03-09",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://doc.myassistancenow.com/api/activitylogs",
+					"protocol": "https",
+					"host": [
+						"doc",
+						"myassistancenow",
+						"com"
+					],
+					"path": [
+						"api",
+						"activitylogs"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "Local",
+			"value": "https://hospicash.mylmsnow.com"
+		},
+		{
+			"key": "server",
+			"value": "https://hospicash.mylmsnow.com"
+		},
+		{
+			"key": "local_server",
+			"value": "http://127.0.0.1:8000"
+		},
+		{
+			"key": "Hospicash_SERVER",
+			"value": "https://doc.myassistancenow.com/api/api/login"
+		}
+	]
+}

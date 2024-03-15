@@ -30,10 +30,10 @@ export const MyDropzoneComponent = ({ onFileSelect }) => {
   const { getRootProps, getInputProps, acceptedFiles, isDragActive } =
     useDropzone({
       accept: {
-        "application/vnd.ms-excel": [".xls"],
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
-          ".xlsx",
-        ],
+        // "application/vnd.ms-excel": [".xls"],
+        // "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
+        //   ".xlsx",
+        // ],
         "text/csv": [".csv"],
       },
       onDrop: (acceptedFiles) => {
@@ -86,7 +86,7 @@ export const MyDropzoneComponent = ({ onFileSelect }) => {
             padding: "12px",
           }}
         >
-          (Only *.xls ,*.xlsx will be accepted)
+          (Only *.csv will be accepted)
         </p>
       )}
       {acceptedFiles.length > 0 && (

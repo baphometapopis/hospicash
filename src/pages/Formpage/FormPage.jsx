@@ -44,10 +44,7 @@ export default function FormPage() {
   const navigation = useNavigate();
   const submitData = async () => {
     dispatch(updateUserData({ dealer_id: LoginData?.user_details?.id }));
-    console.log(
-      location?.state?.Action,
-      "lllllllllllllllllllllllllllllllllllll"
-    );
+
     if (!isEndorsment) {
       const data = await generatePolicy(
         LoginData?.user_details?.id,
@@ -74,7 +71,6 @@ export default function FormPage() {
         });
       }
     } else {
-      console.log("hitting endorsmwnt api ");
       const data = await Update_generatePolicy(
         LoginData?.user_details?.id,
         formik.values,
@@ -193,8 +189,10 @@ export default function FormPage() {
         validateRequired("appointee_name", "Required");
         validateRequired("appointee_age", "Required");
         validateRequired("appointee_relation", "Required");
+        if (values.appointee_age && values?.appointee_age < 18) {
+          errors.appointee_age = "age should be above 18";
+        }
       }
-      console.log(values, errors);
 
       return errors;
     },
@@ -202,6 +200,7 @@ export default function FormPage() {
 
   const getPincode = async (pincode) => {
     const data = await get_Pincode_Data(pincode);
+    console.log(data?.data?.city_or_village_name);
     if (data?.status) {
       setcityName(data?.data?.city_or_village_name);
       setStateName(data?.data?.state_name);
@@ -272,44 +271,43 @@ export default function FormPage() {
       location?.state?.policyID
     );
 
-    formik.setFieldValue("addr1", data?.data?.addr1);
-    formik.setFieldValue("addr2", data?.data?.addr2);
-    formik.setFieldValue("appointee_age", data?.data?.appointee_age);
-    formik.setFieldValue("appointee_name", data?.data?.appointee_full_name);
+    formik.setFieldValue("addr1", data?.data[0].addr1);
+    formik.setFieldValue("addr2", data?.data[0].addr2);
+    formik.setFieldValue("appointee_age", data?.data[0].appointee_age);
+    formik.setFieldValue("appointee_name", data?.data[0].appointee_full_name);
     formik.setFieldValue(
       "appointee_relation",
-      Number(data?.data?.appointee_relation)
+      Number(data?.data[0].appointee_relation)
     );
-    formik.setFieldValue("city_id", data?.data?.city);
-    formik.setFieldValue("state_id", data?.data?.state);
-    formik.setFieldValue("fname", data?.data?.fname);
-    formik.setFieldValue("pincode", data?.data?.pincode);
+    formik.setFieldValue("city_id", data?.data[0].city);
+    formik.setFieldValue("state_id", data?.data[0].state);
+    formik.setFieldValue("fname", data?.data[0].fname);
+    formik.setFieldValue("pincode", data?.data[0].pincode);
 
-    setStateName(data?.data?.state_name);
-    setcityName(data?.data?.city_name);
+    setStateName(data?.data[0].state_name);
+    setcityName(data?.data[0].city_name);
 
-    formik.setFieldValue("pan_number", data?.data?.pan_number);
-    formik.setFieldValue("dob", data?.data?.dob);
-    formik.setFieldValue("email", data?.data?.email);
-    formik.setFieldValue("gender", Number(data?.data?.gender));
-    formik.setFieldValue("mobile_no", data?.data?.mobile_no);
-    formik.setFieldValue("nominee_age", data?.data?.nominee_age);
-    formik.setFieldValue("nominee_full_name", data?.data?.nominee_full_name);
+    formik.setFieldValue("pan_number", data?.data[0].pan_number);
+    formik.setFieldValue("dob", data?.data[0].dob);
+    formik.setFieldValue("email", data?.data[0].email);
+    formik.setFieldValue("gender", Number(data?.data[0].gender));
+    formik.setFieldValue("mobile_no", data?.data[0].mobile_no);
+    formik.setFieldValue("nominee_age", data?.data[0].nominee_age);
+    formik.setFieldValue("nominee_full_name", data?.data[0].nominee_full_name);
     formik.setFieldValue(
       "nominee_relation",
-      Number(data?.data?.nominee_relation)
+      Number(data?.data[0].nominee_relation)
     );
-    formik.setFieldValue("salutation", Number(data?.data?.salutation));
+    formik.setFieldValue("salutation", Number(data?.data[0].salutation));
 
-    formik.setFieldValue("mname", data?.data?.mname);
-    formik.setFieldValue("lname", data?.data?.lname);
+    formik.setFieldValue("mname", data?.data[0].mname);
+    formik.setFieldValue("lname", data?.data[0].lname);
 
-    console.log(data?.data[0]);
+    // console.log(data?.data[0]);
   };
 
   useEffect(() => {
     if (location?.state?.Action === "Endorsment") {
-      console.log("jhgjk");
       getEndorsmentDetails();
     }
     getFormData();
@@ -576,6 +574,7 @@ export default function FormPage() {
                   type="text"
                   placeholder="Pincode"
                   label="Pincode"
+                  disabled={isEndorsment}
                   required={true}
                   value={formik.values.pincode}
                   maxLength={6}

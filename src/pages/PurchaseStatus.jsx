@@ -39,10 +39,8 @@ export default function PurchaseStatus() {
           decryptdata?.user_details?.id,
           policy_id
         );
-        // console.log(data);
         if (data?.status) {
-          console.log(data?.data);
-          setPolicyData(data?.data);
+          setPolicyData(data?.data[0]);
         } else {
           toast.error("Failed to get Policy Data", {
             position: "bottom-right",

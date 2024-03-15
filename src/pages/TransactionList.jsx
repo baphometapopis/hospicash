@@ -8,9 +8,11 @@ import { decryptData } from "../Utils/cryptoUtils";
 import TransactionListTable from "../components/dashboardcomponent/DashboardCardContainer/TransactionCard/TransactionListTable";
 import { SearchContainer } from "../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../components/Mobile FIlterCOmponent/FilterDrawer";
+import { calculatePagination } from "../Utils/calculationPagination";
 export default function TransactionsList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
+  const [totalPage, settotalPage] = useState();
 
   const handleOpenFilterDrawer = () => {
     setFilterDrawerVisible(true);
@@ -35,10 +37,18 @@ export default function TransactionsList() {
   // });
 
   const handlePageChange = (pageNumber) => {
-    console.log(pageNumber, "jhfd");
-
+    console.log(pageNumber);
     setCurrentPage(pageNumber);
-    setIndexOfFirstRecord((pageNumber - 1) * 10 + 1);
+    const pagination = calculatePagination(
+      totalRecords,
+      recordsPerPage,
+      pageNumber
+    );
+    console.log(pagination);
+    settotalPage(pagination?.totalPages);
+    // setIndexOfFirstRecord()
+    setIndexOfFirstRecord(pagination?.startIndex);
+    // setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
@@ -49,7 +59,7 @@ export default function TransactionsList() {
     };
 
     window.addEventListener("resize", handleWindowResize);
-    if (windowWidth <= 768) {
+    if (windowWidth <= 1035) {
       setisMobile(false);
     } else {
       setisMobile(true);
@@ -58,6 +68,7 @@ export default function TransactionsList() {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, [windowWidth]);
+
   const dealerTransactionList = useCallback(async () => {
     const data = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(data);
@@ -76,6 +87,13 @@ export default function TransactionsList() {
           const data = await getDealerTransactionList(listdata);
           setPolicyList(data?.data);
           setTotalRecords(data?.recordsTotal);
+          const pagination = calculatePagination(
+            totalRecords,
+            recordsPerPage,
+            0
+          );
+          console.log(pagination);
+          settotalPage(pagination?.totalPages);
           console.log(data?.recordsTotal);
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -83,15 +101,15 @@ export default function TransactionsList() {
         }
       }
     }
-  }, [indexOfFirstRecord, indexOfLastRecord, recordsPerPage]);
+  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
 
   useEffect(() => {
     dealerTransactionList();
   }, [dealerTransactionList]);
 
-  useEffect(() => {
-    setIndexOfLastRecord(currentPage * recordsPerPage);
-  }, [currentPage, recordsPerPage]);
+  // useEffect(() => {
+  //   setIndexOfLastRecord(currentPage * recordsPerPage);
+  // }, [currentPage, recordsPerPage, totalPage]);
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -131,96 +149,7 @@ export default function TransactionsList() {
             loginData={loginData}
             handlePageChange={dealerTransactionList}
           />
-          {false && (
-            <div
-              style={{
-                backgroundColor: "#0089d1",
-                padding: "10px",
-                zIndex: 4,
-              }}
-              className="px-4 flex rounded-t items-center justify-between w-full sticky top-[115px] "
-            >
-              <span
-                style={{
-                  width: "8%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                SR No
-              </span>
-              <span
-                style={{
-                  width: "25%", // Adjusted width for responsiveness
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                Tranx No
-              </span>
-              <span
-                style={{
-                  width: "10%",
-                  textAlign: "center",
-                  minWidth: "fitcontent",
-                }}
-                className="text-white "
-              >
-                Amount
-              </span>
-              <span
-                style={{
-                  width: "10%",
-                  textAlign: "center",
-                }}
-                className="text-white"
-              >
-                Status
-              </span>
-              <span
-                style={{ textAlign: "center", width: "10%" }}
-                className="text-white w-['10%']"
-              >
-                Transaction Type
-              </span>
-              <span
-                style={{ textAlign: "center", width: "15%" }}
-                className="text-white"
-              >
-                Payment Date
-              </span>
-              {/* <span
-                style={{ color: "white", width: "20%", textAlign: "center" }}
-              >
-                Created At
-              </span> */}
-              {loginData?.user_details?.role_type === "admin" && (
-                <span
-                  style={{ color: "white", width: "20%", textAlign: "center" }}
-                >
-                  Action
-                </span>
-              )}
-            </div>
-          )}
-          {/* {poicyList.map((data) => (
-            <>
-              {isMobile ? (
-                <TransactionCard
-                  key={data.id}
-                  transaction={data}
-                  user_id={loginData?.user_details?.id}
-                  role_type={loginData?.user_details?.role_type}
-                />
-              ) : (
-                <MobileTransactionCard
-                  key={data.id}
-                  transaction={data}
-                  user_id={loginData?.user_details?.id}
-                />
-              )}
-            </>
-          ))} */}
+
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
@@ -228,7 +157,7 @@ export default function TransactionsList() {
             </span>
             <div className="flex items-center mt-4">
               <span className="text-gray-600 mx-2">
-                Page {currentPage} of {Math.ceil(totalRecords / recordsPerPage)}
+                Page {currentPage} of {totalPage}
               </span>
 
               <button
@@ -241,9 +170,7 @@ export default function TransactionsList() {
               <button
                 className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={
-                  currentPage === Math.ceil(totalRecords / recordsPerPage)
-                }
+                disabled={currentPage === totalPage}
               >
                 Next
               </button>

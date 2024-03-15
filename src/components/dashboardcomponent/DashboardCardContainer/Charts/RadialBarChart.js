@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ReactApexChart from "react-apexcharts";
+import WindowSizeContext from "../../../../Utils/Context/WindowSizeContext";
 
 const RadialBarChart = () => {
+  const windowSize = useContext(WindowSizeContext);
+
   const totalPolicies = 5000;
   const pendingPolicies = 4000;
   const donePolicies = 1000;
@@ -18,7 +21,7 @@ const RadialBarChart = () => {
     },
     plotOptions: {
       radialBar: {
-        offsetY: -20,
+        offsetY: 20,
         startAngle: 0,
         endAngle: 270,
         hollow: {
@@ -45,9 +48,9 @@ const RadialBarChart = () => {
     legend: {
       show: true,
       floating: true,
-      fontSize: "12px",
-      offsetX: 260,
-      offsetY: 15,
+      fontSize: "11px",
+      offsetX: windowSize.width > 1345 ? 200 : 150,
+      offsetY: 35,
       labels: {
         useSeriesColors: true,
       },
@@ -85,7 +88,7 @@ const RadialBarChart = () => {
     <div>
       <ReactApexChart
         type="radialBar"
-        height={350}
+        height={300}
         options={chartOptions}
         series={series}
       />

@@ -1,10 +1,17 @@
+import { decryptData } from "../Utils/cryptoUtils";
 import { API_BASE_URL } from "./api_Endpoint";
+
+const localData = localStorage.getItem("Acemoney_Cache");
+const decryptdata = decryptData(localData);
+const user_id = decryptdata?.user_details?.id;
 
 export const cancelSoldPolicy = async (data, id) => {
   console.log(data);
 
   var urlencoded = new FormData();
-  urlencoded.append("cancellation_reson", data?.comments);
+  urlencoded.append("cancel_remark", data?.comments);
+  urlencoded.append("user_id",user_id);
+
   urlencoded.append("policy_id", id);
   urlencoded.append(
     "cancelation_reason_type",

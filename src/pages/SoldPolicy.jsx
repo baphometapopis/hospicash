@@ -8,9 +8,12 @@ import DealerSoldPolicyTable from "../components/dashboardcomponent/DealerSoldPo
 import { SearchContainer } from "../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../components/Mobile FIlterCOmponent/FilterDrawer";
 import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
+import { calculatePagination } from "../Utils/calculationPagination";
+import { decryptData } from "../Utils/cryptoUtils";
 
 export default function SoldPolicy() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, settotalPage] = useState();
 
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
 
@@ -33,14 +36,25 @@ export default function SoldPolicy() {
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
     setCurrentPage(pageNumber);
-    setIndexOfFirstRecord(pageNumber * recordsPerPage);
+    const pagination = calculatePagination(
+      totalRecords,
+      recordsPerPage,
+      pageNumber
+    );
+    console.log(pagination);
+    settotalPage(pagination?.totalPages);
+    // setIndexOfFirstRecord()
+    setIndexOfFirstRecord(pagination?.startIndex);
+    // setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
 
   const SoldCancelPolicy = useCallback(() => {
+    const data = localStorage.getItem("Acemoney_Cache");
+    const decryptdata = decryptData(data);
     const listdata = {
-      dealer_id: "1",
+      dealer_id: decryptdata?.user_details?.id,
       start: indexOfFirstRecord,
       end: recordsPerPage,
       policy_type: "sold",
@@ -51,19 +65,19 @@ export default function SoldPolicy() {
         .then((data) => {
           setPolicyList(data?.data);
           setTotalRecords(data?.recordsTotal);
-          console.log(data?.recordsTotal);
+          const pagination = calculatePagination(
+            totalRecords,
+            recordsPerPage,
+            0
+          );
+          console.log(pagination);
+          settotalPage(pagination?.totalPages);
         })
         .catch((error) => {
-          console.error(error);
+          console.error(error, "dsdsds");
         });
     }
-  }, [
-    indexOfFirstRecord,
-    indexOfLastRecord,
-    recordsPerPage,
-    setPolicyList,
-    setTotalRecords,
-  ]);
+  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -83,7 +97,7 @@ export default function SoldPolicy() {
 
   useEffect(() => {
     setIndexOfLastRecord(currentPage * recordsPerPage);
-  }, [currentPage, recordsPerPage]);
+  }, [currentPage, recordsPerPage, totalPage]);
 
   useEffect(() => {
     SoldCancelPolicy();
@@ -215,8 +229,7 @@ export default function SoldPolicy() {
             </span>
             <div className="flex items-center mt-4">
               <span className="text-gray-600 mx-2">
-                Page {currentPage} of{" "}
-                {Math.floor(totalRecords / recordsPerPage)}
+                Page {currentPage} of {totalPage}
               </span>
 
               <button
@@ -229,9 +242,7 @@ export default function SoldPolicy() {
               <button
                 className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={
-                  currentPage === Math.floor(totalRecords / recordsPerPage)
-                }
+                disabled={currentPage === totalPage}
               >
                 Next
               </button>

@@ -7,9 +7,12 @@ import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 import DealerCancelledPolicyTable from "../components/dashboardcomponent/DealerCancelledPolicyTable";
 import { SearchContainer } from "../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../components/Mobile FIlterCOmponent/FilterDrawer";
+import { calculatePagination } from "../Utils/calculationPagination";
+import { decryptData } from "../Utils/cryptoUtils";
 
 export default function CancelledPolicy() {
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
+  const [totalPage, settotalPage] = useState("");
 
   const handleOpenFilterDrawer = () => {
     setFilterDrawerVisible(true);
@@ -32,39 +35,48 @@ export default function CancelledPolicy() {
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
     setCurrentPage(pageNumber);
-    setIndexOfFirstRecord(pageNumber * recordsPerPage);
+    const pagination = calculatePagination(
+      totalRecords,
+      recordsPerPage,
+      pageNumber
+    );
+    console.log(pagination);
+    settotalPage(pagination?.totalPages);
+    // setIndexOfFirstRecord()
+    setIndexOfFirstRecord(pagination?.startIndex);
+    // setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
 
   const SoldCancelPolicy = useCallback(() => {
-    const fetchData = async () => {
-      const listdata = {
-        dealer_id: "1",
-        start: indexOfFirstRecord,
-        end: recordsPerPage,
-        policy_type: "cancelled",
-      };
-      if (indexOfFirstRecord !== indexOfLastRecord) {
-        try {
-          const data = await getSold_CancelPolicy(listdata);
-          setPolicyList(data?.data);
-          setTotalRecords(data?.recordsTotal);
-          console.log(data?.recordsTotal);
-        } catch (error) {
-          console.error(error);
-        }
-      }
+    const data = localStorage.getItem("Acemoney_Cache");
+    const decryptdata = decryptData(data);
+    const listdata = {
+      dealer_id: decryptdata?.user_details?.id,
+      start: indexOfFirstRecord,
+      end: recordsPerPage,
+      policy_type: "cancelled",
     };
 
-    fetchData();
-  }, [
-    indexOfFirstRecord,
-    indexOfLastRecord,
-    recordsPerPage,
-    setPolicyList,
-    setTotalRecords,
-  ]);
+    if (indexOfFirstRecord !== indexOfLastRecord) {
+      getSold_CancelPolicy(listdata)
+        .then((data) => {
+          setPolicyList(data?.data);
+          setTotalRecords(data?.recordsTotal);
+          const pagination = calculatePagination(
+            totalRecords,
+            recordsPerPage,
+            0
+          );
+          console.log(pagination);
+          settotalPage(pagination?.totalPages);
+        })
+        .catch((error) => {
+          console.error(error, "dsdsds");
+        });
+    }
+  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -84,7 +96,7 @@ export default function CancelledPolicy() {
 
   useEffect(() => {
     setIndexOfLastRecord(currentPage * recordsPerPage);
-  }, [currentPage, recordsPerPage]);
+  }, [currentPage, recordsPerPage, totalPage]);
 
   useEffect(() => {
     SoldCancelPolicy();
@@ -142,31 +154,26 @@ export default function CancelledPolicy() {
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
               {totalRecords} entries
             </span>
-            {Math.floor(totalRecords / recordsPerPage) !== 0 && (
-              <div className="flex items-center mt-4">
-                <span className="text-gray-600 mx-2">
-                  Page {currentPage} of{" "}
-                  {Math.floor(totalRecords / recordsPerPage)}
-                </span>
+            <div className="flex items-center mt-4">
+              <span className="text-gray-600 mx-2">
+                Page {currentPage} of {totalPage}
+              </span>
 
-                <button
-                  className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  Prev
-                </button>
-                <button
-                  className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={
-                    currentPage === Math.floor(totalRecords / recordsPerPage)
-                  }
-                >
-                  Next
-                </button>
-              </div>
-            )}
+              <button
+                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <button
+                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPage}
+              >
+                Next
+              </button>
+            </div>
           </div>
         </div>
       </div>

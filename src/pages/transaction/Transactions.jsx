@@ -21,6 +21,7 @@ import PaymentModal from "../../components/dashboardcomponent/Modal/PaymentModal
 import AccountBankTransactionListTable from "../../components/dashboardcomponent/DataTable";
 import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
 import { SearchContainer } from "../../components/dashboardcomponent/SearchContainer";
+import { calculatePagination } from "../../Utils/calculationPagination";
 export default function Transactions() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
@@ -36,6 +37,7 @@ export default function Transactions() {
   const [bankTransactionList, setBankTransactionList] = useState([]);
   const [selectedIC, setSelectedIC] = useState();
   const [selectedICPaymentDetails, setselectedICPaymentDetails] = useState();
+  const [totalPage, settotalPage] = useState();
 
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
@@ -62,10 +64,17 @@ export default function Transactions() {
   const handlePageChange = (pageNumber) => {
     console.log(pageNumber);
     setCurrentPage(pageNumber);
-    setIndexOfFirstRecord((pageNumber - 1) * 10 + 1);
-    setpageNumber(pageNumber * recordsPerPage);
+    const pagination = calculatePagination(
+      totalRecords,
+      recordsPerPage,
+      pageNumber
+    );
+    console.log(pagination);
+    settotalPage(pagination?.totalPages);
+    // setIndexOfFirstRecord()
+    setIndexOfFirstRecord(pagination?.startIndex);
+    // setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
-
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
 
   const getICPartyPAymentDetails = async (id) => {
@@ -116,13 +125,20 @@ export default function Transactions() {
           const data = await getBankTransactionList(listdata);
           setBankTransactionList(data?.data);
           setTotalRecords(data?.recordsTotal);
+          const pagination = calculatePagination(
+            totalRecords,
+            recordsPerPage,
+            0
+          );
+          console.log(pagination);
+    settotalPage(pagination?.totalPages);
         } catch (error) {
           console.error("Error fetching data:", error);
           // Handle the error as needed
         }
       }
     }
-  }, [indexOfFirstRecord, indexOfLastRecord, recordsPerPage]);
+  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
 
   useEffect(() => {
     dealerTransactionList();
@@ -318,12 +334,12 @@ export default function Transactions() {
           {/* <div className="bg-white w-[97%] mx-1 h-8 absolute bottom-24"></div> */}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
-              Showing {pageNumber + 1} to {pageNumber + 10} of {totalRecords}{" "}
-              entries
+              Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
+              {totalRecords} entries
             </span>
             <div className="flex items-center mt-4">
               <span className="text-gray-600 mx-2">
-                Page {currentPage} of {Math.ceil(totalRecords / recordsPerPage)}
+                Page {currentPage} of {totalPage}
               </span>
 
               <button
@@ -337,7 +353,7 @@ export default function Transactions() {
                 className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={
-                  currentPage === Math.ceil(totalRecords / recordsPerPage)
+                  currentPage === totalPage
                 }
               >
                 Next

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import CancelModal from "../../Modal/PolicyModal/CancelModal";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../../Api/api_Endpoint";
 
 const MobilePolicyCard = ({ policy, openCancelModal }) => {
   const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const getStatusStyle = (status) => {
-
     switch (status) {
       case "Pending":
         return {
@@ -47,7 +47,7 @@ const MobilePolicyCard = ({ policy, openCancelModal }) => {
   const statusStyle = getStatusStyle(policy.status);
   const handleDownloadPDF = async () => {
     try {
-      const pdfUrl = `https://hospicash.mylmsnow.com/api/api/downloadPolicy/${policy?.policy_id}`;
+      const pdfUrl = `${API_BASE_URL}/downloadPolicy/${policy?.policy_id}`;
       const response = await fetch(pdfUrl);
       const blob = await response.blob();
 

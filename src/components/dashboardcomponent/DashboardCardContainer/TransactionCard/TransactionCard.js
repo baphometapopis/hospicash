@@ -2,6 +2,7 @@ import React from "react";
 import { ApproveDealerTransaction } from "../../../../Api/approveDealer";
 
 const TransactionCard = ({ transaction, user_id, role_type }) => {
+  console.log(transaction, "pkojihugyftdrgx");
   const approveDealerRequest = async () => {
     const data = await ApproveDealerTransaction(user_id, transaction);
     console.log(data);

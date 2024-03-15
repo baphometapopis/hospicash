@@ -35,7 +35,6 @@ export default function Login() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       handleLoginApi(); // navigate("/dashboard ");
     },
   });
@@ -51,7 +50,6 @@ export default function Login() {
 
       if (loginResponse?.status) {
         const encryptedData = encryptData(loginResponse.data);
-        console.log(loginResponse);
 
         // Attempt to store data in local storage
         // Check if the user is logged in after storing data
@@ -72,7 +70,6 @@ export default function Login() {
           navigation("/Home");
         }
       } else {
-        console.log(loginResponse.message);
 
         toast.error(loginResponse?.message, {
           position: "bottom-right",
@@ -83,7 +80,6 @@ export default function Login() {
         });
       }
     } catch (error) {
-      console.error("Error during login:", error);
       // Handle other errors if needed
       // toast.error("An error occurred during login");
     }
@@ -92,21 +88,16 @@ export default function Login() {
 
   const getLocalData = async () => {
     const localData = localStorage.getItem("Acemoney_Cache");
-    console.log(localData, "the Login PAge ");
 
     if (localData === null || localData === undefined) {
-      console.log("redirect to login");
       navigation("/Login");
     } else {
       navigation("/Home");
 
-      console.log("redirect to Dashboatd");
     }
   };
 
   const { pathname, search } = window.location;
-  console.log(pathname, search);
-  console.log(window.location.origin);
 
   // Parse the URL parameters
   const urlParams = new URLSearchParams(search);
@@ -119,7 +110,6 @@ export default function Login() {
 
       if (loginResponse?.status) {
         const encryptedData = encryptData(loginResponse.data);
-        console.log(loginResponse);
 
         // Attempt to store data in local storage
         // Check if the user is logged in after storing data
@@ -140,7 +130,6 @@ export default function Login() {
           navigation("/Home");
         }
       } else {
-        console.log(loginResponse.message);
 
         toast.error(loginResponse?.message, {
           position: "bottom-right",
@@ -152,7 +141,6 @@ export default function Login() {
         navigation("/");
       }
     } catch (error) {
-      console.error("Error during Global login:", error);
       // Handle other errors if needed
       toast.error("An error occurred during login");
     }
@@ -161,7 +149,6 @@ export default function Login() {
   // Check if the redirection_key exists
   useEffect(() => {
     if (redirectionKey) {
-      console.log("Redirection Key Found:", redirectionKey);
       GlobalhandleLoginApi(redirectionKey);
     }
     getLocalData();

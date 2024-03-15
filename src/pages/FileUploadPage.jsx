@@ -22,6 +22,8 @@ import { fileUpload } from "../Api/fileUpload";
 import { BarLoader } from "react-spinners";
 
 import { get_Excel_InQueue_List } from "../Api/getExcelInQueueList";
+import { API_BASE_URL, FileURL } from "../Api/api_Endpoint";
+import TimeDifferenceTimer from "../Utils/TimeDifferenceTimer";
 
 export default function MonthlyFileUpload() {
   const [LoginData, setLoginData] = useState();
@@ -101,8 +103,7 @@ export default function MonthlyFileUpload() {
   const handleDownloadPDF = async (id, status) => {
     console.log(id, status);
     try {
-      const href_url = `https://hospicash.mylmsnow.com/api/downloadMonthExcel?excel_id=${id}&status=${status}`;
-      console.log(href_url);
+      const href_url = `${FileURL}/downloadMonthExcel?excel_id=${id}&status=${status}`;
       window.open(href_url, "_blank");
     } catch (error) {
       console.error("Error downloading PDF:", error);
@@ -124,7 +125,6 @@ export default function MonthlyFileUpload() {
           setTotalRecords(data?.data?.length);
         }
       } else {
-        
         const data = await get_Excel_InQueue_List(id);
         if (data?.status) {
           setinQueueList(data?.data);
@@ -181,6 +181,15 @@ export default function MonthlyFileUpload() {
   }, [getLocalData, showUpload]);
   useEffect(() => {}, [selectedFile]);
   const [timeLeft, setTimeLeft] = useState(200 * 6);
+  const handleDownload = () => {
+    const url = process.env.PUBLIC_URL + "/SampleFile/acemoney-hsopicash.csv";
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "acemoney-hsopicash.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -202,8 +211,43 @@ export default function MonthlyFileUpload() {
       <div className=" grid md:grid-cols-3    gap-2 w-[85%]  lg:max-h-80 min-h-fit -mt-20  rounded mb-4 ">
         <div className="h-64 min-w-[250px] border  border-neutral-light bg-white col-span-2 md:col-span-1 overflow-scroll hide-scrollbar justify-between">
           <MyDropzoneComponent onFileSelect={handleFileSelect} />
-          {showUpload ? (
-            <div onClick={sendFile} className=" bg-primary mx-5">
+          <div
+            style={{
+              flexDirection: "row",
+              display: "flex",
+              // backgroundColor: "red",
+              justifyContent: "center",
+            }}
+          >
+            {showUpload ? (
+              <div onClick={sendFile} className=" bg-primary mx-5 w-[45%]">
+                <p
+                  style={{
+                    textAlign: "center",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  Upload
+                </p>
+              </div>
+            ) : (
+              <div className=" bg-primary mx-5">
+                <p
+                  style={{
+                    textAlign: "center",
+                    color: "white",
+                    cursor: "not-allowed",
+                  }}
+                >
+                  Uploading....
+                </p>
+              </div>
+            )}
+            <div
+              className=" bg-secondary mx-5 w-[45%]"
+              onClick={handleDownload}
+            >
               <p
                 style={{
                   textAlign: "center",
@@ -211,28 +255,17 @@ export default function MonthlyFileUpload() {
                   cursor: "pointer",
                 }}
               >
-                Upload
+                Sample
               </p>
             </div>
-          ) : (
-            <div className=" bg-primary mx-5">
-              <p
-                style={{
-                  textAlign: "center",
-                  color: "white",
-                  cursor: "not-allowed",
-                }}
-              >
-                Uploading....
-              </p>
-            </div>
-          )}
+          </div>
         </div>
         <div className=" border border-neutral-light bg-white h-64 overflow-y-scroll hide-scrollbar p-2 row-span-2 col-span-2 w-full">
           {inQueueList.length !== 0 ? (
             <>
               {inQueueList?.map((data, index) => (
                 <div
+                  key={index}
                   style={{
                     boxShadow:
                       "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
@@ -276,10 +309,12 @@ export default function MonthlyFileUpload() {
                     />
                   </div>
                   <div className="mx-4 items-end">
-                    {Math.floor(timeLeft / 60)
+                    {/* {Math.floor(timeLeft / 60)
                       .toString()
                       .padStart(2, "0")}
-                    :{(timeLeft % 60).toString().padStart(2, "0")}
+                    :{(timeLeft % 60).toString().padStart(2, "0")} */}
+
+                    <TimeDifferenceTimer createDate={data.create_date} />
                   </div>
                 </div>
               ))}
@@ -292,132 +327,10 @@ export default function MonthlyFileUpload() {
       <div className="  w-[85%] mb:px-8 mb-20 bg-white border border-neutral-light rounded">
         <div className="container mx-auto p-4">
           <h1 className="text-2xl font-bold mb-4">Uploaded FIle List</h1>
-          {false && (
-            <div
-              style={{
-                backgroundColor: "white",
-                borderRadius: "50px",
-                marginBottom: "20px",
-                marginTop: "5px",
-                border: "1px solid",
-                paddingLeft: "20px",
-                marginLeft: "auto",
-                zIndex: 5,
-              }}
-              className=" flex sticky top-12 "
-            >
-              <div
-                style={{ padding: "10px" }}
-                className=" flex items-center w-full "
-              >
-                <input
-                  style={{ border: 0, outline: "none", width: "120px" }}
-                  placeholder="transaction ID"
-                />
-                <div
-                  style={{ color: "#aaaaaa" }}
-                  className="border-[0.5px] h-[25px]  mx-4"
-                />
-                <Select
-                  options={options}
-                  styles={{
-                    option: (provided) => ({
-                      ...provided,
-                      zIndex: 9999, // Set your desired z-index value
-                    }),
-                    control: (provided) => ({
-                      ...provided,
-                      border: "none", // Remove the border
-                      outline: "none", // Remove the outline
-                    }),
-                    dropdownIndicator: (provided) => ({
-                      ...provided,
-                      color: "#0089d1", // Set the arrow color to blue
-                    }),
-                  }}
-                  // other props as needed
-                />
-                <label>Start Date: </label>{" "}
-                <DatePicker
-                  id="date"
-                  selected={searchParam.start_date}
-                  onKeyDown={(event) => {
-                    const allowedCharacters = /^[0-9/]*$/;
-
-                    if (
-                      !(
-                        allowedCharacters.test(event.key) ||
-                        event.key === "Backspace" ||
-                        event.key === "/"
-                      )
-                    ) {
-                      event.preventDefault();
-                    }
-                  }}
-                  onChange={(date) => {
-                    console.log(date);
-                    setSearchParam({ ...searchParam, start_date: date });
-                  }}
-                  preventOpenOnFocus={false}
-                  autoComplete="false"
-                  dateFormat="yyyy/MM/dd"
-                  placeholderText="YYYY/MM/DD"
-                  className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
-                />
-                <div
-                  style={{ color: "#aaaaaa" }}
-                  className="border-[0.5px] h-[25px]  mx-4"
-                />
-                <label>End Date: </label>{" "}
-                <DatePicker
-                  id="date"
-                  selected={searchParam.end_date}
-                  onKeyDown={(event) => {
-                    const allowedCharacters = /^[0-9/]*$/;
-
-                    if (
-                      !(
-                        allowedCharacters.test(event.key) ||
-                        event.key === "Backspace" ||
-                        event.key === "/"
-                      )
-                    ) {
-                      event.preventDefault();
-                    }
-                  }}
-                  onChange={(date) => {
-                    console.log(date);
-                    setSearchParam({ ...searchParam, end_date: date });
-                  }}
-                  preventOpenOnFocus={false}
-                  autoComplete="false"
-                  dateFormat="yyyy/MM/dd"
-                  placeholderText="YYYY/MM/DD"
-                  className="focus:outline-none border border-[#6D6D6D] px-2 py-1  "
-                />
-              </div>
-              <div
-                style={{
-                  backgroundColor: "#0089d1",
-                  width: "100px",
-                  borderTopRightRadius: "50px",
-                  borderBottomRightRadius: "50px",
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <img
-                  src={SearchIcon}
-                  className="w-[50px]  object-cover"
-                  alt="search_image"
-                />
-              </div>
-            </div>
-          )}
 
           {totalFileUploaded?.map((data, index) => (
             <div
+              key={index}
               style={{
                 boxShadow:
                   " rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",

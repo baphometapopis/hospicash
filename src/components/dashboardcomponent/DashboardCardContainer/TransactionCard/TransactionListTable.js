@@ -11,7 +11,7 @@ const TransactionListTable = ({ data, role, loginData, handlePageChange }) => {
   const [page, setPage] = useState(1); // State to track current page
   const [pageSize, setPageSize] = useState(10);
   const approveDealer = async (props, status) => {
-    // console.log(props);
+    console.log(data);
     const resdata = await Approve_Dealer_Transaction(
       loginData?.user_details?.id,
       props,
@@ -248,13 +248,13 @@ const TransactionListTable = ({ data, role, loginData, handlePageChange }) => {
       {" "}
       <DataGrid
         pagination={true}
-        paginationMode="server" // Use server-side pagination mode
+        // paginationMode="server" // Use server-side pagination mode
         pageSize={pageSize}
         page={page}
         onPageChange={(newPage) => setPage(newPage)}
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         rows={data || []}
-        rowCount={[]} // The total number of rows on the server
+        // rowCount={[]} // The total number of rows on the server
         columns={columns}
         rowsPerPageOptions={[]}
         getRowHeight={() => "auto"}

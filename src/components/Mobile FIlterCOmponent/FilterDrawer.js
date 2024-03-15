@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Drawer, Select, DatePicker } from "antd";
+import { getFilterListApi } from "../../Api/getFilters";
 const { RangePicker } = DatePicker;
 
 const FilterDrawer = ({ visible, onClose }) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [filterOptions, setfilterOptions] = useState([]);
 
-  const options = [
-    { value: "transaction_no", label: "Transaction No" },
-    { value: "status", label: "Status" },
-    { value: "transaction_type", label: "Transaction Type" },
-  ];
+  const getFilterList = async () => {
+    const filterRes = await getFilterListApi();
+    if (filterRes?.status) {
+      setfilterOptions(filterRes.filter_data);
+    }
+    console.log(filterRes.filter_data);
+  };
+
   const handleDateChange = (dates, dateStrings) => {
     console.log("Selected Dates:", dates);
     console.log("Formatted Dates:", dateStrings);
@@ -17,7 +22,7 @@ const FilterDrawer = ({ visible, onClose }) => {
   const [inputValue, setInputValue] = useState("");
   const [isTextboxEnabled, setIsTextboxEnabled] = useState(false);
   const handleOptionChange = (selectedOption) => {
-    console.log(selectedOption)
+    console.log(selectedOption);
     setSelectedOption(selectedOption);
     setIsTextboxEnabled(true); // Enable text box when an option is selected
   };
@@ -25,12 +30,16 @@ const FilterDrawer = ({ visible, onClose }) => {
     setInputValue(e.target.value);
   };
 
+  useEffect(() => {
+    getFilterList();
+  }, []);
+
   return (
     <Drawer
       title="Filter Options"
       placement="right"
       onClose={onClose}
-      visible={visible}
+      open={visible}
     >
       <div style={{ padding: "10px" }}>
         <div className="py-2">
@@ -42,7 +51,7 @@ const FilterDrawer = ({ visible, onClose }) => {
           </label>
           <Select
             className="w-full h-[40px]"
-            options={options}
+            options={filterOptions}
             onChange={handleOptionChange}
             placeholder="select Options"
             styles={{
