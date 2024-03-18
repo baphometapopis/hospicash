@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import PolicyCard from "./DashboardCardContainer/PolicyCardContainer/PolicyCard";
 import CancelModal from "./Modal/PolicyModal/CancelModal";
 
-const DealerSoldPolicyTable = ({ data }) => {
+const DealerSoldPolicyTable = ({ data, refresh }) => {
   const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
   const [seletedCancelPolicyData, setseletedCancelPolicyData] = useState("");
 
@@ -151,6 +151,7 @@ const DealerSoldPolicyTable = ({ data }) => {
         isOpen={isCancelModalOpen}
         onClose={() => setisCancelModalOpen(false)}
         data={seletedCancelPolicyData}
+        refresh={refresh}
       />
       <DataGrid
         pagination={false}

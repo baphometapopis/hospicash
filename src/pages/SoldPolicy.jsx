@@ -10,6 +10,9 @@ import FilterDrawer from "../components/Mobile FIlterCOmponent/FilterDrawer";
 import MobilePolicyCard from "../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
 import { calculatePagination } from "../Utils/calculationPagination";
 import { decryptData } from "../Utils/cryptoUtils";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import Refresh from "../assets/Icons/icons8-refresh-64.png";
 
 export default function SoldPolicy() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,9 +27,11 @@ export default function SoldPolicy() {
   const handleCloseFilterDrawer = () => {
     setFilterDrawerVisible(false);
   };
+  const [isRefreshButtonDisabled, setIsRefreshButtonDisabled] = useState(false);
 
   const [totalRecords, setTotalRecords] = useState();
   const [poicyList, setPolicyList] = useState([]);
+  const [filterValue, setfilterValue] = useState("");
 
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
@@ -48,10 +53,30 @@ export default function SoldPolicy() {
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
 
+  const refreshpage = () => {};
+
+  const handleRefresh = () => {
+    // Disable the button
+    setIsRefreshButtonDisabled(true);
+
+    SoldCancelPolicy();
+
+    setTimeout(() => {
+      // Enable the button after 10 seconds
+      setIsRefreshButtonDisabled(false);
+    }, 10000); // 10 seconds in milliseconds
+  };
+
   const SoldCancelPolicy = useCallback(() => {
     const data = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(data);
+    console.log(filterValue);
     const listdata = {
+      value: filterValue?.searchvalue,
+      start_date: filterValue?.start_date,
+      end_date: filterValue?.end_date,
+
+      search: filterValue?.param,
       dealer_id: decryptdata?.user_details?.id,
       start: indexOfFirstRecord,
       end: recordsPerPage,
@@ -74,7 +99,13 @@ export default function SoldPolicy() {
           console.error(error, "dsdsds");
         });
     }
-  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
+  }, [filterValue, indexOfFirstRecord, indexOfLastRecord, totalRecords]);
+
+  const getSearchValue = (prop) => {
+    setfilterValue(prop);
+    // console.log(prop);
+    SoldCancelPolicy();
+  };
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -125,23 +156,42 @@ export default function SoldPolicy() {
                 onClick={handleOpenFilterDrawer}
               />
             )}
+            <Tippy
+              content={
+                isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
+              }
+              placement="right"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img
+                src={Refresh}
+                className={`w-[35px] h-[30px]   ${
+                  isRefreshButtonDisabled
+                    ? "cursor-not-allowed animate-spin-slow"
+                    : "cursor-pointer"
+                } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
+                alt="search_image"
+                onClick={() => !isRefreshButtonDisabled && handleRefresh()}
+              />
+            </Tippy>
           </div>
           <FilterDrawer
             visible={filterDrawerVisible}
             onClose={handleCloseFilterDrawer}
           />
 
-          {isMobile && <SearchContainer />}
+          {isMobile && <SearchContainer getSearchValue={getSearchValue} />}
 
-          {isMobile ? (
-            <DealerSoldPolicyTable data={poicyList} />
-          ) : (
+          {/* {isMobile ? ( */}
+          <DealerSoldPolicyTable data={poicyList} refresh={refreshpage} />
+          {/* ) : (
             <>
               {poicyList?.map((data) => (
                 <MobilePolicyCard key={data.id} policy={data} />
               ))}
             </>
-          )}
+          )} */}
 
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">

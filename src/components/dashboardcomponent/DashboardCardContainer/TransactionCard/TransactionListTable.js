@@ -241,7 +241,7 @@ const TransactionListTable = ({ data, role, loginData, handlePageChange }) => {
         height: 600,
         width: "100%",
         "& ::-webkit-scrollbar": { display: "none" },
-        // backgroundColor: "",
+        // "::-webkit-slider-thumb": { backgroundColor: "red" },
         border: "none",
       }}
     >

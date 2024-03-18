@@ -2,6 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import { getDealerTransactionList } from "../Api/getDealerTransactionList";
 import IconFilter from "../assets/Icons/IconFIlter.png";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import Refresh from "../assets/Icons/icons8-refresh-64.png";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { decryptData } from "../Utils/cryptoUtils";
@@ -17,10 +20,13 @@ export default function TransactionsList() {
   const handleOpenFilterDrawer = () => {
     setFilterDrawerVisible(true);
   };
+  const [isRefreshButtonDisabled, setIsRefreshButtonDisabled] = useState(false);
 
   const handleCloseFilterDrawer = () => {
     setFilterDrawerVisible(false);
   };
+  const [filterValue, setfilterValue] = useState("");
+
   const [totalRecords, setTotalRecords] = useState();
   const [poicyList, setPolicyList] = useState([]);
   const [loginData, setloginData] = useState();
@@ -28,13 +34,6 @@ export default function TransactionsList() {
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
-
-  // const [searchParam, setSearchParam] = useState({
-  //   value: "",
-  //   param: "",
-  //   start_date: "",
-  //   end_date: "",
-  // });
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -67,6 +66,23 @@ export default function TransactionsList() {
     };
   }, [windowWidth]);
 
+  const handleRefresh = () => {
+    // Disable the button
+    setIsRefreshButtonDisabled(true);
+
+    dealerTransactionList();
+
+    setTimeout(() => {
+      // Enable the button after 10 seconds
+      setIsRefreshButtonDisabled(false);
+    }, 10000); // 10 seconds in milliseconds
+  };
+  const getSearchValue = (prop) => {
+    setfilterValue(prop);
+    // console.log(prop);
+    dealerTransactionList();
+  };
+
   const dealerTransactionList = useCallback(async () => {
     const data = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(data);
@@ -74,10 +90,15 @@ export default function TransactionsList() {
 
     if (decryptdata) {
       const listdata = {
+        value: filterValue?.searchvalue,
+        start_date: filterValue?.start_date,
+        end_date: filterValue?.end_date,
+
+        search: filterValue?.param,
         dealer_id: decryptdata?.user_details?.id,
         start: indexOfFirstRecord,
         end: recordsPerPage,
-        policy_type: "sold",
+        // policy_type: "sold",
         role_type: decryptdata?.user_details?.role_type,
       };
       if (indexOfFirstRecord !== indexOfLastRecord) {
@@ -97,7 +118,7 @@ export default function TransactionsList() {
         }
       }
     }
-  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
+  }, [indexOfFirstRecord, filterValue, indexOfLastRecord, totalRecords]);
 
   useEffect(() => {
     dealerTransactionList();
@@ -132,12 +153,32 @@ export default function TransactionsList() {
                 onClick={handleOpenFilterDrawer}
               />
             )}
+
+            <Tippy
+              content={
+                isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
+              }
+              placement="right"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img
+                src={Refresh}
+                className={`w-[35px] h-[30px]   ${
+                  isRefreshButtonDisabled
+                    ? "cursor-not-allowed animate-spin-slow"
+                    : "cursor-pointer"
+                } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
+                alt="search_image"
+                onClick={() => !isRefreshButtonDisabled && handleRefresh()}
+              />
+            </Tippy>
           </div>
           <FilterDrawer
             visible={filterDrawerVisible}
             onClose={handleCloseFilterDrawer}
           />
-          {isMobile && <SearchContainer />}
+          {isMobile && <SearchContainer getSearchValue={getSearchValue} />}
 
           <TransactionListTable
             data={poicyList}

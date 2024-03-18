@@ -51,6 +51,9 @@ module.exports = {
       ringColor: {
         DEFAULT: "#092E58",
       },
+      animation: {
+        'spin-slow': 'spin 1s linear infinite', // Define a custom animation called 'spin-slow'
+      },
     },
   },
   plugins: [],

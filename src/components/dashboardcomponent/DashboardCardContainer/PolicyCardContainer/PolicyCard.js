@@ -9,6 +9,7 @@ import Cancel from "../../../../assets/Icons/icons8-cancel-100 (1).png";
 import Edit from "../../../../assets/Icons/icons8-edit-64 (2).png";
 
 const PolicyCard = ({ Policy, iscancelled, openCancelModal }) => {
+  console.log(Policy, "Policy Card ");
   const truncatedContent = Policy?.cancel_remark;
   const onShowHandler = (instance) => {
     if (instance.props.content !== truncatedContent) {
@@ -19,7 +20,8 @@ const PolicyCard = ({ Policy, iscancelled, openCancelModal }) => {
 
   const handleDownloadPDF = async () => {
     try {
-      const pdfUrl = `https://hospicash.mylmsnow.com/api/api/downloadPolicy/${Policy?.policy_id}`;
+      // console.log(Policy?.pdf_url)
+      const pdfUrl = Policy?.pdf_url;
       const response = await fetch(pdfUrl);
       const blob = await response.blob();
 
@@ -62,73 +64,84 @@ const PolicyCard = ({ Policy, iscancelled, openCancelModal }) => {
     <div>
       {!iscancelled ? (
         <div className="flex gap-1">
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#0089d1",
-              color: "#ffff",
-              padding: "1px",
-            }}
-            className="rounded-md cursor-pointer h-fit"
-            onClick={handleDownloadPDF}
-          >
-            <Tippy
-              content={"Download Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
+          {Policy?.sold === 1 && (
+            <div
+              style={{
+                fontSize: "14px",
+                backgroundColor: "#0089d1",
+                color: "#ffff",
+                padding: "1px",
+              }}
+              className="rounded-md cursor-pointer h-fit"
+              onClick={handleDownloadPDF}
             >
-              <img
-                src={Download}
-                className="w-[25px] object-center"
-                alt="search_image"
-              />
-            </Tippy>
-          </div>
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#FCD34D",
-              color: "#ffff",
-            }}
-            onClick={() =>
-              navigate("/Form", {
-                state: { Action: "Endorsment", policyID: Policy?.policy_id },
-              })
-            }
-            className="rounded-md cursor-pointer h-fit"
-          >
-            <Tippy
-              content={"Endorsment Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
+              <Tippy
+                content={"Download Proposal"}
+                placement="top"
+                arrow={true}
+                className="rounded-sm text-xs"
+              >
+                <img
+                  src={Download}
+                  className="w-[25px] object-center"
+                  alt="search_image"
+                />
+              </Tippy>
+            </div>
+          )}
+
+          {Policy?.endorse === 1 && (
+            <div
+              style={{
+                fontSize: "14px",
+                backgroundColor: "#FCD34D",
+                color: "#ffff",
+              }}
+              onClick={() =>
+                navigate("/Form", {
+                  state: { Action: "Endorsment", policyID: Policy?.policy_id },
+                })
+              }
+              className="rounded-md cursor-pointer h-fit"
             >
-              <img
-                src={Edit}
-                className="w-[25px] object-center"
-                alt="search_image"
-              />
-            </Tippy>
-          </div>
-          <div
-            style={{
-              fontSize: "14px",
-              backgroundColor: "#dc143c",
-              color: "#ffff",
-            }}
-            className="rounded-md cursor-pointer h-fit"
-            onClick={() => openCancelModal(Policy)}
-          >
-            <Tippy
-              content={"Cancel Proposal"}
-              placement="top"
-              arrow={true}
-              className="rounded-sm text-xs"
+              <Tippy
+                content={"Endorsment Proposal"}
+                placement="top"
+                arrow={true}
+                className="rounded-sm text-xs"
+              >
+                <img
+                  src={Edit}
+                  className="w-[25px] object-center"
+                  alt="search_image"
+                />
+              </Tippy>
+            </div>
+          )}
+
+          {Policy?.cancel === 1 && (
+            <div
+              style={{
+                fontSize: "14px",
+                backgroundColor: "#dc143c",
+                color: "#ffff",
+              }}
+              className="rounded-md cursor-pointer h-fit"
+              onClick={() => openCancelModal(Policy)}
             >
-              <img src={Cancel} className="w-[25px]" alt="search_image" />
-            </Tippy>
-          </div>
+              <Tippy
+                content={"Cancel Proposal"}
+                placement="top"
+                arrow={true}
+                className="rounded-sm text-xs"
+              >
+                <img src={Cancel} className="w-[25px]" alt="search_image" />
+              </Tippy>
+            </div>
+          )}
+          {Policy?.sold === 0 &&
+            Policy?.endorse === 0 &&
+            Policy?.cancel === 0 && <p>No action Provided</p>}
         </div>
       ) : (
         <Tippy

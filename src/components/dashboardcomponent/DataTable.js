@@ -145,12 +145,10 @@ const AccountBankTransactionListTable = ({ data, totalRecords }) => {
         border: "none",
       }}
     >
-      {" "}
       <DataGrid
         rows={data || []}
         columns={columns}
         getRowHeight={() => "auto"}
-        
         sx={{
           border: "none",
           [`& .super-app-theme--header`]: {
@@ -158,11 +156,9 @@ const AccountBankTransactionListTable = ({ data, totalRecords }) => {
             color: "white",
           },
           [`& .${gridClasses.footerContainer}`]: {
-            
             display: "none",
           },
-           [`& .${gridClasses.footerContainer}`]: {
-            
+          [`& .${gridClasses.footerContainer}`]: {
             display: "none",
           },
           [`& .${gridClasses.cell}`]: {
@@ -174,7 +170,6 @@ const AccountBankTransactionListTable = ({ data, totalRecords }) => {
             marginRight: "3px",
             marginTop: "12px",
             marginBottom: "12px",
-
             bgcolor: (theme) => theme.palette.mode === "white",
             boxShadow:
               "rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px",
@@ -187,7 +182,6 @@ const AccountBankTransactionListTable = ({ data, totalRecords }) => {
           bottom: params.isLastVisible ? 0 : 5,
         })}
         slots={{ noRowsOverlay: CustomNoRowsOverlay }}
-        // sx={{ "--DataGrid-overlayHeight": "300px" }}
       />
     </Box>
   );

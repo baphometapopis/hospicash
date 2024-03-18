@@ -210,10 +210,12 @@ export default function Home() {
   return (
     <div className="flex  w-full   flex-col h-[calc(100vh-48px)] ">
       <div className="dashboard-container ">
-        {LoginData?.role_type === "admin" ? (
+        {LoginData?.admin_role === "admin_master" ? (
           <div className="grid-item item1Admin">
             <div className="item1Admin-left text-center">
-              <span style={{ fontSize: "75px", color: "#494F55" }}>{totalpendingtransaction}</span>
+              <span style={{ fontSize: "75px", color: "#494F55" }}>
+                {totalpendingtransaction}
+              </span>
               <p>Toatal Pending Transaction</p>
             </div>
             <div className="item1Admin-left text-center">
@@ -261,7 +263,7 @@ export default function Home() {
           </div>
         )}
         <div className="grid-item item2">
-          {LoginData?.role_type !== "admin" && (
+          {LoginData?.admin_role !== "admin_master" && (
             <div className="item2-left">
               {isgetPolicySoldCancel ? (
                 <Skeleton.Button
@@ -279,12 +281,12 @@ export default function Home() {
 
           <div
             className={`item2-right p-3  ${
-              LoginData?.role_type === "admin"
+              LoginData?.admin_role === "admin_master"
                 ? "col-span-2 bg-white"
                 : "col-span-1"
             }  `}
           >
-            {LoginData?.role_type === "admin" ? (
+            {LoginData?.admin_role === "admin_master" ? (
               <CompanyBarChart />
             ) : (
               <>

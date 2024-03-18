@@ -1,16 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "react-datepicker/dist/react-datepicker.css";
 import Select from "react-select";
 import { cancelSoldPolicy } from "../../../../Api/cancelSoldPolicy";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const CancelModal = ({ isOpen, onClose, data }) => {
+const CancelModal = ({ isOpen, onClose, data ,refresh }) => {
+  const [fileInputKey, setFileInputKey] = useState(0); // State for file input key
+
   const handleSubmit = async (values, { resetForm }) => {
-    console.log(data);
     const resdata = await cancelSoldPolicy(values, data?.policy_id);
     console.log(resdata);
+    if (resdata?.status) {
+      toast.success("policy cancellation Initiated", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+      refresh();
+    } else {
+      toast.error(resdata?.message, {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+      });
+    }
+
     resetForm();
+    setFileInputKey((prevKey) => prevKey + 1); // Increment key to reset file input
+
     onClose();
   };
 
@@ -28,6 +52,7 @@ const CancelModal = ({ isOpen, onClose, data }) => {
     validateOnChange: true,
     validateOnBlur: true,
   });
+
   const options = [
     { value: "Duplicate Policy", label: "Duplicate Policy" },
     { value: "Others", label: "Others" },
@@ -76,10 +101,7 @@ const CancelModal = ({ isOpen, onClose, data }) => {
             styles={{
               control: (provided, state) => ({
                 ...provided,
-
                 outline: "none", // Remove the outline
-
-                // Border color when focused
                 borderColor:
                   state.isFocused && !formik.touched.ic_id
                     ? "#6D6D6D" // Default border color when focused and not touched
@@ -98,19 +120,18 @@ const CancelModal = ({ isOpen, onClose, data }) => {
               Upload File (Image/PDF)
             </label>
             <input
+              key={fileInputKey} // Key to reset file input
               type="file"
               id="file"
               name="file"
               accept=".pdf, .png, .jpg, .jpeg"
               onChange={(e) => formik.setFieldValue("file", e.target.files[0])}
-              // onChange={(e) => console.log(e)}
             />
             {formik.errors.file && (
               <p className="text-red-500 text-sm mt-1">{formik.errors.file}</p>
             )}
           </div>
 
-          {/* Textarea */}
           <div className="mt-4">
             <label
               htmlFor="comments"
@@ -134,7 +155,7 @@ const CancelModal = ({ isOpen, onClose, data }) => {
             )}
           </div>
 
-          <div className="mt-4  flex  justify-around">
+          <div className="mt-4 flex justify-around">
             <button
               type="submit"
               style={{

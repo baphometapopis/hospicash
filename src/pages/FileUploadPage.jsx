@@ -1,20 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
-import { toast } from "react-toastify";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import moment from "moment";
 import Refresh from "../assets/Icons/icons8-refresh-64.png";
 import Download from "../assets/Icons/icons8-download-64 (2).png";
 import Cancel from "../assets/Icons/icons8-cancel-100 (1).png";
+import { toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 
 import { decryptData } from "../Utils/cryptoUtils";
-import SearchIcon from "../assets/Icons/icons8-search-64.png";
-import Select from "react-select";
+
 import Excel from "../assets/Icons/icons8-microsoft-excel-50.png";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { MyDropzoneComponent } from "../components/dashboardcomponent/FileDropZone";
 
@@ -22,7 +20,7 @@ import { fileUpload } from "../Api/fileUpload";
 import { BarLoader } from "react-spinners";
 
 import { get_Excel_InQueue_List } from "../Api/getExcelInQueueList";
-import { API_BASE_URL, FileURL } from "../Api/api_Endpoint";
+import { FileURL } from "../Api/api_Endpoint";
 import TimeDifferenceTimer from "../Utils/TimeDifferenceTimer";
 
 export default function MonthlyFileUpload() {
@@ -280,27 +278,38 @@ export default function MonthlyFileUpload() {
       </div>
       <div className="  w-[85%] mb:px-8 mb-20 bg-white border border-neutral-light rounded">
         <div className="container mx-auto p-4">
-          <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-            <h1 className="text-2xl font-bold mb-4">Uploaded File List</h1>
-            <Tippy
-              content={
-                isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
-              }
-              placement="right"
-              arrow={true}
-              className="rounded-sm text-xs"
-            >
-              <img
-                src={Refresh}
-                className={`w-[35px] h-[30px]   ${
-                  isRefreshButtonDisabled
-                    ? "cursor-not-allowed"
-                    : "cursor-pointer"
-                } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
-                alt="search_image"
-                onClick={() => !isRefreshButtonDisabled && handleRefresh()}
-              />
-            </Tippy>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems:'center'
+            }}
+          >
+            <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+              <h1 className="text-2xl font-bold mb-4">Uploaded File List</h1>
+              <Tippy
+                content={
+                  isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
+                }
+                placement="right"
+                arrow={true}
+                className="rounded-sm text-xs"
+              >
+                <img
+                  src={Refresh}
+                  className={`w-[35px] h-[30px]   ${
+                    isRefreshButtonDisabled
+                      ? "cursor-not-allowed animate-spin-slow"
+                      : "cursor-pointer"
+                  } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
+                  alt="search_image"
+                  onClick={() => !isRefreshButtonDisabled && handleRefresh()}
+                />
+              </Tippy>
+            </div>
+
+            <p className="bg-primary p-1 rounded text-white cursor-pointer">Download Plan Details</p>
           </div>
 
           {totalFileUploaded?.map((data, index) => (

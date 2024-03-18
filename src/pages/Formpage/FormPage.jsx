@@ -11,6 +11,7 @@ import { get_Pincode_Data, get_policy_data } from "../../Api/getFormData.js";
 import CustomSelect from "../../components/ui/CustomSelect.js";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Dropdown from "react-dropdown-select";
 
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -22,18 +23,24 @@ import { resetUserData, updateUserData } from "../../Redux/userSlice.js.js";
 import moment from "moment";
 import { decryptData } from "../../Utils/cryptoUtils.js";
 import { getSoldPolicyData } from "../../Api/getSoldPolicyData.js";
+import { getFilterListApi } from "../../Api/getFilters.js";
 
 export default function FormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
   const [selectedPlan] = useState(location?.state?.selectedPlan);
   const [salutation, setSalutation] = useState([]);
+  const [EnableEndorsementFields, setEnableEndorsementFields] = useState([]);
+
   const [isEndorsment, setIsEndorsment] = useState(
     location?.state?.Action === "Endorsment" ? true : false
   );
 
   const [nom_relation, setNom_relation] = useState([]);
+  const [FilterOptions, setfilterOptions] = useState([]);
+
   const [genderOption, setgenderOption] = useState([]);
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
   const userData = useSelector((state) => state.user);
@@ -96,6 +103,25 @@ export default function FormPage() {
           pauseOnHover: true,
         });
       }
+    }
+  };
+  const getFilterList = useCallback(async () => {
+    try {
+      const filterRes = await getFilterListApi("endorse");
+      if (filterRes?.status) {
+        setfilterOptions(filterRes.filter_data);
+      }
+    } catch (error) {
+      console.error("Error fetching filter list:", error);
+    }
+  }, []);
+
+  //check endorsedField is checked
+  const checkEndorsedSelected = (parameter) => {
+    if (location?.state?.Action === "Endorsment") {
+      return EnableEndorsementFields.includes(parameter);
+    } else {
+      return true;
     }
   };
 
@@ -236,6 +262,7 @@ export default function FormPage() {
       });
     }
   }, [navigate]);
+
   const getFormData = async () => {
     const data = await get_policy_data();
     if (data?.status) {
@@ -265,6 +292,7 @@ export default function FormPage() {
     };
   }, [windowWidth]);
   const getEndorsmentDetails = async () => {
+    getFilterList();
     const data = await getSoldPolicyData(
       LoginData?.user_details?.id,
       location?.state?.policyID
@@ -363,10 +391,22 @@ export default function FormPage() {
               <p className="text-2xl">
                 {!isEndorsment ? "User Details" : "Update User Details"}
               </p>
+
               {!isEndorsment && (
                 <p>Start punching policy by filling in the User's details</p>
               )}
             </div>
+
+            <Dropdown
+              options={FilterOptions}
+              onChange={(selectedItems) =>
+                setEnableEndorsementFields(
+                  selectedItems.map((item) => item.value)
+                )
+              }
+              placeholder="Select Endorsment Enabled Fields"
+              multi
+            />
 
             <form onSubmit={formik.handleSubmit}>
               {/* grid grid-cols-1  lg:grid-cols-4  md:grid-cols-4 */}
@@ -382,7 +422,7 @@ export default function FormPage() {
                         label: salutation.name,
                       })),
                     ]}
-                    disabled={isEndorsment}
+                    disabled={!checkEndorsedSelected("salutation")}
                     required
                     placeholder="Select Salutation"
                     value={formik.values.salutation}
@@ -402,6 +442,7 @@ export default function FormPage() {
                   type="text"
                   placeholder="Enter your First Name"
                   label="First Name"
+                  disabled={!checkEndorsedSelected("fname")}
                   value={formik.values.fname}
                   capitalize
                   alphabets
@@ -412,6 +453,7 @@ export default function FormPage() {
                   id="mname"
                   name="mname"
                   type="text"
+                  disabled={!checkEndorsedSelected("mname")}
                   placeholder="Enter your Middle Name"
                   label="Middle Name"
                   value={formik.values.mname}
@@ -424,6 +466,7 @@ export default function FormPage() {
                   id="lname"
                   required={true}
                   name="lname"
+                  disabled={!checkEndorsedSelected("lname")}
                   type="text"
                   placeholder="Enter your Last Name"
                   label="Last Name"
@@ -435,6 +478,7 @@ export default function FormPage() {
                   {...formik.getFieldProps("email")}
                   formik={formik}
                   id="email"
+                  disabled={!checkEndorsedSelected("email")}
                   name="email"
                   required
                   type="text"
@@ -448,6 +492,7 @@ export default function FormPage() {
                   id="mobile_no"
                   name="mobile_no"
                   type="text"
+                  disabled={!checkEndorsedSelected("mobile_no")}
                   placeholder="Enter your Mobile No"
                   label="Mobile No"
                   required={true}
@@ -474,7 +519,7 @@ export default function FormPage() {
                     onChange={(selectedOption) => {
                       formik.setFieldValue("gender", selectedOption.value);
                     }}
-                    disabled={isEndorsment}
+                    disabled={!checkEndorsedSelected("gender")}
                     showError={false} // Set this prop to control error visibility
                   />
                 )}
@@ -490,7 +535,7 @@ export default function FormPage() {
                   value={formik.values.pan_number}
                   alphanumeric
                   maxLength={10}
-                  disabled={isEndorsment}
+                  disabled={!checkEndorsedSelected("pan_number")}
                   capitalize
                 />
 
@@ -537,7 +582,7 @@ export default function FormPage() {
                     required={true}
                     placeholder="dob"
                     value={formik.values.dob}
-                    disabled={isEndorsment}
+                    disabled={!checkEndorsedSelected("dob")}
                     className="w-full"
                   />
                 </div>
@@ -548,6 +593,7 @@ export default function FormPage() {
                   name="addr1"
                   type="text"
                   required={true}
+                  disabled={!checkEndorsedSelected("addr1")}
                   placeholder="Address1 "
                   label="Address 1"
                   value={formik.values.addr1}
@@ -558,6 +604,7 @@ export default function FormPage() {
                   formik={formik}
                   id="addr2"
                   name="addr2"
+                  disabled={!checkEndorsedSelected("addr2")}
                   type="text"
                   required={true}
                   placeholder="Address 2 "
@@ -573,7 +620,7 @@ export default function FormPage() {
                   type="text"
                   placeholder="Pincode"
                   label="Pincode"
-                  disabled={isEndorsment}
+                  disabled={!checkEndorsedSelected("pincode")}
                   required={true}
                   value={formik.values.pincode}
                   maxLength={6}
@@ -609,6 +656,7 @@ export default function FormPage() {
                   id="nominee_full_name"
                   name="nominee_full_name"
                   type="text"
+                  disabled={!checkEndorsedSelected("nominee_full_name")}
                   required={true}
                   placeholder="Enter Nominee Name"
                   label="Nominee Full Name"
@@ -623,6 +671,7 @@ export default function FormPage() {
                   name="nominee_age"
                   type="text"
                   placeholder="Nominee Age"
+                  disabled={!checkEndorsedSelected("nominee_age")}
                   label="Nominee Age"
                   required={true}
                   value={formik.values.nominee_age}
@@ -644,6 +693,7 @@ export default function FormPage() {
                     placeholder="Select Relation"
                     value={formik.values.nominee_relation}
                     formik={formik}
+                    disabled={!checkEndorsedSelected("nominee_relation")}
                     onChange={(selectedOption) => {
                       formik.setFieldValue(
                         "nominee_relation",
@@ -662,6 +712,7 @@ export default function FormPage() {
                         id="appointee_name"
                         name="appointee_name"
                         type="text"
+                        disabled={!checkEndorsedSelected("appointee_name")}
                         required={true}
                         placeholder="Enter Appointee Name"
                         label="Appointee Full Name"
@@ -674,6 +725,7 @@ export default function FormPage() {
                         id="appointee_age"
                         name="appointee_age"
                         type="text"
+                        disabled={!checkEndorsedSelected("appointee_age")}
                         placeholder="Appointee Age"
                         label="Appointee Age"
                         required={true}
@@ -692,6 +744,9 @@ export default function FormPage() {
                               value: data.nominee_relation_id,
                               label: data.name,
                             })) || []
+                          }
+                          disabled={
+                            !checkEndorsedSelected("appointee_relation")
                           }
                           placeholder="Select Relation"
                           value={formik.values.appointee_relation}

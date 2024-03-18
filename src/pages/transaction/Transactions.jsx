@@ -22,6 +22,8 @@ import AccountBankTransactionListTable from "../../components/dashboardcomponent
 import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
 import { SearchContainer } from "../../components/dashboardcomponent/SearchContainer";
 import { calculatePagination } from "../../Utils/calculationPagination";
+import Refresh from "../../assets/Icons/icons8-refresh-64.png";
+
 export default function Transactions() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
@@ -41,25 +43,11 @@ export default function Transactions() {
 
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
-  const [pageNumber, setpageNumber] = useState(0);
   const [isFloatButton, setFloatButtonOpen] = useState(true);
+  const [isRefreshButtonDisabled, setIsRefreshButtonDisabled] = useState(false);
 
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
-
-  // const [searchParam, setSearchParam] = useState({
-  //   value: "",
-  //   param: "",
-  //   start_date: "",
-  //   end_date: "",
-  // });
-  // const [state, setState] = useState([
-  //   {
-  //     startDate: new Date(),
-  //     endDate: null,
-  //     key: "selection",
-  //   },
-  // ]);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -74,6 +62,18 @@ export default function Transactions() {
     // setIndexOfFirstRecord(pageNumber * recordsPerPage);
   };
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
+
+  const handleRefresh = () => {
+    // Disable the button
+    setIsRefreshButtonDisabled(true);
+
+    dealerTransactionList();
+
+    setTimeout(() => {
+      // Enable the button after 10 seconds
+      setIsRefreshButtonDisabled(false);
+    }, 10000); // 10 seconds in milliseconds
+  };
 
   const getICPartyPAymentDetails = async (id) => {
     setSelectedIC(id);
@@ -302,6 +302,25 @@ export default function Transactions() {
                 onClick={handleOpenFilterDrawer}
               />
             )}
+            <Tippy
+              content={
+                isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
+              }
+              placement="right"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img
+                src={Refresh}
+                className={`w-[35px] h-[30px]   ${
+                  isRefreshButtonDisabled
+                    ? "cursor-not-allowed animate-spin-slow"
+                    : "cursor-pointer"
+                } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
+                alt="search_image"
+                onClick={() => !isRefreshButtonDisabled && handleRefresh()}
+              />
+            </Tippy>
           </div>
           {/* <button onClick={handleOpenFilterDrawer}>Open Filter Drawer</button> */}
           <FilterDrawer

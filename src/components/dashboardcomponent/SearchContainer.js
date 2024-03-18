@@ -6,19 +6,24 @@ import { getFilterListApi } from "../../Api/getFilters";
 
 const { RangePicker } = DatePicker;
 
-export const SearchContainer = () => {
+export const SearchContainer = ({ removeSearchFilter, getSearchValue }) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
+  const [dateRange, setDateRange] = useState([]);
+
   const [isTextboxEnabled, setIsTextboxEnabled] = useState(false);
   const [filterOptions, setfilterOptions] = useState([]);
 
   const handleOptionChange = (selectedOption) => {
+    console.log(selectedOption);
     setSelectedOption(selectedOption);
     setIsTextboxEnabled(true); // Enable text box when an option is selected
   };
 
   const handleDateChange = (dates, dateStrings) => {
-    console.log("Selected Dates:", dates);
-    console.log("Formatted Dates:", dateStrings);
+    // console.log("Selected Dates:", dates);
+    // console.log("Formatted Dates:", dateStrings);
+    setDateRange(dateStrings);
   };
   const getFilterList = async () => {
     const filterRes = await getFilterListApi();
@@ -58,50 +63,52 @@ export const SearchContainer = () => {
       >
         <div className="flex items-center w-full justify-between ">
           <div style={{ display: "flex", flexDirection: "row" }}>
-            <div style={{ paddingLeft: "30px", width: "250px" }} >
-              <Select
-                options={filterOptions}
-                placeholder="Select Option"
-                onChange={handleOptionChange}
-                styles={{
-                  option: (provided) => ({
-                    ...provided,
-                    zIndex: 9999, // Set your desired z-index value
-                  }),
-                  control: (provided) => ({
-                    ...provided,
-                    width: "100%",
-                    outline: "none", // Remove the outline
-                  }),
-                  dropdownIndicator: (provided) => ({
-                    ...provided,
-                    color: "#0089d1", // Set the arrow color to blue
-                  }),
-                }}
-              />
-            </div>
-            {/* <div
-            style={{ color: "#aaaaaa" }}
-            className=" border border- h-[25px] mx-4"
-          /> */}
-            <input
-              style={{
-                outline: "none",
-                width: "180px",
-                cursor: !isTextboxEnabled ? "not-allowed" : "",
-                border: "1px solid #6d6d6d",
-                padding: "4px",
-                borderRadius: "4px",
-              }}
-              placeholder={
-                isTextboxEnabled
-                  ? `search ${selectedOption?.label}`
-                  : "select Options"
-              }
-              disabled={!isTextboxEnabled}
-              onClick={handleTextboxClick}
-              className="mx-4"
-            />
+            {!removeSearchFilter && (
+              <>
+                <div style={{ paddingLeft: "30px", width: "250px" }}>
+                  <Select
+                    options={filterOptions}
+                    placeholder="Select Option"
+                    onChange={handleOptionChange}
+                    styles={{
+                      option: (provided) => ({
+                        ...provided,
+                        zIndex: 9999, // Set your desired z-index value
+                      }),
+                      control: (provided) => ({
+                        ...provided,
+                        width: "100%",
+                        outline: "none", // Remove the outline
+                      }),
+                      dropdownIndicator: (provided) => ({
+                        ...provided,
+                        color: "#0089d1", // Set the arrow color to blue
+                      }),
+                    }}
+                  />
+                </div>
+                <input
+                  style={{
+                    outline: "none",
+                    width: "180px",
+                    cursor: !isTextboxEnabled ? "not-allowed" : "",
+                    border: "1px solid #6d6d6d",
+                    padding: "4px",
+                    borderRadius: "4px",
+                  }}
+                  placeholder={
+                    isTextboxEnabled
+                      ? `search ${selectedOption?.label}`
+                      : "select Options"
+                  }
+                  value={searchValue ?? ""}
+                  disabled={!isTextboxEnabled}
+                  onClick={handleTextboxClick}
+                  onChange={(text) => setSearchValue(text.target.value)}
+                  className="mx-4"
+                />
+              </>
+            )}
             <RangePicker
               onChange={handleDateChange}
               allowClear // Show clear button
@@ -109,12 +116,24 @@ export const SearchContainer = () => {
                 border: "5px solid #fffff",
                 borderRadius: "4px",
                 backgroundColor: "white",
+                marginLeft: "20px",
                 // border: '0px solid #ffffff'
               }} // Custom border style
             />
           </div>
           <div
+            onClick={() => {
+              const data = {
+                param: selectedOption?.value,
+                searchvalue: searchValue,
+                start_date: dateRange[0] ?? "",
+                end_date: dateRange[1] ?? "",
+              };
+              //passingvalue to parent component
+              getSearchValue(data);
+            }}
             style={{
+              cursor: "pointer",
               backgroundColor: "#0089d1",
               width: "100px",
               minWidth: "50px",
@@ -133,24 +152,6 @@ export const SearchContainer = () => {
             />
           </div>
         </div>
-        {/* <div
-          style={{
-            backgroundColor: "#0089d1",
-            width: "100px",
-            minWidth: "50px",
-            borderTopRightRadius: "50px",
-            borderBottomRightRadius: "50px",
-            alignItems: "center",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <img
-            src={SearchIcon}
-            className="w-[50px] object-cover h-[50px]"
-            alt="search_image"
-          />
-        </div> */}
       </div>
     </>
   );

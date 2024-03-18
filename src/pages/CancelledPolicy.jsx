@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import coverImage from "../assets/img/hospicashcoverimage.jpeg";
 import IconFilter from "../assets/Icons/IconFIlter.png";
 import { useCallback } from "react";
-
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
 import { getSold_CancelPolicy } from "../Api/getsold_CancelPOlicy";
 import DealerCancelledPolicyTable from "../components/dashboardcomponent/DealerCancelledPolicyTable";
 import { SearchContainer } from "../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../components/Mobile FIlterCOmponent/FilterDrawer";
 import { calculatePagination } from "../Utils/calculationPagination";
 import { decryptData } from "../Utils/cryptoUtils";
+import Refresh from "../assets/Icons/icons8-refresh-64.png";
 
 export default function CancelledPolicy() {
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
@@ -23,9 +25,10 @@ export default function CancelledPolicy() {
   };
 
   const [currentPage, setCurrentPage] = useState(1);
-  // const [data, setData] = useState();
+  const [isRefreshButtonDisabled, setIsRefreshButtonDisabled] = useState(false);
   const [totalRecords, setTotalRecords] = useState();
   const [poicyList, setPolicyList] = useState([]);
+  const [filterValue, setfilterValue] = useState("");
 
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
@@ -51,6 +54,11 @@ export default function CancelledPolicy() {
     const data = localStorage.getItem("Acemoney_Cache");
     const decryptdata = decryptData(data);
     const listdata = {
+      value: filterValue?.searchvalue,
+      start_date: filterValue?.start_date,
+      end_date: filterValue?.end_date,
+
+      search: filterValue?.param,
       dealer_id: decryptdata?.user_details?.id,
       start: indexOfFirstRecord,
       end: recordsPerPage,
@@ -73,8 +81,26 @@ export default function CancelledPolicy() {
           console.error(error, "dsdsds");
         });
     }
-  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
+  }, [filterValue, indexOfFirstRecord, indexOfLastRecord, totalRecords]);
 
+  //Disable Refresh Button for 10 sec to avoid continous api Hit
+  const handleRefresh = () => {
+    // Disable the button
+    setIsRefreshButtonDisabled(true);
+
+    SoldCancelPolicy();
+
+    setTimeout(() => {
+      // Enable the button after 10 seconds
+      setIsRefreshButtonDisabled(false);
+    }, 10000); // 10 seconds in milliseconds
+  };
+
+  const getSearchValue = (prop) => {
+    setfilterValue(prop);
+    // console.log(prop);
+    SoldCancelPolicy();
+  };
   useEffect(() => {
     const handleWindowResize = () => {
       setWindowWidth([window.innerWidth]);
@@ -124,12 +150,32 @@ export default function CancelledPolicy() {
                 onClick={handleOpenFilterDrawer}
               />
             )}
+
+            <Tippy
+              content={
+                isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
+              }
+              placement="right"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img
+                src={Refresh}
+                className={`w-[35px] h-[30px]   ${
+                  isRefreshButtonDisabled
+                    ? "cursor-not-allowed animate-spin-slow"
+                    : "cursor-pointer"
+                } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
+                alt="search_image"
+                onClick={() => !isRefreshButtonDisabled && handleRefresh()}
+              />
+            </Tippy>
           </div>
           <FilterDrawer
             visible={filterDrawerVisible}
             onClose={handleCloseFilterDrawer}
           />
-          {isMobile && <SearchContainer />}
+          {isMobile && <SearchContainer getSearchValue={getSearchValue} />}
 
           <DealerCancelledPolicyTable data={poicyList} />
 

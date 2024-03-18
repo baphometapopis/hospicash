@@ -7,10 +7,9 @@ const user_id = decryptdata?.user_details?.id;
 
 export const cancelSoldPolicy = async (data, id) => {
   console.log(data);
-
   var urlencoded = new FormData();
   urlencoded.append("cancel_remark", data?.comments);
-  urlencoded.append("user_id",user_id);
+  urlencoded.append("user_id", user_id);
 
   urlencoded.append("policy_id", id);
   urlencoded.append(
@@ -18,6 +17,7 @@ export const cancelSoldPolicy = async (data, id) => {
     data?.cancelation_reason_type?.value
   );
   urlencoded.append("image", data?.file);
+  urlencoded.append("user_id", user_id);
 
   var requestOptions = {
     method: "POST",

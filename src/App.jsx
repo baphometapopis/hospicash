@@ -22,6 +22,7 @@ import ApprovePendingPolicy from "./pages/Admin/ApprovePendingPolicy";
 import IdleModal from "./components/dashboardcomponent/Modal/IdleModal";
 import { useWindowSize } from "./Utils/useWindowSize";
 import { WindowSizeProvider } from "./Utils/Context/WindowSizeContext";
+import FeedFile from "./pages/IC_admin/FeedFile";
 
 function App() {
   const [state, setState] = useState("Active");
@@ -34,7 +35,7 @@ function App() {
     width: window.innerWidth,
     height: window.innerHeight,
   });
- 
+
   const onIdle = () => {
     setState("Idle");
     if (isLoggedIn) {
@@ -43,14 +44,14 @@ function App() {
   };
   function printWelcomeMessage() {
     console.log(
-      "%c TVS Escalation ",
+      "%c HOSPICASH ",
       "background: #222; color: #bada55; font-size: 24px; padding: 10px;"
     );
     console.log(
       "%c What are you doing here? Is there a bug? ",
       "background: #222; color: #fff; font-size: 16px; padding: 10px;"
     );
-    }
+  }
 
   const onActive = () => {
     setState("Active");
@@ -94,13 +95,13 @@ function App() {
       clearInterval(interval);
     };
   }, [getRemainingTime]);
-
+  const getLocalData = () => {
+    const localData = localStorage.getItem("Acemoney_Cache");
+    setisLoggedIn(localData !== null);
+  };
   useEffect(() => {
-    printWelcomeMessage();
-    const getLocalData = () => {
-      const localData = localStorage.getItem("Acemoney_Cache");
-      setisLoggedIn(localData !== null);
-    };
+    // printWelcomeMessage();
+
     getLocalData();
   }, [state]);
 
@@ -109,6 +110,7 @@ function App() {
     const urlParams = new URLSearchParams(search);
     const redirectionKey = urlParams.get("redirection_key");
     if (redirectionKey) {
+      localStorage.removeItem("Acemoney_Cache");
       setIsRedirect(true);
     }
   }, []);
@@ -127,6 +129,8 @@ function App() {
               <Route index element={<Navigate replace to="login" />} />
               <Route path="Form" element={<FormPage />} />
               <Route path="transaction" element={<Transactions />} />
+              <Route path="Feed_File" element={<FeedFile />} />
+
               <Route path="soldPolicy" element={<SoldPolicy />} />
               <Route path="confirmed" element={<PurchaseStatus />} />
               <Route path="Pending_Policy" element={<ApprovePendingPolicy />} />
