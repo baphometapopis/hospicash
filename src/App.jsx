@@ -23,6 +23,8 @@ import IdleModal from "./components/dashboardcomponent/Modal/IdleModal";
 import { useWindowSize } from "./Utils/useWindowSize";
 import { WindowSizeProvider } from "./Utils/Context/WindowSizeContext";
 import FeedFile from "./pages/IC_admin/FeedFile";
+import EndorsmentPendingPolicy from "./pages/Admin/EndorsmentPendingPolicy";
+import ViewEndorsmentDetails from "./pages/Admin/ViewEndorsmentDetails";
 
 function App() {
   const [state, setState] = useState("Active");
@@ -130,6 +132,14 @@ function App() {
               <Route path="Form" element={<FormPage />} />
               <Route path="transaction" element={<Transactions />} />
               <Route path="Feed_File" element={<FeedFile />} />
+              <Route
+                path="Endorsement_list"
+                element={<EndorsmentPendingPolicy />}
+              />
+              <Route
+                path="View_Endorsment_Details"
+                element={<ViewEndorsmentDetails />}
+              />
 
               <Route path="soldPolicy" element={<SoldPolicy />} />
               <Route path="confirmed" element={<PurchaseStatus />} />

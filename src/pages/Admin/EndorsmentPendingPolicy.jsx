@@ -3,16 +3,14 @@ import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import IconFilter from "../../assets/Icons/IconFIlter.png";
 import { useCallback } from "react";
 
-import { getSold_CancelPolicy } from "../../Api/getsold_CancelPOlicy";
-import DealerCancelledPolicyTable from "../../components/dashboardcomponent/DealerCancelledPolicyTable";
 import { SearchContainer } from "../../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
 import ApprovePendingPolicyDataTables from "../../components/dashboardcomponent/ApprovePendingPolicyDataTables";
 import { decryptData } from "../../Utils/cryptoUtils";
-import { getPendingPolicyListApi } from "../../Api/adminAPi/getPendingCancelledList";
 import { calculatePagination } from "../../Utils/calculationPagination";
- 
-export default function ApprovePendingPolicy() {
+import { getEndorsmentPendingListApi } from "../../Api/adminAPi/getEndorsmentPendingList";
+
+export default function EndorsmentPendingPolicy() {
   const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
   const [totalPage, settotalPage] = useState();
 
@@ -57,10 +55,10 @@ export default function ApprovePendingPolicy() {
       setLoginData(decryptdata?.user_details);
     }
     if (LoginData) {
-      getPendingCancelledlist();
+      getEndorsmentPendingList();
     }
   };
-  const getPendingCancelledlist = useCallback(() => {
+  const getEndorsmentPendingList = useCallback(() => {
     const fetchData = async () => {
       const listdata = {
         dealer_id: LoginData?.id,
@@ -70,7 +68,7 @@ export default function ApprovePendingPolicy() {
       };
       if (indexOfFirstRecord !== indexOfLastRecord) {
         try {
-          const data = await getPendingPolicyListApi(listdata);
+          const data = await getEndorsmentPendingListApi(listdata);
           setPolicyList(data?.data);
           setTotalRecords(data?.recordsTotal);
           const pagination = calculatePagination(
@@ -78,8 +76,7 @@ export default function ApprovePendingPolicy() {
             recordsPerPage,
             0
           );
-    settotalPage(pagination?.totalPages);
-
+          settotalPage(pagination?.totalPages);
         } catch (error) {
           console.error(error);
         }
@@ -87,7 +84,13 @@ export default function ApprovePendingPolicy() {
     };
 
     fetchData();
-  }, [LoginData?.id, LoginData?.role_type, indexOfFirstRecord, indexOfLastRecord, totalRecords]);
+  }, [
+    LoginData?.id,
+    LoginData?.role_type,
+    indexOfFirstRecord,
+    indexOfLastRecord,
+    totalRecords,
+  ]);
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -107,11 +110,11 @@ export default function ApprovePendingPolicy() {
 
   useEffect(() => {
     setIndexOfLastRecord(currentPage * recordsPerPage);
-  }, [currentPage, recordsPerPage,totalPage]);
+  }, [currentPage, recordsPerPage, totalPage]);
 
   useEffect(() => {
     getLocalData();
-  }, [indexOfLastRecord, indexOfFirstRecord, getPendingCancelledlist]);
+  }, [indexOfLastRecord, indexOfFirstRecord]);
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -129,7 +132,7 @@ export default function ApprovePendingPolicy() {
       <div className="-mt-20 md:w-[75%] w-[95%] mb:px-8 mb-20 bg-white border border-neutral-light rounded">
         <div className="container mx-auto p-4">
           <div className="flex gap-5">
-            <h1 className="text-2xl font-bold mb-4">Pending Policy</h1>
+            <h1 className="text-2xl font-bold mb-4">Endorsment Policy</h1>
             {!isMobile && (
               <img
                 src={IconFilter}
@@ -148,7 +151,7 @@ export default function ApprovePendingPolicy() {
           <ApprovePendingPolicyDataTables
             data={poicyList}
             loginData={LoginData}
-            handlePageChange={getPendingCancelledlist}
+            handlePageChange={getEndorsmentPendingList}
           />
 
           {/* {poicyList?.map((data) => (
@@ -164,7 +167,7 @@ export default function ApprovePendingPolicy() {
               )}
             </>
           ))} */}
-       <div className="flex justify-between items-center mt-4">
+          <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
               {totalRecords} entries
@@ -184,9 +187,7 @@ export default function ApprovePendingPolicy() {
               <button
                 className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
                 onClick={() => handlePageChange(currentPage + 1)}
-                disabled={
-                  currentPage === totalPage
-                }
+                disabled={currentPage === totalPage}
               >
                 Next
               </button>
