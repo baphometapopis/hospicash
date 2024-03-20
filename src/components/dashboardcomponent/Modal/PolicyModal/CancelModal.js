@@ -7,7 +7,7 @@ import { cancelSoldPolicy } from "../../../../Api/cancelSoldPolicy";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const CancelModal = ({ isOpen, onClose, data ,refresh }) => {
+const CancelModal = ({ isOpen, onClose, data, refresh }) => {
   const [fileInputKey, setFileInputKey] = useState(0); // State for file input key
 
   const handleSubmit = async (values, { resetForm }) => {

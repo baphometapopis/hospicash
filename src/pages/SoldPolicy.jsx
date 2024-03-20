@@ -185,13 +185,6 @@ export default function SoldPolicy() {
 
           {/* {isMobile ? ( */}
           <DealerSoldPolicyTable data={poicyList} refresh={refreshpage} />
-          {/* ) : (
-            <>
-              {poicyList?.map((data) => (
-                <MobilePolicyCard key={data.id} policy={data} />
-              ))}
-            </>
-          )} */}
 
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">

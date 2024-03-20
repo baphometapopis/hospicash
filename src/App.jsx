@@ -25,6 +25,7 @@ import { WindowSizeProvider } from "./Utils/Context/WindowSizeContext";
 import FeedFile from "./pages/IC_admin/FeedFile";
 import EndorsmentPendingPolicy from "./pages/Admin/EndorsmentPendingPolicy";
 import ViewEndorsmentDetails from "./pages/Admin/ViewEndorsmentDetails";
+import InternetStatus from "./Utils/CheckInternetStatus";
 
 function App() {
   const [state, setState] = useState("Active");
@@ -122,6 +123,7 @@ function App() {
       <WindowSizeProvider>
         <BrowserRouter>
           <ToastContainer />
+          <InternetStatus />
           <IdleModal
             isOpen={isIdleModalOpen}
             onClose={() => setIsIdleModalOpen(false)}

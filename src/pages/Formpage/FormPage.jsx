@@ -24,22 +24,34 @@ import moment from "moment";
 import { decryptData } from "../../Utils/cryptoUtils.js";
 import { getSoldPolicyData } from "../../Api/getSoldPolicyData.js";
 import { getFilterListApi } from "../../Api/getFilters.js";
+import Loader from "../../components/Loader.js";
+import ErrorModal from "../../components/dashboardcomponent/Modal/ErrorModal.js";
 
 export default function FormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [EndorsmentfileInputKey, setEndorsmentFileInputKey] = useState(0); // State for file input key
 
   const [selectedPlan] = useState(location?.state?.selectedPlan);
   const [salutation, setSalutation] = useState([]);
+  const [ErrorModalOpen, setErrorModalOpen] = useState(false);
+  const [ErrorMessage, setErrorMessage] = useState("");
+
   const [EnableEndorsementFields, setEnableEndorsementFields] = useState([]);
+  const [EndorsmentFileUploadedError, setEndorsmentFileUploadedError] =
+    useState();
 
   const [isEndorsment, setIsEndorsment] = useState(
     location?.state?.Action === "Endorsment" ? true : false
   );
 
   const [nom_relation, setNom_relation] = useState([]);
+  const [soldPolicyData, setSoldPolicyData] = useState("");
   const [FilterOptions, setfilterOptions] = useState([]);
+  const [FileUploaded, setFileUploaded] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const [genderOption, setgenderOption] = useState([]);
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
@@ -49,7 +61,17 @@ export default function FormPage() {
   const [StateName, setStateName] = useState("");
   const [LoginData, setLoginData] = useState();
   const navigation = useNavigate();
+
+  function checkEndorsmentFieldsEmpty(...fields) {
+    for (let field of fields) {
+      if (typeof field !== "string" || field.trim() === "") {
+        return true; // Field is empty
+      }
+    }
+    return false; // All fields are non-empty
+  }
   const submitData = async () => {
+    setLoading(true);
     dispatch(updateUserData({ dealer_id: LoginData?.user_details?.id }));
 
     if (!isEndorsment) {
@@ -78,32 +100,62 @@ export default function FormPage() {
         });
       }
     } else {
-      const data = await Update_generatePolicy(
-        LoginData?.user_details?.id,
-        formik.values,
-        location?.state?.policyID
-      );
-      if (data?.status) {
-        navigation("/confirmed", { state: { policy_id: data?.policy_id } });
-
-        toast.success(data?.message, {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-        });
-        dispatch(resetUserData());
+      if (EnableEndorsementFields.length === 0) {
+        setErrorModalOpen(true);
+        setErrorMessage("Please select Fields for Endorsement");
+      } else if (FileUploaded === "") {
+        setErrorModalOpen(true);
+        setErrorMessage("Please upload an Endorsement file");
       } else {
-        toast.error(data?.message, {
-          position: "bottom-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-        });
+        setErrorModalOpen(false);
+        setErrorMessage("");
+        // Proceed with further logic
       }
+
+      if (EnableEndorsementFields.length > 0) {
+        for (let field of EnableEndorsementFields) {
+          console.log(soldPolicyData[field] === formik.values[field]);
+          if (soldPolicyData[field] === formik.values[field]) {
+            setErrorModalOpen(true);
+            setErrorMessage("Please Update the Enabled Fields Value");
+          } else {
+            setErrorModalOpen(false);
+            setErrorMessage("");
+          }
+
+          // if (soldPolicyData[field] !== EnableEndorsementFields[field]) {
+          //   return true; // Field has changed
+          // }
+        }
+      }
+
+      // const data = await Update_generatePolicy(
+      //   LoginData?.user_details?.id,
+      //   formik.values,
+      //   location?.state?.policyID
+      // );
+      // if (data?.status) {
+      //   navigation("/confirmed", { state: { policy_id: data?.policy_id } });
+
+      //   toast.success(data?.message, {
+      //     position: "bottom-right",
+      //     autoClose: 1000,
+      //     hideProgressBar: false,
+      //     closeOnClick: true,
+      //     pauseOnHover: true,
+      //   });
+      //   dispatch(resetUserData());
+      // } else {
+      //   toast.error(data?.message, {
+      //     position: "bottom-right",
+      //     autoClose: 1000,
+      //     hideProgressBar: false,
+      //     closeOnClick: true,
+      //     pauseOnHover: true,
+      //   });
+      // }
     }
+    setLoading(false);
   };
   const getFilterList = useCallback(async () => {
     try {
@@ -150,9 +202,9 @@ export default function FormPage() {
         navigation("/plans", { state: { formdata } });
       }
     },
+
     validate: (values) => {
       const errors = {};
-
       const validateRequired = (field, message) => {
         if (!values[field]) {
           errors[field] = message;
@@ -180,7 +232,6 @@ export default function FormPage() {
       validateRequired("lname", "Required");
       validateRequired("email", "Required");
       validateRequired("pan_number", "Required");
-
       validateRequired("mobile_no", "Required");
       validateRequired("addr1", "Required");
       validateRequired("addr2", "Required");
@@ -297,7 +348,7 @@ export default function FormPage() {
       LoginData?.user_details?.id,
       location?.state?.policyID
     );
-
+    setSoldPolicyData(data?.data[0]); //storing in a state to compare value
     formik.setFieldValue("addr1", data?.data[0].addr1);
     formik.setFieldValue("addr2", data?.data[0].addr2);
     formik.setFieldValue("appointee_age", data?.data[0].appointee_age);
@@ -350,9 +401,16 @@ export default function FormPage() {
       getPincode(formik.values.pincode);
     }
   }, [StateName, cityName]);
+  useEffect(() => {}, [FileUploaded]);
 
   return (
     <>
+      {loading && <Loader />}
+      <ErrorModal
+        isOpen={ErrorModalOpen}
+        onClose={() => setErrorModalOpen(false)}
+        message={ErrorMessage}
+      />
       <div className="flex flex-col w-full items-center overflow-auto">
         <div className=" -z-10 top-12 w-full">
           <img
@@ -397,17 +455,19 @@ export default function FormPage() {
               )}
             </div>
 
-            <Dropdown
-              options={FilterOptions}
-              onChange={(selectedItems) =>
-                setEnableEndorsementFields(
-                  selectedItems.map((item) => item.value)
-                )
-              }
-              placeholder="Select Endorsment Enabled Fields"
-              multi
-            />
-
+            {/* this field id for endorsment where user can select the disabled fields to enable */}
+            {isEndorsment && (
+              <Dropdown
+                options={FilterOptions}
+                onChange={(selectedItems) =>
+                  setEnableEndorsementFields(
+                    selectedItems.map((item) => item.value)
+                  )
+                }
+                placeholder="Select Endorsment Enabled Fields"
+                multi
+              />
+            )}
             <form onSubmit={formik.handleSubmit}>
               {/* grid grid-cols-1  lg:grid-cols-4  md:grid-cols-4 */}
               <div className="formContainer gap-y-6 gap-x-6 place-items-center py-8 px-8">
@@ -762,7 +822,31 @@ export default function FormPage() {
                       )}
                     </>
                   )}
+                {isEndorsment && (
+                  <div className="w-[73%]  overflow-hidden">
+                    <label
+                      htmlFor="file"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Upload File (Image/PDF)
+                    </label>
+                    <input
+                      // key={} // Key to reset file input
+                      type="file"
+                      id="file"
+                      name="file"
+                      accept=".pdf, .png, .jpg, .jpeg"
+                      onChange={(e) => setFileUploaded(e.target.value)}
+                    />
+                    {formik.errors.file && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {formik.errors.file}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
+
               <div className="flex justify-center mt-4">
                 <button
                   type="submit"
