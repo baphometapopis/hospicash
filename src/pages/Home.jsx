@@ -38,6 +38,7 @@ export default function Home() {
 
   const [policyCountByMonth, setpolicyCountByMonth] = useState();
   const [totalpendingtransaction, settotalpendingtransaction] = useState();
+  const [totalapprovedtransaction, settotalapprovedtransaction] = useState();
 
   const [PolicySoldCancelCount, setPolicySoldCancelCount] = useState();
 
@@ -95,7 +96,9 @@ export default function Home() {
   const getTotalPendingTransactionCount = async (id, role_type) => {
     setisgetpolicyCountloading(true);
     const apires = await totalPendingTransactionRequestApi(id, role_type);
-    settotalpendingtransaction(apires?.data[0]?.total);
+    settotalpendingtransaction(apires?.data?.pending);
+    settotalapprovedtransaction(apires?.data?.approved);
+
     setisgetpolicyCountloading(false);
   };
 
@@ -220,7 +223,7 @@ export default function Home() {
             </div>
             <div className="item1Admin-left text-center">
               <p style={{ fontSize: "75px", color: "#494F55" }}>
-                {totalpendingtransaction}
+                {totalapprovedtransaction}
               </p>
               <p> Total Approved Transaction</p>
 

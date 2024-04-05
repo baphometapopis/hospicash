@@ -1,10 +1,11 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
-export const getFilterListApi = async (type) => {
+export const getFilterListApi = async (type, searchType) => {
   var myHeaders = new Headers();
 
   var urlencoded = new URLSearchParams();
-  urlencoded.append("filters_type", type);
+  urlencoded.append("filters_type", type ?? "search");
+  urlencoded.append("search_type", searchType);
 
   var requestOptions = {
     method: "POST",

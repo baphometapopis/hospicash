@@ -175,7 +175,12 @@ export default function CancelledPolicy() {
             visible={filterDrawerVisible}
             onClose={handleCloseFilterDrawer}
           />
-          {isMobile && <SearchContainer getSearchValue={getSearchValue} />}
+          {isMobile && (
+            <SearchContainer
+              getSearchValue={getSearchValue}
+              searchType={"policy"}
+            />
+          )}
 
           <DealerCancelledPolicyTable data={poicyList} />
 

@@ -22,18 +22,37 @@ import { BarLoader } from "react-spinners";
 import { get_Excel_InQueue_List } from "../Api/getExcelInQueueList";
 import { FileURL } from "../Api/api_Endpoint";
 import TimeDifferenceTimer from "../Utils/TimeDifferenceTimer";
+import { calculatePagination } from "../Utils/calculationPagination";
 
 export default function MonthlyFileUpload() {
   const [LoginData, setLoginData] = useState();
   const [isRefreshButtonDisabled, setIsRefreshButtonDisabled] = useState(false);
   const [isSampleButtonDisabled, setIsSampleButtonDisabled] = useState(false);
+  const [totalRecords, setTotalRecords] = useState();
+  const [totalPage, settotalPage] = useState("");
 
   // const [data, setData] = useState();
   const [inQueueList, setinQueueList] = useState([]);
   const [totalFileUploaded, settotalFileUploaded] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [selectedFile, setSelectedFile] = useState();
   const [showUpload, setshowUpload] = useState(true);
+  const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
+  const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
+  const recordsPerPage = 10;
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    const pagination = calculatePagination(
+      totalRecords,
+      recordsPerPage,
+      pageNumber
+    );
+    settotalPage(pagination?.totalPages);
+    // setIndexOfFirstRecord()
+    setIndexOfFirstRecord(pagination?.startIndex);
+    // setIndexOfFirstRecord(pageNumber * recordsPerPage);
+  };
 
   const UploadExcelFile = async () => {
     setshowUpload(false);
@@ -74,22 +93,47 @@ export default function MonthlyFileUpload() {
       });
     }
   };
-  const getExcelInQueueList = useCallback(
+  const getExcelAllList = useCallback(
     async (id, status) => {
       if (status) {
-        const data = await get_Excel_InQueue_List(id, status);
-        if (data?.status) {
-          settotalFileUploaded(data?.data);
-        }
-      } else {
-        const data = await get_Excel_InQueue_List(id);
-        if (data?.status) {
-          setinQueueList(data?.data);
+        const listdata = {
+          id: id,
+          start: indexOfFirstRecord,
+          end: recordsPerPage,
+        };
+
+        if (indexOfFirstRecord !== indexOfLastRecord) {
+          get_Excel_InQueue_List(listdata, "all")
+            .then((data) => {
+              settotalFileUploaded(data?.data);
+              setTotalRecords(data?.recordsTotal);
+              const pagination = calculatePagination(
+                totalRecords,
+                recordsPerPage,
+                0
+              );
+              settotalPage(pagination?.totalPages);
+            })
+            .catch((error) => {
+              console.error(error, "dsdsds");
+            });
         }
       }
     },
-    [settotalFileUploaded, setinQueueList]
+    [indexOfFirstRecord, indexOfLastRecord, totalRecords]
   );
+
+  const getExcelInQueueList = useCallback(async (id, status) => {
+    if (status) {
+      const listdata = {
+        id: id,
+      };
+
+      const data = await getExcelInQueueList(listdata);
+      setinQueueList(data?.data);
+    }
+  }, []);
+
   const getLocalData = useCallback(async () => {
     const localData = localStorage.getItem("Acemoney_Cache");
 
@@ -97,9 +141,9 @@ export default function MonthlyFileUpload() {
       const decryptdata = decryptData(localData);
       setLoginData(decryptdata?.user_details);
       getExcelInQueueList(decryptdata?.user_details?.id);
-      getExcelInQueueList(decryptdata?.user_details?.id, "all");
+      getExcelAllList(decryptdata?.user_details?.id, "all");
     }
-  }, [getExcelInQueueList, setLoginData]);
+  }, [getExcelAllList, getExcelInQueueList]);
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
@@ -125,7 +169,7 @@ export default function MonthlyFileUpload() {
     setIsRefreshButtonDisabled(true);
     // Call the API or any other logic
     //sending all parameter will call all uploaded file list
-    getExcelInQueueList(LoginData?.id, "all");
+    getExcelAllList(LoginData?.id, "all");
     //sending without parameter will  call the list which are in queue
     getExcelInQueueList(LoginData?.id);
 
@@ -148,6 +192,14 @@ export default function MonthlyFileUpload() {
   };
 
   useEffect(() => {}, [selectedFile]);
+
+  useEffect(() => {
+    setIndexOfLastRecord(currentPage * recordsPerPage);
+  }, [currentPage, recordsPerPage, totalPage]);
+
+  useEffect(() => {
+    getExcelAllList();
+  }, [indexOfLastRecord, indexOfFirstRecord, getExcelAllList]);
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -283,7 +335,7 @@ export default function MonthlyFileUpload() {
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              alignItems:'center'
+              alignItems: "center",
             }}
           >
             <div style={{ display: "flex", flexDirection: "row", gap: 10 }}>
@@ -309,7 +361,9 @@ export default function MonthlyFileUpload() {
               </Tippy>
             </div>
 
-            <p className="bg-primary p-1 rounded text-white cursor-pointer">Download Plan Details</p>
+            <p className="bg-primary p-1 rounded text-white cursor-pointer">
+              Download Plan Details
+            </p>
           </div>
 
           {totalFileUploaded?.map((data, index) => (
@@ -391,7 +445,33 @@ export default function MonthlyFileUpload() {
               </div>
             </div>
           ))}
-        </div>{" "}
+          <div className="flex justify-between items-center mt-4">
+            <span className="text-gray-600">
+              Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
+              {totalRecords} entries
+            </span>
+            <div className="flex items-center mt-4">
+              <span className="text-gray-600 mx-2">
+                Page {currentPage} of {totalPage}
+              </span>
+
+              <button
+                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Prev
+              </button>
+              <button
+                className={`mx-1 p-2 rounded bg-blue-500 text-gray`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPage}
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

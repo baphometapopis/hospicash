@@ -181,8 +181,12 @@ export default function SoldPolicy() {
             onClose={handleCloseFilterDrawer}
           />
 
-          {isMobile && <SearchContainer getSearchValue={getSearchValue} />}
-
+          {isMobile && (
+            <SearchContainer
+              getSearchValue={getSearchValue}
+              searchType={"policy"}
+            />
+          )}
           {/* {isMobile ? ( */}
           <DealerSoldPolicyTable data={poicyList} refresh={refreshpage} />
 

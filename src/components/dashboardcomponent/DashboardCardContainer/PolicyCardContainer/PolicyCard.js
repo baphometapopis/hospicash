@@ -9,7 +9,6 @@ import Cancel from "../../../../assets/Icons/icons8-cancel-100 (1).png";
 import Edit from "../../../../assets/Icons/icons8-edit-64 (2).png";
 
 const PolicyCard = ({ Policy, iscancelled, openCancelModal }) => {
-  console.log(Policy, "Policy Card ");
   const truncatedContent = Policy?.cancel_remark;
   const onShowHandler = (instance) => {
     if (instance.props.content !== truncatedContent) {

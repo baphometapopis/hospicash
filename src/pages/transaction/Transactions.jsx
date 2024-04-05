@@ -48,6 +48,7 @@ export default function Transactions() {
 
   const recordsPerPage = 10;
   const [isMobile, setisMobile] = useState(false);
+  const [filterValue, setfilterValue] = useState("");
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -111,6 +112,11 @@ export default function Transactions() {
 
     if (decryptdata) {
       const listdata = {
+        value: filterValue?.searchvalue,
+        start_date: filterValue?.start_date,
+        end_date: filterValue?.end_date,
+
+        search: filterValue?.param,
         dealer_id: decryptdata?.user_details?.id,
         start: indexOfFirstRecord,
         end: recordsPerPage,
@@ -133,7 +139,15 @@ export default function Transactions() {
         }
       }
     }
-  }, [indexOfFirstRecord, indexOfLastRecord, totalRecords]);
+  }, [
+    filterValue?.end_date,
+    filterValue?.param,
+    filterValue?.searchvalue,
+    filterValue?.start_date,
+    indexOfFirstRecord,
+    indexOfLastRecord,
+    totalRecords,
+  ]);
 
   useEffect(() => {
     dealerTransactionList();
@@ -148,6 +162,11 @@ export default function Transactions() {
     if (data?.status) {
       setInsuranceCompaniesList(data?.data);
     }
+  };
+  const getSearchValue = (prop) => {
+    setfilterValue(prop);
+    // console.log(prop);
+    dealerTransactionList();
   };
   useEffect(() => {
     getinsCompaniesList();
@@ -328,8 +347,12 @@ export default function Transactions() {
             onClose={handleCloseFilterDrawer}
           />
 
-          {isMobile && <SearchContainer />}
-
+          {isMobile && (
+            <SearchContainer
+              getSearchValue={getSearchValue}
+              searchType={"accounttransaction"}
+            />
+          )}
           <AccountBankTransactionListTable
             data={bankTransactionList}
             totalRecords={totalRecords}

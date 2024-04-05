@@ -178,7 +178,12 @@ export default function TransactionsList() {
             visible={filterDrawerVisible}
             onClose={handleCloseFilterDrawer}
           />
-          {isMobile && <SearchContainer getSearchValue={getSearchValue} />}
+          {isMobile && (
+            <SearchContainer
+              getSearchValue={getSearchValue}
+              searchType={"dealertransaction"}
+            />
+          )}
 
           <TransactionListTable
             data={poicyList}

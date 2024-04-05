@@ -31,7 +31,7 @@ export default function FormPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const [EndorsmentfileInputKey, setEndorsmentFileInputKey] = useState(0); // State for file input key
+  const [EndorsedFieldUpdated, setEndorsedFieldUpdated] = useState(false); // State for file input key
 
   const [selectedPlan] = useState(location?.state?.selectedPlan);
   const [salutation, setSalutation] = useState([]);
@@ -100,27 +100,33 @@ export default function FormPage() {
         });
       }
     } else {
+      console.log("sdadasd");
+
       if (EnableEndorsementFields.length === 0) {
         setErrorModalOpen(true);
         setErrorMessage("Please select Fields for Endorsement");
-      } else if (FileUploaded === "") {
-        setErrorModalOpen(true);
-        setErrorMessage("Please upload an Endorsement file");
-      } else {
-        setErrorModalOpen(false);
-        setErrorMessage("");
-        // Proceed with further logic
       }
 
+      //  else {
+      //   setErrorModalOpen(false);
+      //   setErrorMessage("");
+      //   // Proceed with further logic
+      // }
+
+      console.log(FileUploaded, "oljihkujyh");
+
+      if (FileUploaded === "") {
+        setErrorModalOpen(true);
+        setErrorMessage("Please upload an Endorsement file");
+      }
       if (EnableEndorsementFields.length > 0) {
         for (let field of EnableEndorsementFields) {
-          console.log(soldPolicyData[field] === formik.values[field]);
           if (soldPolicyData[field] === formik.values[field]) {
             setErrorModalOpen(true);
             setErrorMessage("Please Update the Enabled Fields Value");
+            setEndorsedFieldUpdated(false);
           } else {
-            setErrorModalOpen(false);
-            setErrorMessage("");
+            setEndorsedFieldUpdated(true);
           }
 
           // if (soldPolicyData[field] !== EnableEndorsementFields[field]) {
@@ -129,31 +135,40 @@ export default function FormPage() {
         }
       }
 
-      // const data = await Update_generatePolicy(
-      //   LoginData?.user_details?.id,
-      //   formik.values,
-      //   location?.state?.policyID
-      // );
-      // if (data?.status) {
-      //   navigation("/confirmed", { state: { policy_id: data?.policy_id } });
+      if (
+        FileUploaded !== "" &&
+        EnableEndorsementFields.length > 0 &&
+        EndorsedFieldUpdated
+      ) {
+        const data = await Update_generatePolicy(
+          LoginData?.user_details?.id,
+          formik.values,
+          location?.state?.policyID,
+          EnableEndorsementFields,
+          FileUploaded
+        );
+        if (data?.status) {
+          // navigation("/confirmed", { state: { policy_id: data?.policy_id } });
+          navigation("/soldPolicy", { state: { policy_id: data?.policy_id } });
 
-      //   toast.success(data?.message, {
-      //     position: "bottom-right",
-      //     autoClose: 1000,
-      //     hideProgressBar: false,
-      //     closeOnClick: true,
-      //     pauseOnHover: true,
-      //   });
-      //   dispatch(resetUserData());
-      // } else {
-      //   toast.error(data?.message, {
-      //     position: "bottom-right",
-      //     autoClose: 1000,
-      //     hideProgressBar: false,
-      //     closeOnClick: true,
-      //     pauseOnHover: true,
-      //   });
-      // }
+          toast.success(data?.message, {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+          });
+          dispatch(resetUserData());
+        } else {
+          toast.error(data?.message, {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+          });
+        }
+      }
     }
     setLoading(false);
   };
@@ -231,7 +246,7 @@ export default function FormPage() {
       validateRequired("gender", "Required");
       validateRequired("lname", "Required");
       validateRequired("email", "Required");
-      validateRequired("pan_number", "Required");
+      validateRequired("pan_card_no", "Required");
       validateRequired("mobile_no", "Required");
       validateRequired("addr1", "Required");
       validateRequired("addr2", "Required");
@@ -248,8 +263,8 @@ export default function FormPage() {
       if (values.mobile_no && !validateIndanMobileNo(values.mobile_no)) {
         errors.mobile_no = "Invalid Mobile Number";
       }
-      if (values.pan_number && !validatePanNo(values.pan_number)) {
-        errors.pan_number = "Invalid Pan Number";
+      if (values.pan_card_no && !validatePanNo(values.pan_card_no)) {
+        errors.pan_card_no = "Invalid Pan Number";
       }
 
       if (
@@ -299,6 +314,7 @@ export default function FormPage() {
     if (data) {
       const decryptdata = decryptData(data);
       setLoginData(decryptdata);
+      getFormData(decryptdata);
 
       //api function if needed or  store in a state
     } else {
@@ -314,8 +330,8 @@ export default function FormPage() {
     }
   }, [navigate]);
 
-  const getFormData = async () => {
-    const data = await get_policy_data();
+  const getFormData = async (localdata) => {
+    const data = await get_policy_data(localdata?.user_details?.id);
     if (data?.status) {
       setFormdata(data);
       const activeSalutations = data?.salutation_data?.filter(
@@ -365,7 +381,7 @@ export default function FormPage() {
     setStateName(data?.data[0].state_name);
     setcityName(data?.data[0].city_name);
 
-    formik.setFieldValue("pan_number", data?.data[0].pan_number);
+    formik.setFieldValue("pan_card_no", data?.data[0].pan_card_no);
     formik.setFieldValue("dob", data?.data[0].dob);
     formik.setFieldValue("email", data?.data[0].email);
     formik.setFieldValue("gender", Number(data?.data[0].gender));
@@ -388,7 +404,6 @@ export default function FormPage() {
     if (location?.state?.Action === "Endorsment") {
       getEndorsmentDetails();
     }
-    getFormData();
     getlocalData();
   }, [getlocalData]);
 
@@ -401,7 +416,7 @@ export default function FormPage() {
       getPincode(formik.values.pincode);
     }
   }, [StateName, cityName]);
-  useEffect(() => {}, [FileUploaded]);
+  useEffect(() => {}, [FileUploaded, EndorsedFieldUpdated]);
 
   return (
     <>
@@ -584,18 +599,18 @@ export default function FormPage() {
                   />
                 )}
                 <Input
-                  {...formik.getFieldProps("pan_number")}
+                  {...formik.getFieldProps("pan_card_no")}
                   formik={formik}
-                  id="pan_number"
-                  name="pan_number"
+                  id="pan_card_no"
+                  name="pan_card_no"
                   type="text"
                   placeholder="Enter your Pan Number"
                   label="Pan Number"
                   required={true}
-                  value={formik.values.pan_number}
+                  value={formik.values.pan_card_no}
                   alphanumeric
                   maxLength={10}
-                  disabled={!checkEndorsedSelected("pan_number")}
+                  disabled={!checkEndorsedSelected("pan_card_no")}
                   capitalize
                 />
 
@@ -836,7 +851,7 @@ export default function FormPage() {
                       id="file"
                       name="file"
                       accept=".pdf, .png, .jpg, .jpeg"
-                      onChange={(e) => setFileUploaded(e.target.value)}
+                      onChange={(e) => setFileUploaded(e.target.files[0])}
                     />
                     {formik.errors.file && (
                       <p className="text-red-500 text-sm mt-1">

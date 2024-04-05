@@ -1,9 +1,9 @@
 import makeApiRequest from "./apiCaller";
 
-export const get_policy_data = async () => {
+export const get_policy_data = async (id) => {
   try {
     const body = new URLSearchParams();
-    body.append("dealer_id", "1");
+    body.append("dealer_id", id);
 
     const result = await makeApiRequest("get_policy_data", "POST", body);
     const data = JSON.parse(result);

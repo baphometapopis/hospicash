@@ -31,6 +31,7 @@ export const Getpartypaymentdetails = async (id) => {
     .then((response) => response.json())
     .then((result) => {
       // Returning the JSON data
+      console.log(result);
       return result;
     })
     .catch((error) => {

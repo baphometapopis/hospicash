@@ -25,7 +25,7 @@ const initialState = {
   appointee_age: "",
   appointee_relation: "",
   gender: "",
-  pan_number: "",
+  pan_card_no: "",
 };
 
 const userSlice = createSlice({

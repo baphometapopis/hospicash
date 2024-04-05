@@ -26,6 +26,7 @@ import FeedFile from "./pages/IC_admin/FeedFile";
 import EndorsmentPendingPolicy from "./pages/Admin/EndorsmentPendingPolicy";
 import ViewEndorsmentDetails from "./pages/Admin/ViewEndorsmentDetails";
 import InternetStatus from "./Utils/CheckInternetStatus";
+import DealerListEndorsmentPolicy from "./pages/DealerListEndorsmentPolicy";
 
 function App() {
   const [state, setState] = useState("Active");
@@ -149,6 +150,11 @@ function App() {
               <Route path="Monthly_Policy" element={<MonthlyFileUpload />} />
               <Route path="cancelledPolicy" element={<CancelledPolicy />} />
               <Route path="transaction_list" element={<TransactionsList />} />
+              <Route
+                path="EndorsmentStatus"
+                element={<DealerListEndorsmentPolicy />}
+              />
+
               <Route path="plans" element={<Plans />} />
               <Route path="home" element={<Home />} />
             </Route>

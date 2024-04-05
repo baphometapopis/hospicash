@@ -130,7 +130,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"is_policy_schedule_type\": \"year\",\r\n    \"dealer_id\": \"1\",\r\n    \"plan_id\": 3821,\r\n    \"salutation\": 2,\r\n    \"fname\": \"MNMN\",\r\n    \"mname\": \"MNMNMn\",\r\n    \"lname\": \"MNMn\",\r\n    \"email\": \"a@gmail.com\",\r\n    \"mobile_no\": \"7718015767\",\r\n    \"addr1\": \",MN,MN,MN\",\r\n    \"addr2\": \",MN,MN,MN\",\r\n    \"pincode\": \"400089\",\r\n    \"city_id\": 470,\r\n    \"state_id\": 21,\r\n    \"nominee_full_name\": \"MNMNBMNB\",\r\n    \"nominee_age\": \"45\",\r\n    \"nominee_relation\": 4,\r\n    \"appointee_name\": \"\",\r\n    \"appointee_age\": \"\",\r\n    \"appointee_relation\": \"\",\r\n    \"gender\": 1,\r\n    \"pan_number\": \"EDWPB8289K\",\r\n    \"dob\": \"2024/01/29\"\r\n}",
+					"raw": "{\r\n    \"is_policy_schedule_type\": \"year\",\r\n    \"dealer_id\": \"1\",\r\n    \"plan_id\": 3821,\r\n    \"salutation\": 2,\r\n    \"fname\": \"MNMN\",\r\n    \"mname\": \"MNMNMn\",\r\n    \"lname\": \"MNMn\",\r\n    \"email\": \"a@gmail.com\",\r\n    \"mobile_no\": \"7718015767\",\r\n    \"addr1\": \",MN,MN,MN\",\r\n    \"addr2\": \",MN,MN,MN\",\r\n    \"pincode\": \"400089\",\r\n    \"city_id\": 470,\r\n    \"state_id\": 21,\r\n    \"nominee_full_name\": \"MNMNBMNB\",\r\n    \"nominee_age\": \"45\",\r\n    \"nominee_relation\": 4,\r\n    \"appointee_name\": \"\",\r\n    \"appointee_age\": \"\",\r\n    \"appointee_relation\": \"\",\r\n    \"gender\": 1,\r\n    \"pan_card_no\": \"EDWPB8289K\",\r\n    \"dob\": \"2024/01/29\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

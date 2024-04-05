@@ -6,7 +6,11 @@ import { getFilterListApi } from "../../Api/getFilters";
 
 const { RangePicker } = DatePicker;
 
-export const SearchContainer = ({ removeSearchFilter, getSearchValue }) => {
+export const SearchContainer = ({
+  removeSearchFilter,
+  getSearchValue,
+  searchType,
+}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [searchValue, setSearchValue] = useState("");
   const [dateRange, setDateRange] = useState([]);
@@ -26,7 +30,7 @@ export const SearchContainer = ({ removeSearchFilter, getSearchValue }) => {
     setDateRange(dateStrings);
   };
   const getFilterList = async () => {
-    const filterRes = await getFilterListApi();
+    const filterRes = await getFilterListApi("search", searchType);
     if (filterRes?.status) {
       setfilterOptions(filterRes.filter_data);
     }

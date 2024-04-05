@@ -144,7 +144,7 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
                 <label htmlFor="transaction_no">Transaction No : </label>
                 <label htmlFor="ifsc_code">Bank IFSC Code :</label>
                 <label htmlFor="bank_name">Bank Name :</label>
-                <label htmlFor="account_no">Option1ccount Number :</label>
+                <label htmlFor="account_no">Account Number :</label>
                 <label htmlFor="amount">Amount :</label>
                 <label htmlFor="payment_date" className="text-lg">
                   Date :
@@ -157,7 +157,7 @@ const PaymentModal = ({ isOpen, onClose, icList }) => {
                   options={[
                     ...(icList || []).map((salutation) => ({
                       value: salutation.id,
-                      label: salutation.name,
+                      label: salutation.code,
                     })),
                   ]}
                   placeholder="Select Party"

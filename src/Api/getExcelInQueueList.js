@@ -1,12 +1,13 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
-export const get_Excel_InQueue_List = async (id, status) => {
-  console.log(id, "get_Excel_InQueue_List");
+export const get_Excel_InQueue_List = async (data, status) => {
   var myHeaders = new Headers();
 
   var urlencoded = new URLSearchParams();
-  urlencoded.append("dealer_id", id);
+  urlencoded.append("dealer_id", data?.id);
   urlencoded.append("status", status);
+  urlencoded.append("start", data?.start);
+  urlencoded.append("length", data?.end);
 
   var requestOptions = {
     method: "POST",

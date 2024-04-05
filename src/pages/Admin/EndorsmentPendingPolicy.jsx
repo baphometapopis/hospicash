@@ -3,16 +3,24 @@ import coverImage from "../../assets/img/hospicashcoverimage.jpeg";
 import IconFilter from "../../assets/Icons/IconFIlter.png";
 import { useCallback } from "react";
 
+import { getSold_CancelPolicy } from "../../Api/getsold_CancelPOlicy";
+import DealerSoldPolicyTable from "../../components/dashboardcomponent/DealerSoldPolicyTable";
 import { SearchContainer } from "../../components/dashboardcomponent/SearchContainer";
 import FilterDrawer from "../../components/Mobile FIlterCOmponent/FilterDrawer";
-import ApprovePendingPolicyDataTables from "../../components/dashboardcomponent/ApprovePendingPolicyDataTables";
-import { decryptData } from "../../Utils/cryptoUtils";
+import MobilePolicyCard from "../../components/dashboardcomponent/DashboardCardContainer/PolicyCardContainer/MobilePolicyCard";
 import { calculatePagination } from "../../Utils/calculationPagination";
+import { decryptData } from "../../Utils/cryptoUtils";
+import Tippy from "@tippyjs/react";
+import "tippy.js/dist/tippy.css";
+import Refresh from "../../assets/Icons/icons8-refresh-64.png";
 import { getEndorsmentPendingListApi } from "../../Api/adminAPi/getEndorsmentPendingList";
+import EndorsmentPolicyTable from "./EndorsmentPolicyTable";
 
 export default function EndorsmentPendingPolicy() {
-  const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, settotalPage] = useState();
+
+  const [filterDrawerVisible, setFilterDrawerVisible] = useState(false);
 
   const handleOpenFilterDrawer = () => {
     setFilterDrawerVisible(true);
@@ -21,12 +29,12 @@ export default function EndorsmentPendingPolicy() {
   const handleCloseFilterDrawer = () => {
     setFilterDrawerVisible(false);
   };
+  const [isRefreshButtonDisabled, setIsRefreshButtonDisabled] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  // const [data, setData] = useState();
   const [totalRecords, setTotalRecords] = useState();
   const [poicyList, setPolicyList] = useState([]);
-  const [LoginData, setLoginData] = useState("");
+  const [filterValue, setfilterValue] = useState("");
+  const [loginData, setloginData] = useState();
 
   const [indexOfLastRecord, setIndexOfLastRecord] = useState(10);
   const [indexOfFirstRecord, setIndexOfFirstRecord] = useState(0);
@@ -47,28 +55,42 @@ export default function EndorsmentPendingPolicy() {
   };
 
   const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
-  const getLocalData = async () => {
-    const localData = localStorage.getItem("Acemoney_Cache");
 
-    if (localData !== null || localData !== undefined) {
-      const decryptdata = decryptData(localData);
-      setLoginData(decryptdata?.user_details);
-    }
-    if (LoginData) {
-      getEndorsmentPendingList();
-    }
+  const refreshpage = () => {};
+
+  const handleRefresh = () => {
+    // Disable the button
+    setIsRefreshButtonDisabled(true);
+
+    FetchEndorsmentList();
+
+    setTimeout(() => {
+      // Enable the button after 10 seconds
+      setIsRefreshButtonDisabled(false);
+    }, 10000); // 10 seconds in milliseconds
   };
-  const getEndorsmentPendingList = useCallback(() => {
-    const fetchData = async () => {
-      const listdata = {
-        dealer_id: LoginData?.id,
-        start: indexOfFirstRecord,
-        end: recordsPerPage,
-        role_type: LoginData?.role_type,
-      };
-      if (indexOfFirstRecord !== indexOfLastRecord) {
-        try {
-          const data = await getEndorsmentPendingListApi(listdata);
+
+  const FetchEndorsmentList = useCallback(() => {
+    const data = localStorage.getItem("Acemoney_Cache");
+    const decryptdata = decryptData(data);
+    console.log(filterValue);
+    setloginData(decryptdata);
+
+    const listdata = {
+      value: filterValue?.searchvalue,
+      start_date: filterValue?.start_date,
+      end_date: filterValue?.end_date,
+
+      search: filterValue?.param,
+      dealer_id: decryptdata?.user_details?.id,
+      start: indexOfFirstRecord,
+      end: recordsPerPage,
+      user_type: decryptdata?.user_details?.role_type,
+    };
+
+    if (indexOfFirstRecord !== indexOfLastRecord) {
+      getEndorsmentPendingListApi(listdata)
+        .then((data) => {
           setPolicyList(data?.data);
           setTotalRecords(data?.recordsTotal);
           const pagination = calculatePagination(
@@ -77,20 +99,18 @@ export default function EndorsmentPendingPolicy() {
             0
           );
           settotalPage(pagination?.totalPages);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
+        })
+        .catch((error) => {
+          console.error(error, "dsdsds");
+        });
+    }
+  }, [filterValue, indexOfFirstRecord, indexOfLastRecord, totalRecords]);
 
-    fetchData();
-  }, [
-    LoginData?.id,
-    LoginData?.role_type,
-    indexOfFirstRecord,
-    indexOfLastRecord,
-    totalRecords,
-  ]);
+  const getSearchValue = (prop) => {
+    setfilterValue(prop);
+    // console.log(prop);
+    FetchEndorsmentList();
+  };
 
   useEffect(() => {
     const handleWindowResize = () => {
@@ -113,8 +133,8 @@ export default function EndorsmentPendingPolicy() {
   }, [currentPage, recordsPerPage, totalPage]);
 
   useEffect(() => {
-    getLocalData();
-  }, [indexOfLastRecord, indexOfFirstRecord]);
+    FetchEndorsmentList();
+  }, [indexOfLastRecord, indexOfFirstRecord, FetchEndorsmentList]);
 
   return (
     <div className="flex flex-col w-full items-center">
@@ -132,7 +152,9 @@ export default function EndorsmentPendingPolicy() {
       <div className="-mt-20 md:w-[75%] w-[95%] mb:px-8 mb-20 bg-white border border-neutral-light rounded">
         <div className="container mx-auto p-4">
           <div className="flex gap-5">
-            <h1 className="text-2xl font-bold mb-4">Endorsment Policy</h1>
+            <h1 className="text-2xl font-bold mb-4">
+              Endorsment Pending Policy
+            </h1>
             {!isMobile && (
               <img
                 src={IconFilter}
@@ -141,32 +163,45 @@ export default function EndorsmentPendingPolicy() {
                 onClick={handleOpenFilterDrawer}
               />
             )}
+            <Tippy
+              content={
+                isRefreshButtonDisabled ? "wait 10 sec " : "Refresh Files"
+              }
+              placement="right"
+              arrow={true}
+              className="rounded-sm text-xs"
+            >
+              <img
+                src={Refresh}
+                className={`w-[35px] h-[30px]   ${
+                  isRefreshButtonDisabled
+                    ? "cursor-not-allowed animate-spin-slow"
+                    : "cursor-pointer"
+                } ${isRefreshButtonDisabled ? "opacity-50" : ""}`}
+                alt="search_image"
+                onClick={() => !isRefreshButtonDisabled && handleRefresh()}
+              />
+            </Tippy>
           </div>
           <FilterDrawer
             visible={filterDrawerVisible}
             onClose={handleCloseFilterDrawer}
           />
-          {isMobile && <SearchContainer />}
 
-          <ApprovePendingPolicyDataTables
+          {isMobile && (
+            <SearchContainer
+              getSearchValue={getSearchValue}
+              searchType={"policy"}
+            />
+          )}
+
+          {/* {isMobile ? ( */}
+          <EndorsmentPolicyTable
             data={poicyList}
-            loginData={LoginData}
-            handlePageChange={getEndorsmentPendingList}
+            refresh={refreshpage}
+            role={loginData?.user_details?.role_type}
           />
 
-          {/* {poicyList?.map((data) => (
-            <>
-              {isMobile ? (
-                <PolicyCard key={data.id} Policy={data} iscancelled={true} />
-              ) : (
-                <MobilePolicyCard
-                  key={data.id}
-                  policy={data}
-                  iscancelled={true}
-                />
-              )}
-            </>
-          ))} */}
           <div className="flex justify-between items-center mt-4">
             <span className="text-gray-600">
               Showing {indexOfFirstRecord + 1} to {indexOfFirstRecord + 10} of{" "}
@@ -193,7 +228,7 @@ export default function EndorsmentPendingPolicy() {
               </button>
             </div>
           </div>
-        </div>
+        </div>{" "}
       </div>
     </div>
   );
