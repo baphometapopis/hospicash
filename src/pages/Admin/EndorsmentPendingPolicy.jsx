@@ -84,6 +84,8 @@ export default function EndorsmentPendingPolicy() {
       search: filterValue?.param,
       dealer_id: decryptdata?.user_details?.id,
       start: indexOfFirstRecord,
+      status: "pending",
+
       end: recordsPerPage,
       user_type: decryptdata?.user_details?.role_type,
     };

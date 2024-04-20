@@ -23,6 +23,7 @@ import { get_Excel_InQueue_List } from "../Api/getExcelInQueueList";
 import { FileURL } from "../Api/api_Endpoint";
 import TimeDifferenceTimer from "../Utils/TimeDifferenceTimer";
 import { calculatePagination } from "../Utils/calculationPagination";
+import { SearchContainer } from "../components/dashboardcomponent/SearchContainer";
 
 export default function MonthlyFileUpload() {
   const [LoginData, setLoginData] = useState();
@@ -30,11 +31,14 @@ export default function MonthlyFileUpload() {
   const [isSampleButtonDisabled, setIsSampleButtonDisabled] = useState(false);
   const [totalRecords, setTotalRecords] = useState();
   const [totalPage, settotalPage] = useState("");
+  const [isMobile, setisMobile] = useState(false);
 
   // const [data, setData] = useState();
   const [inQueueList, setinQueueList] = useState([]);
   const [totalFileUploaded, settotalFileUploaded] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [windowWidth, setWindowWidth] = useState([window.innerWidth]);
+  const [filterValue, setfilterValue] = useState("");
 
   const [selectedFile, setSelectedFile] = useState();
   const [showUpload, setshowUpload] = useState(true);
@@ -52,6 +56,12 @@ export default function MonthlyFileUpload() {
     // setIndexOfFirstRecord()
     setIndexOfFirstRecord(pagination?.startIndex);
     // setIndexOfFirstRecord(pageNumber * recordsPerPage);
+  };
+
+  const getSearchValue = (prop) => {
+    setfilterValue(prop);
+    // console.log(prop);
+    getExcelAllList();
   };
 
   const UploadExcelFile = async () => {
@@ -97,6 +107,9 @@ export default function MonthlyFileUpload() {
     async (id, status) => {
       if (status) {
         const listdata = {
+          start_date: filterValue?.start_date,
+          end_date: filterValue?.end_date,
+
           id: id,
           start: indexOfFirstRecord,
           end: recordsPerPage,
@@ -120,7 +133,13 @@ export default function MonthlyFileUpload() {
         }
       }
     },
-    [indexOfFirstRecord, indexOfLastRecord, totalRecords]
+    [
+      filterValue?.end_date,
+      filterValue?.start_date,
+      indexOfFirstRecord,
+      indexOfLastRecord,
+      totalRecords,
+    ]
   );
 
   const getExcelInQueueList = useCallback(async (id, status) => {
@@ -190,6 +209,21 @@ export default function MonthlyFileUpload() {
       setIsSampleButtonDisabled(false);
     }, 10000); // 10 seconds in milliseconds
   };
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWindowWidth([window.innerWidth]);
+    };
+
+    window.addEventListener("resize", handleWindowResize);
+    if (windowWidth <= 768) {
+      setisMobile(false);
+    } else {
+      setisMobile(true);
+    }
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
+  }, [windowWidth]);
 
   useEffect(() => {}, [selectedFile]);
 
@@ -365,6 +399,14 @@ export default function MonthlyFileUpload() {
               Download Plan Details
             </p>
           </div>
+
+          {isMobile && (
+            <SearchContainer
+              getSearchValue={getSearchValue}
+              searchType={"policy"}
+              removeSearchFilter={true}
+            />
+          )}
 
           {totalFileUploaded?.map((data, index) => (
             <div

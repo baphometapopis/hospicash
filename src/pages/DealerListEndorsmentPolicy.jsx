@@ -80,9 +80,10 @@ export default function DealerListEndorsmentPolicy() {
         value: filterValue?.searchvalue,
         start_date: filterValue?.start_date,
         end_date: filterValue?.end_date,
-
         search: filterValue?.param,
         dealer_id: decryptdata?.user_details?.id,
+        status: "all",
+        user_type: decryptdata?.user_details?.role_type,
         start: indexOfFirstRecord,
         end: recordsPerPage,
       };
@@ -100,7 +101,7 @@ export default function DealerListEndorsmentPolicy() {
             settotalPage(pagination?.totalPages);
           })
           .catch((error) => {
-            console.error(error, "dsdsds");
+            console.error(error, "Endorsment Error");
           });
       }
     }
@@ -186,7 +187,12 @@ export default function DealerListEndorsmentPolicy() {
             onClose={handleCloseFilterDrawer}
           />
 
-          {isMobile && <SearchContainer getSearchValue={getSearchValue} />}
+          {isMobile && (
+            <SearchContainer
+              getSearchValue={getSearchValue}
+              searchType={"Endorsmentpolicy"}
+            />
+          )}
 
           {/* {isMobile ? ( */}
           <EndorsmentPolicyTable

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Error from "../../../assets/Icons/Error.png";
 
 const ErrorModal = ({ isOpen, onClose, message }) => {
   console.log();
@@ -18,10 +19,19 @@ const ErrorModal = ({ isOpen, onClose, message }) => {
         onClick={onClose}
       ></div>
 
-      <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-        <h2>Empty Fields!</h2>
-        <p>{message}</p>
-        <button onClick={onClose}>Close</button>
+      <div className="flex flex-col gap-2 items-center  bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 ">
+        <span className="flex flex-row justify-center items-center">
+          <strong className="text-[20px]"></strong>
+          <img
+            src={Error}
+            className="w-6 h-6 object-cover"
+            alt="cover_image"
+          />
+        </span>
+        <p>{message}</p>{" "}
+        <button className="bg-[red] px-4 rounded text-white" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
   );

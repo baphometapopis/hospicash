@@ -16,7 +16,7 @@ export const getEndorsmentPendingListApi = async (formdata) => {
     body.append("end_date", formdata.end_date ?? "");
 
     body.append("value", formdata?.value ?? "");
-    body.append("endorsement_status", "pending");
+    body.append("endorsement_status", formdata?.status);
     body.append("user_type", formdata?.user_type);
 
     const result = await makeApiRequest("PolicyEndorsementlist", "POST", body);

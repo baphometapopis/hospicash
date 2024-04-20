@@ -10,19 +10,46 @@ import Download from "../../assets/Icons/icons8-download-64 (2).png";
 const EndorsmentPolicyTable = ({ data, refresh, role }) => {
   const [isCancelModalOpen, setisCancelModalOpen] = useState(false);
   const [seletedCancelPolicyData, setseletedCancelPolicyData] = useState("");
-  const handleDownloadPDF = async () => {
-    // try {
-    //   // console.log(Policy?.pdf_url)
-    //   const pdfUrl = Policy?.pdf_url;
-    //   const response = await fetch(pdfUrl);
-    //   const blob = await response.blob();
-    //   const downloadLink = document.createElement("a");
-    //   downloadLink.href = URL.createObjectURL(blob);
-    //   downloadLink.download = `${Policy?.policy_no}_${Policy?.full_name}.pdf`;
-    //   downloadLink.click();
-    // } catch (error) {
-    //   console.error("Error downloading PDF:", error);
-    // }
+
+  const getStatusStyle = (status) => {
+    console.log(status, "EndorsmentPolicyTable");
+    switch (status) {
+      case "pending":
+        return {
+          backgroundColor: "#FCD34D",
+          color: "#ffffff",
+        };
+      case "approved":
+        return {
+          backgroundColor: "#68D391",
+          color: "#ffffff",
+        };
+      case "concile":
+        return {
+          backgroundColor: "#4299E1",
+          color: "#ffffff",
+        };
+      default:
+        return {
+          backgroundColor: "#D1D5DB",
+          color: "#000000",
+        };
+    }
+  };
+
+  const handleDownloadPDF = async (pdf) => {
+    try {
+      console.log(pdf?.pdf_url);
+      const pdfUrl = pdf?.pdf_url;
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(blob);
+      downloadLink.download = `Endorsment_${pdf?.policy_no}.pdf`;
+      downloadLink.click();
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
   };
   const navigate = useNavigate();
   const openCancelModal = (prop) => {
@@ -60,13 +87,13 @@ const EndorsmentPolicyTable = ({ data, refresh, role }) => {
     {
       field: "plan_name",
       headerName: "Plan",
-      width: 150,
+      width: 100,
       headerClassName: "super-app-theme--header",
     },
     {
       field: "created_date",
       headerName: "Created Date",
-      width: 180,
+      width: 100,
       headerClassName: "super-app-theme--header",
 
       valueFormatter: (params) => {
@@ -101,13 +128,29 @@ const EndorsmentPolicyTable = ({ data, refresh, role }) => {
   } else {
     columns.push(
       {
+        field: "endorsement_status",
+        headerName: "Status",
+        headerClassName: "super-app-theme--header",
+        width: 100,
+        renderCell: (params) => (
+          <>
+            <p
+              className="px-4 rounded-lg "
+              style={getStatusStyle(params?.row?.endorsement_status)}
+            >
+              {params?.row?.endorsement_status}
+            </p>
+          </>
+        ),
+      },
+      {
         field: "remarks",
         headerName: "Remarks",
         headerClassName: "super-app-theme--header",
-        width: 205,
+        width: 100,
         renderCell: (params) => (
           <>
-            <p>second</p>
+            <p>{params?.row?.remark}</p>
           </>
         ),
       },
@@ -119,29 +162,31 @@ const EndorsmentPolicyTable = ({ data, refresh, role }) => {
         width: 80,
         renderCell: (params) => (
           <>
-            <div
-              style={{
-                fontSize: "14px",
-                backgroundColor: "#0089d1",
-                color: "#ffff",
-                padding: "1px",
-              }}
-              className="rounded-md cursor-pointer h-fit"
-              onClick={handleDownloadPDF}
-            >
-              <Tippy
-                content={"Download Proposal"}
-                placement="top"
-                arrow={true}
-                className="rounded-sm text-xs"
+            {params?.row?.endorsement_status === "approved" && (
+              <div
+                style={{
+                  fontSize: "14px",
+                  backgroundColor: "#0089d1",
+                  color: "#ffff",
+                  padding: "1px",
+                }}
+                className="rounded-md cursor-pointer h-fit"
+                onClick={() => handleDownloadPDF(params.row)}
               >
-                <img
-                  src={Download}
-                  className="w-[25px] object-center"
-                  alt="search_image"
-                />
-              </Tippy>
-            </div>{" "}
+                <Tippy
+                  content={"Download Proposal"}
+                  placement="top"
+                  arrow={true}
+                  className="rounded-sm text-xs"
+                >
+                  <img
+                    src={Download}
+                    className="w-[25px] object-center"
+                    alt="search_image"
+                  />
+                </Tippy>
+              </div>
+            )}
           </>
         ),
       }

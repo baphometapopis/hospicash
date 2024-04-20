@@ -1,6 +1,7 @@
 import { API_BASE_URL } from "./api_Endpoint";
 
 export const get_Excel_InQueue_List = async (data, status) => {
+  console.log(data, "get_Excel_InQueue_List");
   var myHeaders = new Headers();
 
   var urlencoded = new URLSearchParams();
@@ -8,6 +9,8 @@ export const get_Excel_InQueue_List = async (data, status) => {
   urlencoded.append("status", status);
   urlencoded.append("start", data?.start);
   urlencoded.append("length", data?.end);
+  urlencoded.append("start_date", data?.start_date);
+  urlencoded.append("end_date", data?.end_date);
 
   var requestOptions = {
     method: "POST",

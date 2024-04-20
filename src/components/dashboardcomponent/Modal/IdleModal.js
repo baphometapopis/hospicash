@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SessionTimeout from "../../../assets/Icons/sessionTimeout.png";
 
 const IdleModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   useEffect(() => {
     if (isOpen) {
-        navigate('login')
+      navigate("login");
       localStorage.removeItem("Acemoney_Cache");
 
       console.log("lkjghyftg");
@@ -26,10 +27,19 @@ const IdleModal = ({ isOpen, onClose }) => {
         onClick={onClose}
       ></div>
 
-      <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-        <h2>Your session has timed out</h2>
+      <div className="flex flex-col gap-2 items-center  bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6 ">
+        <span className="flex flex-row justify-center items-center">
+          <strong className="text-[20px]">Your session has timed out!</strong>
+          <img
+            src={SessionTimeout}
+            className="w-6 h-6 object-cover"
+            alt="cover_image"
+          />
+        </span>
         <p>Please log in again to continue</p>
-        <button onClick={onClose}>Close</button>
+        <button className="bg-[red] px-4 rounded text-white" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
   );
