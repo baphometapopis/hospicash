@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
+import Footer from "./components/Footer";
 
 export default function AppLayout() {
   const [opened, setOpened] = useState(false);
@@ -15,6 +16,7 @@ export default function AppLayout() {
       <div className="flex">
         <Sidebar opened={opened} />
         <Outlet />
+
       </div>
     </>
   );
